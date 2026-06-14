@@ -58,8 +58,8 @@ services:
     plan: free
     branch: main
     autoDeploy: true
-    # NEXT_PUBLIC_API_URL is a build-time arg — baked into the client bundle.
-    # Replace with your actual API service URL after first deploy.
-    buildArgs:
+    # NEXT_PUBLIC_API_URL is a Docker build arg — baked into the client bundle
+    # at build time. Replace with your actual API service URL after first deploy.
+    envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://wallmeri-api.onrender.com/api

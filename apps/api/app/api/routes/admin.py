@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session, joinedload
 from app.core.database import get_db
 from app.core.deps import get_current_admin
 from app.core.utils import slugify
-from app.models import Order, Product, User
+from app.models import Order, Product
 from app.schemas.catalog import ProductCreate, ProductOut, ProductUpdate
 from app.schemas.order import OrderOut
 

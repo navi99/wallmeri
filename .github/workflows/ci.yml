@@ -1,4 +1,4 @@
-name: CI
+name: Wallmeri CI
 
 on:
   push:

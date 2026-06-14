@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: wallmeri_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-wallmeri}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-wallmeri}
+      POSTGRES_DB: ${POSTGRES_DB:-wallmeri}
+    # Host port 5433 -> container 5432 (avoids clashing with a local Postgres on 5432).
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wallmeri} -d ${POSTGRES_DB:-wallmeri}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./apps/api
+    container_name: wallmeri_api
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      UVICORN_RELOAD: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./apps/api:/app
+
+  web:
+    build:
+      context: ./apps/web
+    container_name: wallmeri_web
+    env_file:
+      - .env
+    environment:
+      # Browser calls the API via localhost (host port mapping).
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000/api}
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  pgdata:

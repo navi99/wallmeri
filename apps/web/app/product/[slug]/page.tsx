@@ -1,0 +1,146 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Check, ChevronLeft, Minus, Plus, ShieldCheck, Truck } from "lucide-react";
+import { toast } from "sonner";
+
+import { Badge, Button, Spinner } from "@/components/ui";
+import { api, ApiError } from "@/lib/api";
+import { useCart } from "@/lib/store/cart";
+import { formatINR } from "@/lib/utils";
+
+export default function ProductPage({ params }: { params: { slug: string } }) {
+  const [qty, setQty] = useState(1);
+  const add = useCart((s) => s.add);
+
+  const { data: product, isLoading, error } = useQuery({
+    queryKey: ["product", params.slug],
+    queryFn: () => api.getProduct(params.slug),
+    retry: false,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid place-items-center py-32">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    const notFound = error instanceof ApiError && error.status === 404;
+    return (
+      <div className="container-page py-24 text-center">
+        <h1 className="text-2xl font-bold text-ink">
+          {notFound ? "Poster not found" : "Something went wrong"}
+        </h1>
+        <Link href="/catalog" className="mt-4 inline-block font-semibold text-brand-700 hover:underline">
+          Back to catalog
+        </Link>
+      </div>
+    );
+  }
+
+  const inStock = product.stock > 0;
+
+  const onAdd = () => {
+    add(
+      {
+        product_id: product.id,
+        slug: product.slug,
+        title: product.title,
+        image_url: product.image_url,
+        price_inr: product.price_inr,
+      },
+      qty,
+    );
+    toast.success(`Added ${qty} × "${product.title}" to cart`);
+  };
+
+  return (
+    <div className="container-page py-8">
+      <Link
+        href="/catalog"
+        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-brand-700"
+      >
+        <ChevronLeft className="h-4 w-4" /> Back to catalog
+      </Link>
+
+      <div className="mt-6 grid gap-8 lg:grid-cols-2">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-brand-100 bg-brand-50">
+          <Image
+            src={product.image_url}
+            alt={product.title}
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+            priority
+          />
+        </div>
+
+        <div>
+          {product.category && <Badge>{product.category.name}</Badge>}
+          <h1 className="mt-3 text-3xl font-extrabold text-ink">{product.title}</h1>
+          <p className="mt-2 text-2xl font-bold text-brand-600">
+            {formatINR(product.price_inr)}
+          </p>
+
+          <p className="mt-5 leading-relaxed text-muted">{product.description}</p>
+
+          <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
+            <div className="rounded-xl bg-cream px-4 py-3">
+              <dt className="text-muted">Material</dt>
+              <dd className="font-semibold text-ink">{product.material}</dd>
+            </div>
+            <div className="rounded-xl bg-cream px-4 py-3">
+              <dt className="text-muted">Availability</dt>
+              <dd className="font-semibold text-ink">
+                {inStock ? `${product.stock} in stock` : "Out of stock"}
+              </dd>
+            </div>
+          </dl>
+
+          {inStock && (
+            <div className="mt-6 flex items-center gap-4">
+              <div className="flex items-center rounded-xl border border-brand-200">
+                <button
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  className="grid h-11 w-11 place-items-center text-ink hover:bg-brand-50"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="h-4 w-4" />
+                </button>
+                <span className="w-10 text-center font-semibold">{qty}</span>
+                <button
+                  onClick={() => setQty((q) => Math.min(product.stock, q + 1))}
+                  className="grid h-11 w-11 place-items-center text-ink hover:bg-brand-50"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+              <Button size="lg" onClick={onAdd} className="flex-1 sm:flex-none">
+                Add to cart
+              </Button>
+            </div>
+          )}
+
+          <ul className="mt-7 space-y-2 text-sm text-muted">
+            <li className="flex items-center gap-2">
+              <Truck className="h-4 w-4 text-brand-600" /> Free shipping over ₹2,999
+            </li>
+            <li className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-brand-600" /> Secure Razorpay checkout
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-brand-600" /> Fade-resistant metal print
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}

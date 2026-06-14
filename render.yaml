@@ -1,0 +1,65 @@
+# Render Blueprint — defines all Wallmeri services in one file.
+# Deploy: Render Dashboard → New → Blueprint → connect this repo.
+# https://render.com/docs/blueprint-spec
+
+databases:
+  - name: wallmeri-db
+    databaseName: wallmeri
+    user: wallmeri
+    plan: free          # upgrade to starter ($7/mo) before launch
+
+services:
+  # ── FastAPI backend ─────────────────────────────────────────────────────────
+  - type: web
+    name: wallmeri-api
+    env: docker
+    dockerfilePath: apps/api/Dockerfile
+    dockerContext: apps/api
+    plan: free          # upgrade before launch (free tier spins down)
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /api
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: wallmeri-db
+          property: connectionString
+      - key: ENV
+        value: production
+      # CORS must include the deployed web URL, e.g. https://wallmeri-web.onrender.com
+      # Update this after the web service is first deployed.
+      - key: CORS_ORIGINS
+        value: https://wallmeri-web.onrender.com
+      - key: JWT_SECRET
+        sync: false       # enter manually in Render dashboard (never commit secrets)
+      - key: ADMIN_EMAIL
+        value: admin@wallmeri.in
+      - key: ADMIN_PASSWORD
+        sync: false       # enter manually
+      - key: ADMIN_NAME
+        value: Wallmeri Admin
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: SHIPPING_FLAT_INR
+        value: "99"
+      - key: FREE_SHIPPING_THRESHOLD_INR
+        value: "2999"
+
+  # ── Next.js frontend ────────────────────────────────────────────────────────
+  - type: web
+    name: wallmeri-web
+    env: docker
+    dockerfilePath: apps/web/Dockerfile
+    dockerContext: apps/web
+    plan: free
+    branch: main
+    autoDeploy: true
+    # NEXT_PUBLIC_API_URL is a build-time arg — baked into the client bundle.
+    # Replace with your actual API service URL after first deploy.
+    buildArgs:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://wallmeri-api.onrender.com/api

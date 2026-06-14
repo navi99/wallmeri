@@ -21,6 +21,10 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+# Next.js standalone server binds to $HOSTNAME; Render sets HOSTNAME to the
+# internal pod name, so the server listens on the wrong interface and the proxy
+# gets 502. Force binding on all interfaces.
+ENV HOSTNAME=0.0.0.0
 
 # Next.js standalone output bundles everything needed to run the server.
 COPY --from=builder /app/.next/standalone ./

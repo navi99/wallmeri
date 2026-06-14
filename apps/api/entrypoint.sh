@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Waiting for Postgres at ${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}..."
+echo "Waiting for Postgres..."
 python - <<'PY'
 import os, time, sys
 import psycopg2
-host = os.getenv("POSTGRES_HOST", "db")
-port = int(os.getenv("POSTGRES_PORT", "5432"))
-user = os.getenv("POSTGRES_USER", "wallmeri")
-password = os.getenv("POSTGRES_PASSWORD", "wallmeri")
-db = os.getenv("POSTGRES_DB", "wallmeri")
+url = os.environ["DATABASE_URL"]
 for i in range(60):
     try:
-        psycopg2.connect(host=host, port=port, user=user, password=password, dbname=db).close()
+        psycopg2.connect(url).close()
         print("Postgres is ready.")
         sys.exit(0)
     except Exception as e:

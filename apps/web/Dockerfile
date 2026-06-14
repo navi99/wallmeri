@@ -6,14 +6,13 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-COPY . .
-
-# NEXT_PUBLIC_API_URL must be passed as a build arg so it is baked into the
-# client bundle (Next.js public env vars are resolved at build time, not runtime).
+# Declare build arg before COPY so it is set when next build runs.
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-
 ENV NODE_ENV=production
+
+COPY . .
+
 RUN npm run build
 
 # ── Stage 2: minimal runtime image ───────────────────────────────────────────

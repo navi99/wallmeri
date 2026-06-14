@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import List, Optional
+from typing import List
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -12,17 +12,11 @@ class Settings(BaseSettings):
     ENV: str = "development"
     API_PREFIX: str = "/api"
 
-    # Database — either set DATABASE_URL (Render managed Postgres) or the
-    # individual POSTGRES_* vars (local Docker dev).
-    DATABASE_URL: Optional[str] = None
-    POSTGRES_HOST: str = "db"
-    POSTGRES_PORT: int = 5432
-    POSTGRES_USER: str = "wallmeri"
-    POSTGRES_PASSWORD: str = "wallmeri"
-    POSTGRES_DB: str = "wallmeri"
+    # Database
+    DATABASE_URL: str
 
     # Auth
-    JWT_SECRET: str = "change-me-in-production"
+    JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 14
@@ -31,11 +25,11 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = "http://localhost:3000"
 
     # Seeded admin account
-    ADMIN_EMAIL: str = "admin@wallmeri.in"
-    ADMIN_PASSWORD: str = "admin12345"
-    ADMIN_NAME: str = "Wallmeri Admin"
+    ADMIN_EMAIL: str
+    ADMIN_PASSWORD: str
+    ADMIN_NAME: str
 
-    # Razorpay
+    # Razorpay (optional — leave blank to use mock mode)
     RAZORPAY_KEY_ID: str = ""
     RAZORPAY_KEY_SECRET: str = ""
     RAZORPAY_WEBHOOK_SECRET: str = ""
@@ -46,19 +40,13 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
-        if self.DATABASE_URL:
-            # Render (and some other hosts) provide a postgres:// URL; SQLAlchemy
-            # requires the postgresql+psycopg2:// scheme.
-            url = self.DATABASE_URL
-            if url.startswith("postgres://"):
-                url = "postgresql+psycopg2://" + url[len("postgres://"):]
-            elif url.startswith("postgresql://"):
-                url = "postgresql+psycopg2://" + url[len("postgresql://"):]
-            return url
-        return (
-            f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
-            f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-        )
+        # Normalize postgres:// / postgresql:// to the scheme SQLAlchemy requires.
+        url = self.DATABASE_URL
+        if url.startswith("postgres://"):
+            return "postgresql+psycopg2://" + url[len("postgres://"):]
+        if url.startswith("postgresql://"):
+            return "postgresql+psycopg2://" + url[len("postgresql://"):]
+        return url
 
     @property
     def cors_origins_list(self) -> List[str]:

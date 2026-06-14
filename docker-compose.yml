@@ -6,9 +6,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-wallmeri}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-wallmeri}
       POSTGRES_DB: ${POSTGRES_DB:-wallmeri}
-    # Host port 5433 -> container 5432 (avoids clashing with a local Postgres on 5432).
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -38,11 +37,11 @@ services:
   web:
     build:
       context: ./apps/web
+      dockerfile: Dockerfile.dev
     container_name: wallmeri_web
     env_file:
       - .env
     environment:
-      # Browser calls the API via localhost (host port mapping).
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000/api}
     depends_on:
       - api

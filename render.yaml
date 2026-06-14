@@ -18,7 +18,7 @@ services:
     plan: free          # upgrade before launch (free tier spins down)
     branch: main
     autoDeploy: true
-    healthCheckPath: /api
+    healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
         fromDatabase:

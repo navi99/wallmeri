@@ -1,10 +1,13 @@
 # Wallmeri — Premium Metal Wall Art Marketplace
 
-India-focused marketplace for premium metal wall art and posters. Browse a catalog,
-search, add to cart, check out with Razorpay, and track orders. Includes an admin area
-for managing the product catalog.
+India-focused, curated marketplace for premium metal wall art. Customers browse
+**by category or by artist**, buy via Razorpay (guest checkout supported), and leave
+**verified-purchase reviews**. Artists are onboarded manually by the Wallmeri team
+(intake form → verification checklist → artist page); all art/image management is
+done by admins. Sign in with email/password or Google.
 
-Reference: [displate.com](https://displate.com).
+References: [displate.com](https://displate.com), [metalposters.com](https://metalposters.com).
+Product backlog: [docs/backlog/](docs/backlog/) (active plan: [MVP.md](docs/backlog/MVP.md)).
 
 ## Stack
 
@@ -14,7 +17,10 @@ Reference: [displate.com](https://displate.com).
 | API      | FastAPI · SQLAlchemy 2 · Alembic · Pydantic v2 |
 | Database | PostgreSQL 16 |
 | Payments | Razorpay (with a local **mock mode** when keys are absent) |
-| Infra    | Docker Compose |
+| Auth     | Email/password + JWT · optional **Google sign-in** |
+| Images   | S3-compatible object storage (R2/S3) with local-disk dev fallback |
+| Email    | SMTP (any provider) with console-log dev fallback |
+| Infra    | Docker Compose · Render Blueprint (`render.yaml`) |
 
 Monorepo layout:
 
@@ -43,13 +49,34 @@ docker-compose.yml
    ```
 
    On first boot the API container waits for Postgres, runs Alembic migrations,
-   and seeds demo data (admin user, categories, ~12 posters).
+   and seeds demo data (admin user, categories, 2 artists, ~12 posters).
 
 3. Open:
 
    - Storefront: <http://localhost:3000>
    - API docs (Swagger): <http://localhost:8000/docs>
    - API health: <http://localhost:8000/health>
+
+## What's in the MVP
+
+- **Browse two ways** — by category (`/category/[slug]`, multi-tag posters) or by
+  artist (`/artists` directory → artist pages). Guest browsing throughout.
+- **Artists, curated** — `/artists/join` intake form → admin pipeline
+  (new/contacted/onboarded/rejected) → artist record with a verification checklist
+  that must be complete before the artist can go live.
+- **Admin console** (`/admin`) — posters (image upload, category tags, artist
+  attribution), categories, artists, applications, orders (paid → shipped →
+  delivered with tracking + emails), review moderation.
+- **Checkout** — Razorpay (or mock mode), idempotent payment confirmation with
+  exactly-once stock decrement, order confirmation email, guest order tracking
+  at `/track`.
+- **Reviews** — verified purchase only (delivered orders), admin-moderated,
+  star ratings across the storefront.
+- **Auth** — email/password + optional Google sign-in (auto-links to an existing
+  account with the same email).
+
+Optional integrations (all degrade gracefully when unconfigured — see
+`.env.example`): Google sign-in, S3/R2 image storage, SMTP email, Razorpay.
 
 ## Default admin account
 
@@ -87,17 +114,22 @@ docker compose logs -f api     # tail API logs
 # Re-run the seed manually
 docker compose exec api python -m app.seed
 
+# Run API unit tests / end-to-end smoke test
+docker compose exec api pytest
+docker compose exec api python scripts/smoke_mvp.py
+
 # Create a new migration after model changes
 docker compose exec api alembic revision --autogenerate -m "describe change"
 docker compose exec api alembic upgrade head
 ```
 
-## Deploying to Render (later)
+## Deploying to Render
 
-- **Postgres**: create a managed Render Postgres; point the API's `POSTGRES_*` vars at it.
-- **API**: deploy `apps/api` as a Web Service (Docker). Set env vars from `.env.example`.
-  The entrypoint runs migrations + seed on boot.
-- **Web**: deploy `apps/web` as a Web Service (Docker) or a static/SSR Next.js service;
-  set `NEXT_PUBLIC_API_URL` to the deployed API URL (e.g. `https://wallmeri-api.onrender.com/api`).
-- Set a strong `JWT_SECRET` and real Razorpay keys in production.
-```
+The repo is a ready-to-deploy Render Blueprint (`render.yaml`): managed Postgres +
+API + web. Full step-by-step instructions — including configuring the object store
+(Cloudflare R2 / S3 / persistent disk), Google OAuth, SMTP, and Razorpay webhooks —
+are in **[docs/DEPLOY.md](docs/DEPLOY.md)**.
+
+The short version: push to GitHub → Render → *New → Blueprint* → fill in the
+secret env vars (`JWT_SECRET`, a strong `ADMIN_PASSWORD` — the production seed
+refuses the default — Razorpay keys, and optional S3/Google/SMTP values) → deploy.

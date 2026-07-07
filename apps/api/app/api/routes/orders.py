@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
 from app.core.deps import get_current_user, get_optional_user
+from app.core.ratelimit import check_rate_limit
 from app.models import Order, User
 from app.schemas.order import OrderOut
 
@@ -27,10 +28,14 @@ def list_my_orders(
 @router.get("/{order_id}", response_model=OrderOut)
 def get_order(
     order_id: int,
+    request: Request,
     email: str | None = Query(default=None, description="Required for guest order lookup"),
     db: Session = Depends(get_db),
     user: User | None = Depends(get_optional_user),
 ):
+    # Guests look up by id+email; rate-limit so the pair can't be brute-forced.
+    if user is None:
+        check_rate_limit(request, scope="guest-order-lookup", limit=20, window_seconds=600)
     order = (
         db.query(Order)
         .options(joinedload(Order.items))

@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.deps import get_optional_user
-from app.models import Order, OrderItem, OrderStatus, Product, User
+from app.models import Order, OrderItem, OrderStatus, User
+from app.services.order_service import mark_order_paid
 from app.schemas.order import (
     CheckoutRequest,
     CreatePaymentResponse,
@@ -87,23 +88,15 @@ def verify_payment(payload: VerifyPaymentRequest, db: Session = Depends(get_db))
     if not razorpay_service.verify_signature(
         payload.razorpay_order_id, payload.razorpay_payment_id, payload.razorpay_signature
     ):
-        order.status = OrderStatus.failed
-        db.commit()
+        if order.status == OrderStatus.pending:
+            order.status = OrderStatus.failed
+            db.commit()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Payment signature verification failed"
         )
 
-    order.status = OrderStatus.paid
-    order.razorpay_payment_id = payload.razorpay_payment_id
-
-    # Decrement stock now that payment is confirmed.
-    for item in order.items:
-        if item.product_id:
-            product = db.get(Product, item.product_id)
-            if product:
-                product.stock = max(0, product.stock - item.qty)
-
-    db.commit()
+    # Idempotent: webhook may have confirmed this order already.
+    mark_order_paid(db, order, payload.razorpay_payment_id)
     return {"status": "paid", "order_id": order.id}
 
 
@@ -127,8 +120,7 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
             order = (
                 db.query(Order).filter(Order.razorpay_order_id == rzp_order_id).first()
             )
-            if order and order.status != OrderStatus.paid:
-                order.status = OrderStatus.paid
-                order.razorpay_payment_id = entity.get("id")
-                db.commit()
+            if order:
+                # Idempotent — no-op if checkout verify already confirmed it.
+                mark_order_paid(db, order, entity.get("id"))
     return {"ok": True}

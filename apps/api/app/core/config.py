@@ -38,6 +38,33 @@ class Settings(BaseSettings):
     SHIPPING_FLAT_INR: int = 99
     FREE_SHIPPING_THRESHOLD_INR: int = 2999
 
+    # Object storage for uploaded images (S3-compatible, e.g. Cloudflare R2 / AWS S3).
+    # Leave S3_BUCKET blank to fall back to local-disk storage served at /uploads
+    # (fine for local dev; on Render attach a persistent disk or configure S3).
+    S3_BUCKET: str = ""
+    S3_ENDPOINT_URL: str = ""       # e.g. https://<account>.r2.cloudflarestorage.com
+    S3_REGION: str = "auto"
+    S3_ACCESS_KEY_ID: str = ""
+    S3_SECRET_ACCESS_KEY: str = ""
+    S3_PUBLIC_BASE_URL: str = ""    # public URL prefix for stored objects, no trailing slash
+    UPLOADS_DIR: str = "uploads"    # local fallback directory
+    # Public base URL of this API (used to build local /uploads URLs), e.g.
+    # http://localhost:8000 locally or https://wallmeri-api.onrender.com in prod.
+    PUBLIC_API_BASE_URL: str = "http://localhost:8000"
+
+    # Google sign-in (optional — button hidden on the web when unset)
+    GOOGLE_CLIENT_ID: str = ""
+
+    # Email (optional — logs to console when SMTP_HOST is unset)
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    EMAIL_FROM: str = "Wallmeri <no-reply@wallmeri.in>"
+
+    # Public base URL of the storefront (used in emails), e.g. http://localhost:3000
+    PUBLIC_WEB_BASE_URL: str = "http://localhost:3000"
+
     @property
     def database_url(self) -> str:
         # Normalize postgres:// / postgresql:// to the scheme SQLAlchemy requires.

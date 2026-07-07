@@ -10,11 +10,11 @@ type ButtonSize = "sm" | "md" | "lg";
 
 const buttonVariants: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-sm",
+    "bg-brand-600 text-cream hover:bg-brand-700 active:bg-brand-800 shadow-sm",
   outline:
-    "border border-brand-200 bg-white text-ink hover:bg-brand-50",
+    "border border-brand-200 bg-paper text-ink hover:border-brand-400 hover:bg-brand-50",
   ghost: "text-ink hover:bg-brand-50",
-  danger: "bg-white text-brand-700 border border-brand-200 hover:bg-brand-50",
+  danger: "bg-paper text-brand-700 border border-brand-200 hover:bg-brand-50",
 };
 
 const buttonSizes: Record<ButtonSize, string> = {
@@ -57,7 +57,7 @@ export const Input = React.forwardRef<
   <input
     ref={ref}
     className={cn(
-      "h-11 w-full rounded-xl border border-brand-200 bg-white px-3.5 text-sm text-ink placeholder:text-muted/70 focus:border-brand-400 focus-visible:outline-none",
+      "h-11 w-full rounded-xl border border-brand-200 bg-paper px-3.5 text-sm text-ink placeholder:text-muted/70 focus:border-brand-400 focus-visible:outline-none",
       className,
     )}
     {...props}
@@ -72,7 +72,7 @@ export const Textarea = React.forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      "w-full rounded-xl border border-brand-200 bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/70 focus:border-brand-400 focus-visible:outline-none",
+      "w-full rounded-xl border border-brand-200 bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/70 focus:border-brand-400 focus-visible:outline-none",
       className,
     )}
     {...props}
@@ -87,7 +87,7 @@ export const Select = React.forwardRef<
   <select
     ref={ref}
     className={cn(
-      "h-11 w-full rounded-xl border border-brand-200 bg-white px-3 text-sm text-ink focus:border-brand-400 focus-visible:outline-none",
+      "h-11 w-full rounded-xl border border-brand-200 bg-paper px-3 text-sm text-ink focus:border-brand-400 focus-visible:outline-none",
       className,
     )}
     {...props}
@@ -121,7 +121,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-brand-100 bg-white shadow-card",
+        "rounded-2xl border border-brand-100 bg-paper shadow-card",
         className,
       )}
       {...props}

@@ -6,9 +6,12 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# Declare build arg before COPY so it is set when next build runs.
+# Declare build args before COPY so they are set when next build runs.
+# NEXT_PUBLIC_* values are baked into the client bundle at build time.
 ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
 ENV NODE_ENV=production
 
 COPY . .

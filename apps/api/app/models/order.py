@@ -21,8 +21,23 @@ def _utcnow() -> datetime:
 class OrderStatus(str, enum.Enum):
     pending = "pending"
     paid = "paid"
+    shipped = "shipped"
+    delivered = "delivered"
     failed = "failed"
     cancelled = "cancelled"
+    refunded = "refunded"
+
+
+# Legal admin/system transitions. Anything not listed is rejected server-side.
+ORDER_TRANSITIONS: dict[OrderStatus, set[OrderStatus]] = {
+    OrderStatus.pending: {OrderStatus.paid, OrderStatus.failed, OrderStatus.cancelled},
+    OrderStatus.paid: {OrderStatus.shipped, OrderStatus.cancelled, OrderStatus.refunded},
+    OrderStatus.shipped: {OrderStatus.delivered, OrderStatus.refunded},
+    OrderStatus.delivered: {OrderStatus.refunded},
+    OrderStatus.failed: {OrderStatus.paid},  # retried payment can still succeed
+    OrderStatus.cancelled: set(),
+    OrderStatus.refunded: set(),
+}
 
 
 class Order(Base):
@@ -50,6 +65,13 @@ class Order(Base):
 
     razorpay_order_id: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
     razorpay_payment_id: Mapped[str | None] = mapped_column(String(120), nullable=True)
+
+    # Fulfilment (courier integration is post-MVP; free-text tracking for now).
+    courier_name: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    tracking_number: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    paid_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    shipped_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, nullable=False

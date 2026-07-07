@@ -47,6 +47,13 @@ def verify_signature(razorpay_order_id: str, razorpay_payment_id: str, signature
     return hmac.compare_digest(expected, signature)
 
 
+def refund_payment(payment_id: str, amount_inr: int) -> None:
+    """Issue a full refund. No-op in mock mode."""
+    if not is_configured():
+        return
+    _client().payment.refund(payment_id, {"amount": amount_inr * 100})
+
+
 def verify_webhook_signature(body: bytes, signature: str) -> bool:
     if not settings.RAZORPAY_WEBHOOK_SECRET:
         return False

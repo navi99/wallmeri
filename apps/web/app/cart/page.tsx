@@ -45,14 +45,14 @@ export default function CartPage() {
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-3xl font-extrabold text-ink">Your cart</h1>
+      <h1 className="text-3xl font-bold text-ink">Your cart</h1>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
           {items.map((item) => (
             <div
               key={item.product_id}
-              className="flex gap-4 rounded-2xl border border-brand-100 bg-white p-4"
+              className="flex gap-4 rounded-2xl border border-brand-100 bg-paper p-4"
             >
               <Link
                 href={`/product/${item.slug}`}
@@ -101,7 +101,7 @@ export default function CartPage() {
           ))}
         </div>
 
-        <aside className="h-fit rounded-2xl border border-brand-100 bg-white p-6">
+        <aside className="h-fit rounded-2xl border border-brand-100 bg-paper p-6">
           <h2 className="text-lg font-bold text-ink">Order summary</h2>
           <dl className="mt-4 space-y-3 text-sm">
             <div className="flex justify-between">

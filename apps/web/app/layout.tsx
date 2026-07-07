@@ -1,10 +1,23 @@
 import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
 import { Suspense } from "react";
 
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+
+const sans = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const displayFont = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Wallmeri — Premium Metal Wall Art",
@@ -18,10 +31,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${sans.variable} ${displayFont.variable}`}>
       <body className="flex min-h-screen flex-col">
         <Providers>
-          <Suspense fallback={<div className="h-16 border-b border-brand-100" />}>
+          <Suspense fallback={<div className="h-16 bg-ink" />}>
             <SiteHeader />
           </Suspense>
           <main className="flex-1">{children}</main>

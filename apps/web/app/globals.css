@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}
-
 html,
 body {
   padding: 0;
@@ -13,16 +9,31 @@ body {
 }
 
 body {
-  background-color: #fffaf7;
-  color: #2a1f1f;
+  background-color: #edebdd; /* Cotton */
+  color: #1b1717; /* Noir Black */
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
+::selection {
+  background-color: #810100;
+  color: #edebdd;
+}
+
 /* Focus visibility for accessibility */
 *:focus-visible {
-  outline: 2px solid #d92626;
+  outline: 2px solid #810100;
   outline-offset: 2px;
+}
+
+@layer base {
+  /* The Plaque Rule: editorial serif for page/section headings only.
+     h3 and below stay Inter (card titles, footer labels, admin UI). */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
 }
 
 @layer components {

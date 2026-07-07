@@ -14,12 +14,14 @@ from app.core.security import (
 from app.models import User
 from app.schemas.auth import (
     AuthResponse,
+    GoogleLoginRequest,
     LoginRequest,
     RefreshRequest,
     RegisterRequest,
     TokenPair,
     UserOut,
 )
+from app.services import google_auth
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -50,10 +52,38 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
 @router.post("/login", response_model=AuthResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email.lower()).first()
-    if not user or not verify_password(payload.password, user.password_hash):
+    # Google-only accounts have no password hash — treat as invalid credentials.
+    if not user or not user.password_hash or not verify_password(payload.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password"
         )
+    return AuthResponse(user=UserOut.model_validate(user), tokens=_tokens_for(user))
+
+
+@router.post("/google", response_model=AuthResponse)
+def google_login(payload: GoogleLoginRequest, db: Session = Depends(get_db)):
+    try:
+        identity = google_auth.verify_id_token(payload.credential)
+    except google_auth.GoogleAuthError as exc:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc))
+
+    user = db.query(User).filter(User.google_sub == identity.sub).first()
+    if not user:
+        # Link to an existing password account with the same (Google-verified)
+        # email rather than creating a duplicate; otherwise create the account.
+        user = db.query(User).filter(User.email == identity.email).first()
+        if user:
+            user.google_sub = identity.sub
+        else:
+            user = User(
+                email=identity.email,
+                password_hash=None,
+                full_name=identity.name,
+                google_sub=identity.sub,
+            )
+            db.add(user)
+        db.commit()
+        db.refresh(user)
     return AuthResponse(user=UserOut.model_validate(user), tokens=_tokens_for(user))
 
 

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -8,6 +8,15 @@ from app.core.database import Base
 
 def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
+
+
+# A poster can carry multiple category tags.
+product_categories = Table(
+    "product_categories",
+    Base.metadata,
+    Column("product_id", ForeignKey("products.id", ondelete="CASCADE"), primary_key=True),
+    Column("category_id", ForeignKey("categories.id", ondelete="CASCADE"), primary_key=True),
+)
 
 
 class Product(Base):
@@ -25,10 +34,15 @@ class Product(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     is_featured: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
-    category_id: Mapped[int | None] = mapped_column(
-        ForeignKey("categories.id", ondelete="SET NULL"), nullable=True, index=True
+    # None = Wallmeri Original (fully admin-managed poster).
+    artist_id: Mapped[int | None] = mapped_column(
+        ForeignKey("artists.id", ondelete="SET NULL"), nullable=True, index=True
     )
-    category: Mapped["Category | None"] = relationship(back_populates="products")  # noqa: F821
+    artist: Mapped["Artist | None"] = relationship(back_populates="products")  # noqa: F821
+
+    categories: Mapped[list["Category"]] = relationship(  # noqa: F821
+        secondary=product_categories, back_populates="products"
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, nullable=False

@@ -13,10 +13,13 @@ import { formatINR } from "@/lib/utils";
 
 function statusLabel(status: string) {
   const map: Record<string, string> = {
-    paid: "Paid",
+    paid: "Paid — being prepared",
     pending: "Pending payment",
+    shipped: "Shipped",
+    delivered: "Delivered",
     failed: "Payment failed",
     cancelled: "Cancelled",
+    refunded: "Refunded",
   };
   return map[status] ?? status;
 }
@@ -62,7 +65,7 @@ function OrderContent({ id }: { id: number }) {
         <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-brand-50 text-brand-600">
           <CheckCircle2 className="h-9 w-9" />
         </span>
-        <h1 className="mt-4 text-3xl font-extrabold text-ink">Thank you for your order!</h1>
+        <h1 className="mt-4 text-3xl font-bold text-ink">Thank you for your order!</h1>
         <p className="mt-2 text-muted">
           Order <span className="font-semibold text-ink">#{order.id}</span> ·{" "}
           {statusLabel(order.status)}
@@ -107,6 +110,27 @@ function OrderContent({ id }: { id: number }) {
           </div>
         </dl>
       </Card>
+
+      {(order.status === "shipped" || order.status === "delivered") &&
+        (order.courier_name || order.tracking_number) && (
+          <Card className="mt-4 p-6">
+            <h2 className="text-lg font-bold text-ink">Tracking</h2>
+            <p className="mt-2 text-sm text-muted">
+              {order.courier_name && (
+                <>
+                  Courier: <span className="font-medium text-ink">{order.courier_name}</span>
+                  <br />
+                </>
+              )}
+              {order.tracking_number && (
+                <>
+                  Tracking number:{" "}
+                  <span className="font-medium text-ink">{order.tracking_number}</span>
+                </>
+              )}
+            </p>
+          </Card>
+        )}
 
       <Card className="mt-4 p-6">
         <h2 className="text-lg font-bold text-ink">Shipping to</h2>

@@ -43,7 +43,7 @@ function CatalogContent() {
   return (
     <div className="container-page py-8">
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-extrabold text-ink">
+        <h1 className="text-3xl font-bold text-ink">
           {q ? `Results for “${q}”` : category ? categoryName(category, categoriesQuery.data) : "All metal posters"}
         </h1>
         <p className="text-sm text-muted">
@@ -107,7 +107,7 @@ function CatalogContent() {
               <button
                 disabled={page <= 1}
                 onClick={() => update({ page: String(page - 1) })}
-                className="rounded-lg border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50 disabled:opacity-50"
+                className="rounded-lg border border-brand-200 bg-paper px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50 disabled:opacity-50"
               >
                 Previous
               </button>
@@ -117,7 +117,7 @@ function CatalogContent() {
               <button
                 disabled={page >= data.pages}
                 onClick={() => update({ page: String(page + 1) })}
-                className="rounded-lg border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50 disabled:opacity-50"
+                className="rounded-lg border border-brand-200 bg-paper px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50 disabled:opacity-50"
               >
                 Next
               </button>
@@ -125,7 +125,7 @@ function CatalogContent() {
           )}
         </>
       ) : (
-        <div className="mt-10 rounded-2xl border border-brand-100 bg-white p-12 text-center">
+        <div className="mt-10 rounded-2xl border border-brand-100 bg-paper p-12 text-center">
           <p className="text-lg font-semibold text-ink">No posters found</p>
           <p className="mt-1 text-muted">Try a different search or clear your filters.</p>
           <Link

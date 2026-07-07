@@ -84,7 +84,20 @@ class OrderOut(BaseModel):
     shipping_address: dict
     razorpay_order_id: Optional[str]
     razorpay_payment_id: Optional[str]
+    courier_name: str = ""
+    tracking_number: str = ""
+    paid_at: Optional[datetime] = None
+    shipped_at: Optional[datetime] = None
+    delivered_at: Optional[datetime] = None
     created_at: datetime
     items: list[OrderItemOut]
 
     model_config = {"from_attributes": True}
+
+
+class OrderStatusUpdate(BaseModel):
+    status: str = Field(
+        pattern="^(paid|shipped|delivered|cancelled|refunded)$"
+    )
+    courier_name: str = Field(default="", max_length=120)
+    tracking_number: str = Field(default="", max_length=120)

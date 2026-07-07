@@ -141,7 +141,7 @@ export default function CheckoutPage() {
           email: values.email,
           contact: values.phone,
         },
-        theme: { color: "#d92626" },
+        theme: { color: "#810100" },
         handler: async (response: any) => {
           try {
             await api.verifyPayment({
@@ -175,7 +175,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-3xl font-extrabold text-ink">Checkout</h1>
+      <h1 className="text-3xl font-bold text-ink">Checkout</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -236,7 +236,7 @@ export default function CheckoutPage() {
           </div>
         </Card>
 
-        <aside className="h-fit rounded-2xl border border-brand-100 bg-white p-6">
+        <aside className="h-fit rounded-2xl border border-brand-100 bg-paper p-6">
           <h2 className="text-lg font-bold text-ink">Your order</h2>
           <div className="mt-4 space-y-3">
             {items.map((item) => (

@@ -16,6 +16,11 @@ class RefreshRequest(BaseModel):
     refresh_token: str
 
 
+class GoogleLoginRequest(BaseModel):
+    # The ID token ("credential") returned by Google Identity Services.
+    credential: str
+
+
 class TokenPair(BaseModel):
     access_token: str
     refresh_token: str

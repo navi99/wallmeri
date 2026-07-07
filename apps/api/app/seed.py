@@ -1,8 +1,11 @@
-"""Idempotent database seed: admin user, categories, and demo metal posters."""
+"""Idempotent database seed: admin user, categories, artists, and demo metal posters."""
+import sys
+
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.core.security import hash_password
-from app.models import Category, Product, User
+from app.core.utils import slugify
+from app.models import Artist, Category, Product, User
 
 CATEGORIES = [
     ("Abstract", "abstract"),
@@ -20,36 +23,66 @@ def _img(seed: str) -> str:
     return f"https://picsum.photos/seed/{seed}/900/1200"
 
 
+ARTISTS = [
+    {
+        "name": "Meera Iyer",
+        "slug": "meera-iyer",
+        "bio": (
+            "Chennai-based abstract artist exploring colour, rhythm and light. "
+            "Meera's work blends traditional South Indian palettes with bold modern forms."
+        ),
+        "avatar_url": "https://picsum.photos/seed/meera-iyer/400/400",
+        "instagram_url": "https://instagram.com/meera.paints",
+    },
+    {
+        "name": "Arjun Verma",
+        "slug": "arjun-verma",
+        "bio": (
+            "Digital illustrator from Pune. Arjun creates cinematic cityscapes and "
+            "sci-fi worlds inspired by night trains, monsoon streets and retro games."
+        ),
+        "avatar_url": "https://picsum.photos/seed/arjun-verma/400/400",
+        "website_url": "https://arjunverma.art",
+    },
+]
+
 PRODUCTS = [
-    # (title, category_slug, price_inr, featured, description)
-    ("Crimson Tide", "abstract", 1799, True,
+    # (title, [category_slugs], artist_slug or None, price_inr, featured, description)
+    ("Crimson Tide", ["abstract"], "meera-iyer", 1799, True,
      "A bold abstract composition in flowing crimson and ivory tones, printed on premium matte metal."),
-    ("Golden Horizon", "abstract", 1599, True,
+    ("Golden Horizon", ["abstract"], "meera-iyer", 1599, True,
      "Warm geometric gradients that catch the light from every angle."),
-    ("Misty Pines", "nature", 1499, True,
+    ("Misty Pines", ["nature"], None, 1499, True,
      "A serene forest shrouded in morning mist, rendered with rich depth on brushed metal."),
-    ("Mountain Dawn", "nature", 1699, False,
+    ("Mountain Dawn", ["nature"], None, 1699, False,
      "First light breaking over alpine peaks — calm, expansive, and grounding."),
-    ("Nebula Drift", "space", 1999, True,
+    ("Nebula Drift", ["space", "abstract"], "meera-iyer", 1999, True,
      "Deep-space nebula in soft pastels, vivid against the metal's subtle sheen."),
-    ("Lunar Quiet", "space", 1899, False,
+    ("Lunar Quiet", ["space"], None, 1899, False,
      "A minimalist moon study that brings a quiet focal point to any wall."),
-    ("Neon Streets", "cities", 1799, True,
+    ("Neon Streets", ["cities"], "arjun-verma", 1799, True,
      "Rain-slicked city streets glowing with neon — a cinematic urban statement piece."),
-    ("Skyline Dusk", "cities", 1599, False,
+    ("Skyline Dusk", ["cities"], "arjun-verma", 1599, False,
      "A pastel skyline at dusk, balancing warm and cool tones beautifully."),
-    ("Retro Arcade", "gaming", 1499, False,
+    ("Retro Arcade", ["gaming"], "arjun-verma", 1499, False,
      "A nostalgic nod to classic arcades, full of playful colour and character."),
-    ("Pixel Quest", "gaming", 1399, False,
+    ("Pixel Quest", ["gaming", "cities"], "arjun-verma", 1399, False,
      "Vibrant pixel-art landscape for the modern gamer's space."),
-    ("Vinyl Soul", "music", 1499, True,
+    ("Vinyl Soul", ["music"], None, 1499, True,
      "A tribute to analog sound — warm, textured, and timeless."),
-    ("Sakura Spirit", "anime", 1699, True,
+    ("Sakura Spirit", ["anime"], None, 1699, True,
      "Delicate cherry-blossom anime art in soft pinks and reds."),
 ]
 
 
 def seed() -> None:
+    if settings.ENV == "production" and settings.ADMIN_PASSWORD == "admin12345":
+        print(
+            "FATAL: refusing to seed production with the default admin password. "
+            "Set a strong ADMIN_PASSWORD."
+        )
+        sys.exit(1)
+
     db = SessionLocal()
     try:
         # Admin user
@@ -73,15 +106,38 @@ def seed() -> None:
                 db.add(cat)
                 print(f"  + category {name}")
             cat_by_slug[slug] = cat
+
+        # Artists (seeded fully verified + active so the demo store works out of the box)
+        artist_by_slug: dict[str, Artist] = {}
+        for data in ARTISTS:
+            artist = db.query(Artist).filter(Artist.slug == data["slug"]).first()
+            if not artist:
+                artist = Artist(
+                    **data,
+                    identity_verified=True,
+                    agreement_received=True,
+                    contact_verified=True,
+                    is_active=True,
+                )
+                db.add(artist)
+                print(f"  + artist {data['name']}")
+            artist_by_slug[data["slug"]] = artist
         db.flush()
 
         # Products
-        for title, cat_slug, price, featured, desc in PRODUCTS:
-            from app.core.utils import slugify
-
+        for title, cat_slugs, artist_slug, price, featured, desc in PRODUCTS:
             slug = slugify(title)
             existing = db.query(Product).filter(Product.slug == slug).first()
             if existing:
+                # Backfill links on products created before the artist/M2M schema.
+                if existing.artist_id is None and artist_slug:
+                    existing.artist_id = artist_by_slug[artist_slug].id
+                    print(f"  ~ linked {title} -> {artist_slug}")
+                have = {c.slug for c in existing.categories}
+                missing = [cat_by_slug[s] for s in cat_slugs if s not in have]
+                if missing:
+                    existing.categories.extend(missing)
+                    print(f"  ~ tagged {title} with {[c.slug for c in missing]}")
                 continue
             product = Product(
                 slug=slug,
@@ -93,7 +149,8 @@ def seed() -> None:
                 stock=50,
                 is_active=True,
                 is_featured=featured,
-                category_id=cat_by_slug[cat_slug].id,
+                artist_id=artist_by_slug[artist_slug].id if artist_slug else None,
+                categories=[cat_by_slug[s] for s in cat_slugs],
             )
             db.add(product)
             print(f"  + product {title}")

@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 
+import { GoogleButton } from "@/components/google-button";
 import { Button, Card, FieldError, Input, Label } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/store/auth";
@@ -66,6 +67,13 @@ export default function RegisterPage() {
             Create account
           </Button>
         </form>
+
+        <GoogleButton
+          onSuccess={(res) => {
+            toast.success(`Welcome, ${res.user.full_name || "friend"}!`);
+            router.push("/");
+          }}
+        />
 
         <p className="mt-5 text-center text-sm text-muted">
           Already have an account?{" "}

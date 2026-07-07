@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronLeft, Minus, Plus, ShieldCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
 
+import { ReviewsSection } from "@/components/reviews-section";
+import { Stars } from "@/components/stars";
 import { Badge, Button, Spinner } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { useCart } from "@/lib/store/cart";
@@ -82,20 +84,50 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         </div>
 
         <div>
-          {product.category && <Badge>{product.category.name}</Badge>}
-          <h1 className="mt-3 text-3xl font-extrabold text-ink">{product.title}</h1>
-          <p className="mt-2 text-2xl font-bold text-brand-600">
+          {product.categories.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {product.categories.map((c) => (
+                <Link key={c.id} href={`/category/${c.slug}`}>
+                  <Badge className="hover:bg-brand-100">{c.name}</Badge>
+                </Link>
+              ))}
+            </div>
+          )}
+          <h1 className="mt-3 text-3xl font-bold text-ink">{product.title}</h1>
+          <p className="mt-1 text-sm text-muted">
+            {product.artist ? (
+              <>
+                Art by{" "}
+                <Link
+                  href={`/artist/${product.artist.slug}`}
+                  className="font-semibold text-brand-700 hover:underline"
+                >
+                  {product.artist.name}
+                </Link>
+              </>
+            ) : (
+              "A Wallmeri Original"
+            )}
+          </p>
+          {product.rating_count > 0 && (
+            <Stars
+              rating={product.rating_avg ?? 0}
+              count={product.rating_count}
+              className="mt-2"
+            />
+          )}
+          <p className="mt-3 font-display text-3xl font-semibold text-brand-600">
             {formatINR(product.price_inr)}
           </p>
 
           <p className="mt-5 leading-relaxed text-muted">{product.description}</p>
 
           <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-xl bg-cream px-4 py-3">
+            <div className="rounded-xl border border-brand-100 bg-paper px-4 py-3">
               <dt className="text-muted">Material</dt>
               <dd className="font-semibold text-ink">{product.material}</dd>
             </div>
-            <div className="rounded-xl bg-cream px-4 py-3">
+            <div className="rounded-xl border border-brand-100 bg-paper px-4 py-3">
               <dt className="text-muted">Availability</dt>
               <dd className="font-semibold text-ink">
                 {inStock ? `${product.stock} in stock` : "Out of stock"}
@@ -141,6 +173,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </ul>
         </div>
       </div>
+
+      <ReviewsSection slug={product.slug} />
     </div>
   );
 }

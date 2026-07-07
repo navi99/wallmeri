@@ -48,6 +48,43 @@ services:
         value: "99"
       - key: FREE_SHIPPING_THRESHOLD_INR
         value: "2999"
+      # Public base URLs — used to build image/upload URLs and links in emails.
+      # Update if your service names/domains differ.
+      - key: PUBLIC_API_BASE_URL
+        value: https://wallmeri-api.onrender.com
+      - key: PUBLIC_WEB_BASE_URL
+        value: https://wallmeri-web.onrender.com
+      # Google sign-in (optional — customers get a "Continue with Google" button).
+      # Must match the web service's NEXT_PUBLIC_GOOGLE_CLIENT_ID.
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      # Object storage for admin image uploads (S3-compatible, e.g. Cloudflare R2).
+      # STRONGLY recommended in production: without it, uploads go to local disk,
+      # which is EPHEMERAL on Render (lost on every deploy/restart) unless you
+      # attach a persistent disk mounted at /app/uploads. See docs/DEPLOY.md.
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ENDPOINT_URL
+        sync: false
+      - key: S3_REGION
+        value: auto
+      - key: S3_ACCESS_KEY_ID
+        sync: false
+      - key: S3_SECRET_ACCESS_KEY
+        sync: false
+      - key: S3_PUBLIC_BASE_URL
+        sync: false
+      # Transactional email via SMTP (optional — logs to console when unset).
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: EMAIL_FROM
+        value: Wallmeri <no-reply@wallmeri.in>
 
   # ── Next.js frontend ────────────────────────────────────────────────────────
   - type: web
@@ -63,3 +100,7 @@ services:
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://wallmeri-api.onrender.com/api
+      # Same OAuth client id as the API's GOOGLE_CLIENT_ID (build-time, baked
+      # into the client bundle). Leave unset to hide the Google button.
+      - key: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+        sync: false

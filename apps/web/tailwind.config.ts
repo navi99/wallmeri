@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         // Wallmeri palette (WallMeriColorTheme.jpeg):
-        // Cotton #F5F4EB · Cherry Red #810100 · Maroon #630000 · Noir Black #1B1717
+        // Cotton #FAF9F6 · Cherry Red #810100 · Maroon #630000 · Noir Black #1B1717
         brand: {
           50: "#f8f1ec",
           100: "#f0ded4",
@@ -23,7 +23,7 @@ const config: Config = {
           800: "#4d0303",
           900: "#3a0606",
         },
-        cream: "#f5f4eb", // Cotton — page canvas
+        cream: "#faf9f6", // Cotton — page canvas
         paper: "#fbfaf4", // warm near-white — card surfaces
         ink: "#1b1717", // Noir Black — primary text & dark surfaces
         muted: "#5f5852", // warm grey — secondary text, AA on cream/paper

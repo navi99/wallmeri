@@ -14,7 +14,7 @@ const sectionHeading =
 
 // Steel-poster texture for category tiles (from the handoff design).
 const stripes =
-  "repeating-linear-gradient(45deg, rgba(237,235,221,0.05) 0 2px, transparent 2px 14px)";
+  "repeating-linear-gradient(45deg, rgba(250,249,246,0.05) 0 2px, transparent 2px 14px)";
 const categoryGradients = [
   "linear-gradient(160deg,#810100 0%,#2e0503 100%)",
   "linear-gradient(200deg,#3a3230 0%,#1B1717 100%)",

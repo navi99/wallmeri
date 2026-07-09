@@ -9,7 +9,7 @@ body {
 }
 
 body {
-  background-color: #edebdd; /* Cotton */
+  background-color: #f5f4eb; /* Cotton */
   color: #1b1717; /* Noir Black */
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -17,7 +17,7 @@ body {
 
 ::selection {
   background-color: #810100;
-  color: #edebdd;
+  color: #f5f4eb;
 }
 
 /* Focus visibility for accessibility */

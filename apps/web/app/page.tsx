@@ -1,11 +1,26 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui";
 import { api } from "@/lib/api";
+
+const kicker =
+  "text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-600";
+const sectionHeading =
+  "font-sans text-[clamp(26px,2.8vw,34px)] font-bold uppercase tracking-tight text-ink";
+
+// Steel-poster texture for category tiles (from the handoff design).
+const stripes =
+  "repeating-linear-gradient(45deg, rgba(237,235,221,0.05) 0 2px, transparent 2px 14px)";
+const categoryGradients = [
+  "linear-gradient(160deg,#810100 0%,#2e0503 100%)",
+  "linear-gradient(200deg,#3a3230 0%,#1B1717 100%)",
+  "linear-gradient(180deg,#4a4340 0%,#241f1e 100%)",
+  "linear-gradient(140deg,#1B1717 0%,#1B1717 60%,#5b0a06 100%)",
+];
 
 export default function HomePage() {
   const productsQuery = useQuery({
@@ -16,67 +31,63 @@ export default function HomePage() {
     queryKey: ["categories"],
     queryFn: () => api.listCategories(),
   });
-  const artistsQuery = useQuery({
-    queryKey: ["artists"],
-    queryFn: () => api.listArtists(),
-  });
+
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const scrollCarousel = (dir: -1 | 1) => {
+    const el = carouselRef.current;
+    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
 
   const products = productsQuery.data?.items ?? [];
-  const featuredOnly = products.filter((p) => p.is_featured);
-  const hasFeatured = featuredOnly.length > 0;
-  // Featured first, backfilled with the newest of the rest to a full grid.
+  // Featured first, backfilled with the newest of the rest.
   const gridProducts = [
-    ...featuredOnly,
+    ...products.filter((p) => p.is_featured),
     ...products.filter((p) => !p.is_featured),
   ].slice(0, 8);
-  const heroTiles = gridProducts.slice(0, 4);
+  const heroProduct = gridProducts[0];
+  const qualityProduct = gridProducts[1] ?? heroProduct;
+  const categories = categoriesQuery.data ?? [];
+
+  const arrowButton =
+    "grid h-11 w-11 place-items-center border border-ink text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-40";
 
   return (
     <div>
-      {/* Hero — noir gallery wall */}
-      <section className="relative overflow-hidden bg-ink text-cream">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(65%_90%_at_15%_0%,rgba(99,0,0,0.55),transparent_70%)]" />
-        <div className="container-page relative grid items-center gap-10 py-20 lg:grid-cols-2 lg:py-28">
-          <div>
-            <h1 className="font-display text-4xl font-semibold leading-[1.1] sm:text-6xl">
-              Art that lasts.{" "}
-              <span className="italic text-brand-300">Printed on metal.</span>
-            </h1>
-            <p className="mt-5 max-w-md text-lg leading-relaxed text-cream/70">
-              Bold, durable wall art for your home and workspace. Curated
-              designs, vivid colours, and free shipping across India over
-              ₹2,999.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/catalog">
-                <Button size="lg">Browse the collection</Button>
-              </Link>
-              <Link href="/catalog?sort=price_asc">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-cream/30 bg-transparent text-cream hover:border-cream/60 hover:bg-white/10"
-                >
-                  Shop best value
-                </Button>
-              </Link>
-            </div>
-          </div>
+      {/* Hero — framed poster flanked by headline and pitch */}
+      <section className="container-page flex flex-wrap items-center justify-center gap-[clamp(32px,4vw,56px)] py-[clamp(56px,7vw,96px)]">
+        <div className="flex min-w-[280px] max-w-[380px] flex-1 flex-col items-end gap-5 text-right">
+          <div className={kicker}>Art on metal</div>
+          <h1 className="font-sans text-[clamp(44px,4.5vw,64px)] font-bold uppercase leading-[1.02] tracking-tight text-ink">
+            Your walls,
+            <br />
+            <em className="font-display font-medium normal-case italic tracking-normal">
+              elevated.
+            </em>
+          </h1>
+        </div>
+
+        <div className="w-[min(380px,88vw)] flex-none bg-ink p-3.5 shadow-[0_24px_60px_rgba(27,23,23,0.25)]">
           {productsQuery.isLoading ? (
-            <div className="grid grid-cols-2 gap-4 pb-6" aria-hidden="true">
-              {[0, 1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className={`aspect-[3/4] animate-pulse rounded-2xl border border-white/10 bg-white/5 motion-reduce:animate-none ${
-                    i % 2 === 1 ? "translate-y-6" : ""
-                  }`}
-                />
-              ))}
-            </div>
-          ) : heroTiles.length === 0 ? (
-            <div className="grid min-h-64 place-items-center rounded-2xl border border-white/15 p-10 text-center">
+            <div
+              className="aspect-[73/100] w-full animate-pulse bg-white/5 motion-reduce:animate-none"
+              aria-hidden="true"
+            />
+          ) : heroProduct ? (
+            <Link
+              href={`/product/${heroProduct.slug}`}
+              className="relative block aspect-[73/100] w-full overflow-hidden"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={heroProduct.image_url}
+                alt={heroProduct.title}
+                className="h-full w-full object-cover"
+              />
+            </Link>
+          ) : (
+            <div className="grid aspect-[73/100] w-full place-items-center p-8 text-center">
               <div>
-                <p className="font-display text-2xl text-cream">
+                <p className="font-display text-2xl italic text-cream">
                   The gallery is being rehung.
                 </p>
                 <p className="mt-2 text-sm text-cream/60">
@@ -84,196 +95,241 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-          ) : heroTiles.length === 1 ? (
-            <Link
-              href={`/product/${heroTiles[0].slug}`}
-              className="relative mx-auto block aspect-[3/4] w-full max-w-sm overflow-hidden rounded-2xl border border-white/15 shadow-lift transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={heroTiles[0].image_url}
-                alt={heroTiles[0].title}
-                className="h-full w-full object-cover"
-              />
-            </Link>
-          ) : heroTiles.length === 3 ? (
-            <div className="grid grid-cols-2 gap-4 pb-6">
-              <Link
-                href={`/product/${heroTiles[0].slug}`}
-                className="relative row-span-2 overflow-hidden rounded-2xl border border-white/15 shadow-lift transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={heroTiles[0].image_url}
-                  alt={heroTiles[0].title}
-                  className="h-full w-full object-cover"
-                />
-              </Link>
-              {heroTiles.slice(1).map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/product/${p.slug}`}
-                  className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/15 shadow-lift transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={p.image_url}
-                    alt={p.title}
-                    className="h-full w-full object-cover"
-                  />
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-4 pb-6">
-              {heroTiles.map((p, i) => (
-                <Link
-                  key={p.id}
-                  href={`/product/${p.slug}`}
-                  className={`relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/15 shadow-lift transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${
-                    i % 2 === 1 ? "translate-y-6" : ""
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={p.image_url}
-                    alt={p.title}
-                    className="h-full w-full object-cover"
-                  />
-                </Link>
-              ))}
-            </div>
           )}
+        </div>
+
+        <div className="flex min-w-[280px] max-w-[340px] flex-1 flex-col gap-6">
+          <p className="text-[17px] leading-[1.65] text-ink/75">
+            Museum-grade prints on solid metal. Magnetic mounting, no frames,
+            no drilling — gallery presence in seconds.
+          </p>
+          <div className="flex flex-wrap gap-3.5">
+            <Link href="/catalog">
+              <Button size="lg">Shop posters</Button>
+            </Link>
+            <Link href="/catalog?sort=newest">
+              <Button size="lg" variant="outline">
+                New arrivals
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Reassurance strip */}
-      <section className="border-b border-brand-100">
-        <p className="container-page flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-4 text-center text-sm text-muted">
-          <span>Free shipping over ₹2,999</span>
-          <span aria-hidden="true">·</span>
-          <span>Secure Razorpay checkout</span>
-          <span aria-hidden="true">·</span>
-          <span>Gallery-grade prints on steel</span>
-        </p>
-      </section>
-
-      {/* Categories */}
-      {categoriesQuery.data && categoriesQuery.data.length > 0 && (
-        <section className="container-page py-6">
-          <h2 className="text-2xl font-bold text-ink">Shop by category</h2>
-          <div className="mt-5 flex flex-wrap gap-3">
-            {categoriesQuery.data.map((c) => (
+      {/* Collections */}
+      {categories.length > 0 && (
+        <section className="container-page pb-[clamp(56px,7vw,96px)]">
+          <div className="mb-9 flex flex-wrap items-baseline justify-between gap-4">
+            <h2 className={sectionHeading}>Collections</h2>
+            <Link
+              href="/catalog"
+              className="text-xs font-medium uppercase tracking-[0.16em] text-brand-600 hover:text-ink"
+            >
+              View all →
+            </Link>
+          </div>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(230px,1fr))] gap-5">
+            {categories.map((c, i) => (
               <Link
                 key={c.id}
                 href={`/category/${c.slug}`}
-                className="rounded-full border border-brand-200 bg-paper px-5 py-2 text-sm font-medium text-ink hover:border-brand-400 hover:bg-brand-50"
+                className="group flex flex-col gap-3"
               >
-                {c.name}
+                <div
+                  className="flex h-[300px] items-end p-[18px] transition-opacity group-hover:opacity-85"
+                  style={{
+                    background: `${stripes}, ${categoryGradients[i % categoryGradients.length]}`,
+                  }}
+                >
+                  <span className="font-display text-3xl italic text-cream">
+                    {c.name}
+                  </span>
+                </div>
+                <span className="text-[15px] font-semibold uppercase tracking-[0.06em] text-ink group-hover:text-brand-600">
+                  {c.name}
+                </span>
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      {/* Meet the artists */}
-      {artistsQuery.data && artistsQuery.data.length > 0 && (
-        <section className="container-page py-6">
-          <div className="flex items-end justify-between">
-            <h2 className="text-2xl font-bold text-ink">Meet the artists</h2>
-            <Link href="/artists" className="text-sm font-semibold text-brand-700 hover:underline">
-              All artists →
-            </Link>
+      {/* Bestsellers carousel */}
+      <section className="pb-[clamp(56px,7vw,96px)]">
+        <div className="container-page mb-9 flex flex-wrap items-baseline justify-between gap-4">
+          <h2 className={sectionHeading}>Bestsellers</h2>
+          <div className="flex gap-2.5">
+            <button
+              onClick={() => scrollCarousel(-1)}
+              aria-label="Scroll bestsellers back"
+              className={arrowButton}
+            >
+              ←
+            </button>
+            <button
+              onClick={() => scrollCarousel(1)}
+              aria-label="Scroll bestsellers forward"
+              className={arrowButton}
+            >
+              →
+            </button>
           </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {artistsQuery.data.slice(0, 3).map((a) => (
-              <Link
-                key={a.id}
-                href={`/artist/${a.slug}`}
-                className="flex items-center gap-4 rounded-2xl border border-brand-100 bg-paper p-5 shadow-card transition-shadow hover:shadow-lift"
-              >
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-brand-50">
-                  {a.avatar_url && (
-                    <Image src={a.avatar_url} alt={a.name} fill sizes="56px" className="object-cover" />
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-bold text-ink">{a.name}</p>
-                  <p className="line-clamp-1 text-sm text-muted">{a.bio}</p>
-                  <p className="mt-0.5 text-xs font-semibold text-brand-700">
-                    {a.product_count} poster{a.product_count === 1 ? "" : "s"}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Featured products */}
-      <section className="container-page py-10">
-        <div className="flex items-end justify-between">
-          <h2 className="text-2xl font-bold text-ink">
-            {hasFeatured ? "Featured posters" : "New arrivals"}
-          </h2>
-          <Link href="/catalog" className="text-sm font-semibold text-brand-700 hover:underline">
-            View all →
-          </Link>
         </div>
+
         {productsQuery.isLoading ? (
           <div
-            className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+            className="container-page flex gap-5 overflow-hidden"
             aria-hidden="true"
           >
             {[0, 1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="animate-pulse overflow-hidden rounded-2xl border border-brand-100 bg-paper motion-reduce:animate-none"
-              >
-                <div className="aspect-[3/4] bg-brand-50" />
-                <div className="space-y-2 p-4">
-                  <div className="h-4 w-3/4 rounded bg-brand-100" />
-                  <div className="h-3 w-1/2 rounded bg-brand-50" />
-                </div>
-              </div>
+                className="aspect-[3/4] w-[280px] flex-none animate-pulse bg-ink/10 motion-reduce:animate-none"
+              />
             ))}
           </div>
         ) : productsQuery.isError ? (
-          <div className="mt-6 rounded-2xl border border-brand-100 bg-paper p-10 text-center">
-            <p className="font-display text-xl text-ink">
-              We couldn&apos;t load the gallery.
-            </p>
-            <p className="mt-2 text-sm text-muted">
-              Something went wrong on our side — your connection is probably fine.
-            </p>
-            <Button
-              variant="outline"
-              className="mt-5"
-              onClick={() => productsQuery.refetch()}
-            >
-              Try again
-            </Button>
+          <div className="container-page">
+            <div className="border border-ink/10 bg-paper p-10 text-center">
+              <p className="font-display text-2xl italic text-ink">
+                We couldn&apos;t load the gallery.
+              </p>
+              <p className="mt-2 text-sm text-muted">
+                Something went wrong on our side — your connection is probably
+                fine.
+              </p>
+              <Button
+                variant="outline"
+                className="mt-5"
+                onClick={() => productsQuery.refetch()}
+              >
+                Try again
+              </Button>
+            </div>
           </div>
         ) : gridProducts.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-brand-100 bg-paper p-10 text-center">
-            <p className="font-display text-xl text-ink">
-              The gallery is being rehung.
-            </p>
-            <p className="mt-2 text-sm text-muted">
-              New pieces are on their way. Meet the artists behind them in the
-              meantime.
-            </p>
-            <Link href="/artists" className="mt-5 inline-block">
-              <Button variant="outline">Meet the artists</Button>
-            </Link>
+          <div className="container-page">
+            <div className="border border-ink/10 bg-paper p-10 text-center">
+              <p className="font-display text-2xl italic text-ink">
+                The gallery is being rehung.
+              </p>
+              <p className="mt-2 text-sm text-muted">
+                New pieces are on their way. Meet the artists behind them in
+                the meantime.
+              </p>
+              <Link href="/artists" className="mt-5 inline-block">
+                <Button variant="outline">Meet the artists</Button>
+              </Link>
+            </div>
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div
+            ref={carouselRef}
+            className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-2 sm:px-6 lg:px-[max(2rem,calc((100vw-80rem)/2+2rem))]"
+          >
             {gridProducts.map((p) => (
-              <ProductCard key={p.id} product={p} showFeaturedBadge={false} />
+              <div key={p.id} className="w-[280px] flex-none snap-start">
+                <ProductCard product={p} showFeaturedBadge={false} />
+              </div>
             ))}
           </div>
         )}
+      </section>
+
+      {/* How it works — magnetic mounting */}
+      <section className="bg-ink px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,88px)]">
+        <div className="mb-16 text-center">
+          <div className={`${kicker} mb-4`}>Magnetic mounting</div>
+          <h2 className="font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase tracking-tight text-cream">
+            On your wall in{" "}
+            <em className="font-display font-medium normal-case italic tracking-normal">
+              under a minute
+            </em>
+          </h2>
+        </div>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-12">
+          {[
+            {
+              n: "01",
+              title: "Stick the magnet",
+              body: "One adhesive magnet pad on the wall. No drill, no holes, no damage.",
+            },
+            {
+              n: "02",
+              title: "Snap the poster",
+              body: "The steel poster clicks onto the magnet — perfectly flat, perfectly level.",
+            },
+            {
+              n: "03",
+              title: "Swap anytime",
+              body: "Change artwork in seconds. One magnet, an entire rotating gallery.",
+            },
+          ].map((step) => (
+            <div
+              key={step.n}
+              className="flex flex-col items-center gap-4 text-center"
+            >
+              <div className="font-display text-[52px] italic leading-none text-cream/30">
+                {step.n}
+              </div>
+              <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-cream">
+                {step.title}
+              </div>
+              <p className="max-w-[260px] text-sm leading-[1.7] text-cream/60">
+                {step.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Quality — the material */}
+      <section className="container-page flex flex-wrap items-center gap-[clamp(40px,5vw,72px)] py-[clamp(56px,7vw,96px)]">
+        <div className="h-[460px] min-w-[300px] flex-1 bg-ink">
+          {qualityProduct ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={qualityProduct.image_url}
+              alt={qualityProduct.title}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div
+              className="h-full w-full"
+              style={{ background: `${stripes}, ${categoryGradients[1]}` }}
+              aria-hidden="true"
+            />
+          )}
+        </div>
+        <div className="flex min-w-[300px] max-w-[440px] flex-1 flex-col gap-[22px]">
+          <div className={kicker}>The material</div>
+          <h2 className="font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase leading-[1.1] tracking-tight text-ink">
+            Solid metal.
+            <br />
+            <em className="font-display font-medium normal-case italic tracking-normal">
+              Built to outlast paper.
+            </em>
+          </h2>
+          <p className="text-[15px] leading-[1.7] text-ink/70">
+            Each piece is printed directly onto rigid steel with UV-cured inks
+            — colours that never fade, edges that never curl, a matte finish
+            that reads like a gallery print.
+          </p>
+          <div className="flex flex-wrap gap-10 pt-2">
+            <div>
+              <div className="text-2xl font-bold text-ink">10+ yrs</div>
+              <div className="text-[11px] uppercase tracking-[0.1em] text-ink/50">
+                Colour guarantee
+              </div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-ink">100%</div>
+              <div className="text-[11px] uppercase tracking-[0.1em] text-ink/50">
+                Recyclable steel
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );

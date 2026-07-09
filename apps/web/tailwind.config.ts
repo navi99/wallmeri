@@ -32,9 +32,14 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "Georgia", "serif"],
       },
+      // Steel-gallery design language: sharp edges everywhere except pills.
       borderRadius: {
-        xl: "0.9rem",
-        "2xl": "1.25rem",
+        DEFAULT: "0",
+        sm: "0",
+        md: "0",
+        lg: "0",
+        xl: "0",
+        "2xl": "0",
       },
       boxShadow: {
         card: "0 1px 2px rgba(27, 23, 23, 0.05), 0 10px 30px rgba(99, 0, 0, 0.08)",

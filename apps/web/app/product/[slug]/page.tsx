@@ -116,7 +116,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               className="mt-2"
             />
           )}
-          <p className="mt-3 font-display text-3xl font-semibold text-brand-600">
+          <p className="mt-3 text-3xl font-bold text-brand-600">
             {formatINR(product.price_inr)}
           </p>
 

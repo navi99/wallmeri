@@ -1,95 +1,71 @@
 import Link from "next/link";
 
+const colHeading =
+  "text-[11px] font-semibold uppercase tracking-[0.16em] text-cream";
+const colLink = "text-[13px] text-cream/65 transition-colors hover:text-cream";
+
 export function SiteFooter() {
   return (
     <footer className="mt-16 bg-ink text-cream">
-      <div className="container-page grid gap-8 py-14 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 font-display text-lg font-bold text-cream">
-              W
-            </span>
-            <span className="font-display text-xl font-semibold tracking-wide">Wallmeri</span>
-          </div>
-          <p className="mt-4 text-sm leading-relaxed text-cream/60">
-            Premium metal wall art, crafted and shipped across India.
+      <div className="container-page flex flex-wrap items-start justify-between gap-12 py-14">
+        <div className="flex flex-col gap-3.5">
+          <div className="text-lg font-bold tracking-[0.24em]">WALLMERI</div>
+          <p className="max-w-[280px] text-[13px] leading-relaxed text-cream/50">
+            Premium metal posters, crafted and shipped across India. Designed
+            to be collected.
           </p>
         </div>
 
-        <div>
-          <h3 className="text-sm font-semibold text-cream/60">
-            Shop
-          </h3>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            <li>
-              <Link href="/catalog" className="text-cream/75 hover:text-cream">
-                All posters
-              </Link>
-            </li>
-            <li>
-              <Link href="/catalog?sort=price_asc" className="text-cream/75 hover:text-cream">
-                Best value
-              </Link>
-            </li>
-            <li>
-              <Link href="/artists" className="text-cream/75 hover:text-cream">
-                Our artists
-              </Link>
-            </li>
-            <li>
-              <Link href="/cart" className="text-cream/75 hover:text-cream">
-                Your cart
-              </Link>
-            </li>
-          </ul>
-        </div>
+        <div className="flex flex-wrap gap-x-16 gap-y-10">
+          <div className="flex flex-col gap-3">
+            <div className={`${colHeading} mb-1`}>Shop</div>
+            <Link href="/catalog" className={colLink}>
+              All posters
+            </Link>
+            <Link href="/catalog?sort=price_asc" className={colLink}>
+              Best value
+            </Link>
+            <Link href="/artists" className={colLink}>
+              Artists
+            </Link>
+            <Link href="/cart" className={colLink}>
+              Your cart
+            </Link>
+          </div>
 
-        <div>
-          <h3 className="text-sm font-semibold text-cream/60">
-            Account
-          </h3>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            <li>
-              <Link href="/login" className="text-cream/75 hover:text-cream">
-                Login
-              </Link>
-            </li>
-            <li>
-              <Link href="/register" className="text-cream/75 hover:text-cream">
-                Create account
-              </Link>
-            </li>
-            <li>
-              <Link href="/orders" className="text-cream/75 hover:text-cream">
-                Order history
-              </Link>
-            </li>
-            <li>
-              <Link href="/track" className="text-cream/75 hover:text-cream">
-                Track an order
-              </Link>
-            </li>
-          </ul>
-        </div>
+          <div className="flex flex-col gap-3">
+            <div className={`${colHeading} mb-1`}>Account</div>
+            <Link href="/login" className={colLink}>
+              Login
+            </Link>
+            <Link href="/register" className={colLink}>
+              Create account
+            </Link>
+            <Link href="/orders" className={colLink}>
+              Order history
+            </Link>
+            <Link href="/track" className={colLink}>
+              Track an order
+            </Link>
+          </div>
 
-        <div>
-          <h3 className="text-sm font-semibold text-cream/60">
-            Help
-          </h3>
-          <ul className="mt-4 space-y-2.5 text-sm text-cream/75">
-            <li>
-              <Link href="/artists/join" className="hover:text-cream">
-                Become a Wallmeri artist
-              </Link>
-            </li>
-            <li>Free shipping over ₹2,999</li>
-            <li>Secure Razorpay checkout</li>
-            <li>Made in India</li>
-          </ul>
+          <div className="flex flex-col gap-3">
+            <div className={`${colHeading} mb-1`}>Support</div>
+            <Link href="/artists/join" className={colLink}>
+              Become a Wallmeri artist
+            </Link>
+            <span className="text-[13px] text-cream/65">
+              Free shipping over ₹2,999
+            </span>
+            <span className="text-[13px] text-cream/65">
+              Secure Razorpay checkout
+            </span>
+            <span className="text-[13px] text-cream/65">Made in India</span>
+          </div>
         </div>
       </div>
-      <div className="border-t border-white/10 py-5">
-        <p className="container-page text-center text-xs text-cream/50">
+      <div className="border-t border-cream/10 py-5">
+        <p className="container-page text-center text-[11px] text-cream/35">
           © {new Date().getFullYear()} Wallmeri. All rights reserved.
         </p>
       </div>

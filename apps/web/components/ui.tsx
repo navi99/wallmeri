@@ -9,18 +9,17 @@ type ButtonVariant = "primary" | "outline" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary:
-    "bg-brand-600 text-cream hover:bg-brand-700 active:bg-brand-800 shadow-sm",
+  primary: "bg-ink text-cream hover:bg-brand-600 active:bg-brand-700",
   outline:
-    "border border-brand-200 bg-paper text-ink hover:border-brand-400 hover:bg-brand-50",
-  ghost: "text-ink hover:bg-brand-50",
-  danger: "bg-paper text-brand-700 border border-brand-200 hover:bg-brand-50",
+    "border border-ink bg-transparent text-ink hover:bg-ink hover:text-cream",
+  ghost: "text-ink hover:bg-ink/5",
+  danger: "bg-transparent text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-cream",
 };
 
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: "h-9 px-3 text-sm",
-  md: "h-11 px-5 text-sm",
-  lg: "h-12 px-7 text-base",
+  sm: "h-9 px-4 text-[11px]",
+  md: "h-11 px-6 text-xs",
+  lg: "h-[52px] px-9 text-xs",
 };
 
 export interface ButtonProps
@@ -36,7 +35,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex items-center justify-center gap-2 font-semibold uppercase tracking-[0.16em] transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60",
         buttonVariants[variant],
         buttonSizes[size],
         className,
@@ -57,7 +56,7 @@ export const Input = React.forwardRef<
   <input
     ref={ref}
     className={cn(
-      "h-11 w-full rounded-xl border border-brand-200 bg-paper px-3.5 text-sm text-ink placeholder:text-muted/70 focus:border-brand-400 focus-visible:outline-none",
+      "h-11 w-full border border-ink/20 bg-paper px-3.5 text-sm text-ink placeholder:text-muted/70 focus:border-ink focus-visible:outline-none",
       className,
     )}
     {...props}
@@ -72,7 +71,7 @@ export const Textarea = React.forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      "w-full rounded-xl border border-brand-200 bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/70 focus:border-brand-400 focus-visible:outline-none",
+      "w-full border border-ink/20 bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/70 focus:border-ink focus-visible:outline-none",
       className,
     )}
     {...props}
@@ -87,7 +86,7 @@ export const Select = React.forwardRef<
   <select
     ref={ref}
     className={cn(
-      "h-11 w-full rounded-xl border border-brand-200 bg-paper px-3 text-sm text-ink focus:border-brand-400 focus-visible:outline-none",
+      "h-11 w-full border border-ink/20 bg-paper px-3 text-sm text-ink focus:border-ink focus-visible:outline-none",
       className,
     )}
     {...props}
@@ -121,7 +120,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-brand-100 bg-paper shadow-card",
+        "border border-ink/10 bg-paper shadow-card",
         className,
       )}
       {...props}
@@ -139,7 +138,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold text-brand-700",
+        "inline-flex items-center bg-ink/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-brand-700",
         className,
       )}
     >

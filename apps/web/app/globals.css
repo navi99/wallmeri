@@ -27,11 +27,12 @@ body {
 }
 
 @layer base {
-  /* The Plaque Rule: editorial serif for page/section headings only.
-     h3 and below stay Inter (card titles, footer labels, admin UI). */
+  /* Steel Gallery type system: headings are Archivo (sans), bold and
+     tracked per component. Cormorant Garamond (--font-display) is the
+     accent serif — italic emphasis inside headings, review quotes,
+     oversized step numerals — applied explicitly via .font-display. */
   h1,
   h2 {
-    font-family: var(--font-display);
     letter-spacing: -0.01em;
   }
 }

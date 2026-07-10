@@ -1,11 +1,28 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui";
 import { api } from "@/lib/api";
+
+// Same framed gallery slides as the About hero.
+const heroSlides = [
+  {
+    src: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=880&q=80",
+    alt: "Framed art glowing on a dark living-room wall, lit like a gallery",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1554907984-15263bfd63bd?auto=format&fit=crop&w=880&q=80",
+    alt: "A single framed print hung on a bright, quiet wall",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=880&q=80",
+    alt: "Wall art anchoring a warm contemporary living room",
+  },
+];
 
 const kicker =
   "text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-600";
@@ -53,65 +70,58 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero — framed poster flanked by headline and pitch */}
-      <section className="container-page flex flex-wrap items-center justify-center gap-[clamp(32px,4vw,56px)] py-[clamp(56px,7vw,96px)]">
-        <div className="flex min-w-[280px] max-w-[380px] flex-1 flex-col items-end gap-5 text-right">
-          <div className={kicker}>Art on metal</div>
-          <h1 className="font-sans text-[clamp(44px,4.5vw,64px)] font-bold uppercase leading-[1.02] tracking-tight text-ink">
-            Your walls,
-            <br />
-            <em className="font-display font-medium normal-case italic tracking-normal">
-              elevated.
-            </em>
-          </h1>
-        </div>
+      {/* Hero — Premium Red drench, story left / framed poster right (mirrors the About hero) */}
+      <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,96px)]">
+        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
+          <div className="flex min-w-[300px] flex-[1.4] flex-col items-start gap-6">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100">
+              The Wallmeri story
+            </div>
+            <h1 className="font-sans text-[clamp(38px,5vw,64px)] font-bold uppercase leading-[1.05] tracking-tight text-cream">
+              Every artist deserves{" "}
+              <em className="font-display font-medium normal-case italic tracking-normal text-cream">
+                a wall.
+              </em>
+            </h1>
+            <p className="max-w-[560px] text-[16px] leading-[1.7] text-cream/90">
+              We turn original Indian creativity into premium metal art,
+              helping artists get discovered, recognised and rewarded, while
+              giving every home a wall that means something.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-3.5">
+              <Link
+                href="/catalog"
+                className="inline-flex h-[52px] items-center justify-center bg-ink px-9 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:bg-cream hover:text-ink"
+              >
+                Explore the art
+              </Link>
+              <Link
+                href="/artists/join"
+                className="inline-flex h-[52px] items-center justify-center border border-cream/50 px-9 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
+              >
+                Join as an artist
+              </Link>
+            </div>
+          </div>
 
-        <div className="w-[min(380px,88vw)] flex-none bg-ink p-3.5 shadow-[0_24px_60px_rgba(27,23,23,0.25)]">
-          {productsQuery.isLoading ? (
-            <div
-              className="aspect-[73/100] w-full animate-pulse bg-white/5 motion-reduce:animate-none"
-              aria-hidden="true"
-            />
-          ) : heroProduct ? (
-            <Link
-              href={`/product/${heroProduct.slug}`}
-              className="relative block aspect-[73/100] w-full overflow-hidden"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={heroProduct.image_url}
-                alt={heroProduct.title}
-                className="h-full w-full object-cover"
-              />
-            </Link>
-          ) : (
-            <div className="grid aspect-[73/100] w-full place-items-center p-8 text-center">
-              <div>
-                <p className="font-display text-2xl italic text-cream">
-                  The gallery is being rehung.
-                </p>
-                <p className="mt-2 text-sm text-cream/60">
-                  New pieces are on their way — browse back soon.
-                </p>
+          {/* The one framed piece in the gallery: Noir frame, slow crossfade */}
+          <div className="mx-auto w-full min-w-[264px] max-w-[400px] flex-1">
+            <div className="bg-ink p-[14px] shadow-[0_30px_60px_rgba(27,23,23,0.35)]">
+              <div className="relative aspect-[3/4] overflow-hidden">
+                {heroSlides.map((slide, i) => (
+                  <Image
+                    key={slide.src}
+                    src={slide.src}
+                    alt={slide.alt}
+                    fill
+                    priority={i === 0}
+                    sizes="(max-width: 640px) 90vw, 400px"
+                    className="about-slide object-cover"
+                    style={{ animationDelay: `${i * 4}s` }}
+                  />
+                ))}
               </div>
             </div>
-          )}
-        </div>
-
-        <div className="flex min-w-[280px] max-w-[340px] flex-1 flex-col gap-6">
-          <p className="text-[17px] leading-[1.65] text-ink/75">
-            Museum-grade prints on solid metal. Magnetic mounting, no frames,
-            no drilling — gallery presence in seconds.
-          </p>
-          <div className="flex flex-wrap gap-3.5">
-            <Link href="/catalog">
-              <Button size="lg">Shop posters</Button>
-            </Link>
-            <Link href="/catalog?sort=newest">
-              <Button size="lg" variant="outline">
-                New arrivals
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
@@ -236,10 +246,12 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* How it works — magnetic mounting */}
-      <section className="bg-ink px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,88px)]">
+      {/* How it works — magnetic mounting. Premium Red drench, matching the About page bands */}
+      <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,88px)]">
         <div className="mb-16 text-center">
-          <div className={`${kicker} mb-4`}>Magnetic mounting</div>
+          <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100">
+            Magnetic mounting
+          </div>
           <h2 className="font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase tracking-tight text-cream">
             On your wall in{" "}
             <em className="font-display font-medium normal-case italic tracking-normal">
@@ -269,13 +281,13 @@ export default function HomePage() {
               key={step.n}
               className="flex flex-col items-center gap-4 text-center"
             >
-              <div className="font-display text-[52px] italic leading-none text-cream/30">
+              <div className="font-display text-[52px] italic leading-none text-premium-100">
                 {step.n}
               </div>
               <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-cream">
                 {step.title}
               </div>
-              <p className="max-w-[260px] text-sm leading-[1.7] text-cream/60">
+              <p className="max-w-[260px] text-sm leading-[1.7] text-cream/90">
                 {step.body}
               </p>
             </div>

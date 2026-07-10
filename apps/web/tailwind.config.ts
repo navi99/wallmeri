@@ -23,6 +23,14 @@ const config: Config = {
           800: "#4d0303",
           900: "#3a0606",
         },
+        // Premium Red — brighter editorial red for brand-story surfaces (About).
+        // Cotton text on premium-600 is 6.2:1; premium-600 on cream is 6.2:1.
+        premium: {
+          100: "#f7dedd",
+          300: "#e08f8b",
+          600: "#b32624",
+          700: "#8f1b1a",
+        },
         cream: "#faf9f6", // Cotton — page canvas
         paper: "#fbfaf4", // warm near-white — card surfaces
         ink: "#1b1717", // Noir Black — primary text & dark surfaces

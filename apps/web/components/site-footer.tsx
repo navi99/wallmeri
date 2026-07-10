@@ -50,7 +50,10 @@ export function SiteFooter() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className={`${colHeading} mb-1`}>Support</div>
+            <div className={`${colHeading} mb-1`}>Wallmeri</div>
+            <Link href="/about" className={colLink}>
+              About us
+            </Link>
             <Link href="/artists/join" className={colLink}>
               Become a Wallmeri artist
             </Link>

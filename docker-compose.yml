@@ -24,6 +24,8 @@ services:
       - .env
     environment:
       UVICORN_RELOAD: "1"
+      # Windows bind mounts don't forward inotify events into the VM; poll instead.
+      WATCHFILES_FORCE_POLLING: "true"
     depends_on:
       db:
         condition: service_healthy
@@ -41,6 +43,8 @@ services:
       - .env
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000/api}
+      # Windows bind mounts don't forward inotify events into the VM; poll instead.
+      WATCHPACK_POLLING: "true"
     depends_on:
       - api
     ports:

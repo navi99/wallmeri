@@ -17,7 +17,6 @@ export function SiteHeader() {
   const [q, setQ] = useState(params.get("q") ?? "");
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
@@ -27,21 +26,15 @@ export function SiteHeader() {
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
-    if (!menuOpen && !searchOpen) return;
+    if (!menuOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setMenuOpen(false);
-        setSearchOpen(false);
-      }
+      if (e.key === "Escape") setMenuOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen, searchOpen]);
+  }, [menuOpen]);
 
-  const closePanels = () => {
-    setMenuOpen(false);
-    setSearchOpen(false);
-  };
+  const closePanels = () => setMenuOpen(false);
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,23 +53,9 @@ export function SiteHeader() {
       </p>
 
       <div className="container-page flex h-[72px] items-center gap-2 border-b border-ink/10 sm:gap-4">
-        {/* Left: nav (desktop) / menu button (mobile) */}
-        <nav className="hidden flex-1 items-center gap-7 sm:flex" aria-label="Main">
-          <Link href="/catalog" className={navLink}>
-            Shop
-          </Link>
-          <Link href="/artists" className={navLink}>
-            Artists
-          </Link>
-          <Link href="/track" className={`${navLink} hidden md:block`}>
-            Track order
-          </Link>
-        </nav>
+        {/* Left: wordmark (desktop) / menu button + wordmark (mobile) */}
         <button
-          onClick={() => {
-            setMenuOpen((v) => !v);
-            setSearchOpen(false);
-          }}
+          onClick={() => setMenuOpen((v) => !v)}
           aria-label={menuOpen ? "Close menu" : "Menu"}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
@@ -84,9 +63,6 @@ export function SiteHeader() {
         >
           {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
-        <div className="flex-1 sm:hidden" />
-
-        {/* Center: wordmark */}
         <Link
           href="/"
           onClick={closePanels}
@@ -95,52 +71,59 @@ export function SiteHeader() {
           WALLMERI
         </Link>
 
-        {/* Right: utilities */}
-        <div className="flex flex-1 items-center justify-end gap-1 sm:gap-7">
-          <button
-            onClick={() => {
-              setSearchOpen((v) => !v);
-              setMenuOpen(false);
-            }}
-            aria-label="Search"
-            aria-expanded={searchOpen}
-            aria-controls="site-search"
-            className={`hidden sm:block ${navLink}`}
-          >
-            Search
-          </button>
-          <button
-            onClick={() => {
-              setSearchOpen((v) => !v);
-              setMenuOpen(false);
-            }}
-            aria-label="Search"
-            aria-expanded={searchOpen}
-            aria-controls="site-search"
-            className="grid h-11 w-11 place-items-center text-ink hover:text-brand-600 sm:hidden"
-          >
-            {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
-          </button>
-
-          {mounted && user ? (
+        {/* Left of search: nav (desktop) */}
+        <nav className="hidden items-center gap-6 sm:flex" aria-label="Main">
+          <Link href="/catalog" className={navLink}>
+            Shop
+          </Link>
+          <Link href="/artists" className={navLink}>
+            Artists
+          </Link>
+          <Link href="/track" className={`${navLink} hidden lg:block`}>
+            Track order
+          </Link>
+          {mounted && user && (
             <>
               {user.is_admin && (
                 <Link href="/admin" className={`hidden md:block ${navLink}`}>
                   Admin
                 </Link>
               )}
-              <Link href="/orders" className={`hidden sm:block ${navLink}`}>
+              <Link href="/orders" className={navLink}>
                 Orders
               </Link>
-              <button
-                onClick={logout}
-                aria-label="Log out"
-                className={`hidden items-center gap-1.5 sm:flex ${navLink}`}
-              >
-                <LogOut className="h-3.5 w-3.5" />
-                <span className="hidden lg:inline">Logout</span>
-              </button>
             </>
+          )}
+        </nav>
+
+        {/* Center: search (desktop) */}
+        <form
+          onSubmit={submitSearch}
+          role="search"
+          className="relative mx-auto hidden w-full max-w-md flex-1 sm:block"
+        >
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search metal posters..."
+            aria-label="Search products"
+            className="h-11 w-full border border-ink/20 bg-paper pl-9 pr-3 text-sm text-ink placeholder:text-muted/70 focus:border-ink focus-visible:outline-none"
+          />
+        </form>
+        <div className="flex-1 sm:hidden" />
+
+        {/* Right of search: login/logout + cart */}
+        <div className="flex items-center justify-end gap-1 sm:gap-6">
+          {mounted && user ? (
+            <button
+              onClick={logout}
+              aria-label="Log out"
+              className={`hidden items-center gap-1.5 sm:flex ${navLink}`}
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden lg:inline">Logout</span>
+            </button>
           ) : (
             <Link href="/login" className={`hidden sm:block ${navLink}`}>
               Login
@@ -182,21 +165,19 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {searchOpen && (
-        <div id="site-search" className="border-b border-ink/10">
-          <form onSubmit={submitSearch} className="container-page relative py-3">
-            <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
-            <input
-              autoFocus
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search metal posters..."
-              aria-label="Search products"
-              className="h-11 w-full border border-ink/20 bg-paper pl-9 pr-3 text-sm text-ink placeholder:text-muted/70 focus:border-ink focus-visible:outline-none"
-            />
-          </form>
-        </div>
-      )}
+      {/* Mobile: always-visible search row */}
+      <div className="border-b border-ink/10 sm:hidden">
+        <form onSubmit={submitSearch} role="search" className="container-page relative py-3">
+          <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search metal posters..."
+            aria-label="Search products"
+            className="h-11 w-full border border-ink/20 bg-paper pl-9 pr-3 text-sm text-ink placeholder:text-muted/70 focus:border-ink focus-visible:outline-none"
+          />
+        </form>
+      </div>
 
       {menuOpen && (
         <nav

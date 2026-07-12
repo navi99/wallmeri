@@ -46,7 +46,7 @@ function LoginForm() {
   return (
     <div className="container-page flex justify-center py-16">
       <Card className="w-full max-w-md p-8">
-        <h1 className="text-2xl font-bold text-ink">Log in</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">Log in</h1>
         <p className="mt-1 text-sm text-muted">Welcome back to Wallmeri.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
@@ -74,7 +74,7 @@ function LoginForm() {
 
         <p className="mt-5 text-center text-sm text-muted">
           New here?{" "}
-          <Link href="/register" className="font-semibold text-brand-700 hover:underline">
+          <Link href="/register" className="font-semibold text-brand-600 hover:underline">
             Create an account
           </Link>
         </p>

@@ -33,10 +33,10 @@ const sectionHeading =
 const stripes =
   "repeating-linear-gradient(45deg, rgba(250,249,246,0.05) 0 2px, transparent 2px 14px)";
 const categoryGradients = [
-  "linear-gradient(160deg,#810100 0%,#2e0503 100%)",
+  "linear-gradient(160deg,#b32624 0%,#3a0b0a 100%)",
   "linear-gradient(200deg,#3a3230 0%,#1B1717 100%)",
   "linear-gradient(180deg,#4a4340 0%,#241f1e 100%)",
-  "linear-gradient(140deg,#1B1717 0%,#1B1717 60%,#5b0a06 100%)",
+  "linear-gradient(140deg,#1B1717 0%,#1B1717 60%,#6d1413 100%)",
 ];
 
 export default function HomePage() {

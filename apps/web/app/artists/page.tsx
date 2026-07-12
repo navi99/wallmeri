@@ -15,7 +15,7 @@ export default function ArtistsPage() {
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-3xl font-bold text-ink">Our artists</h1>
+      <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Our artists</h1>
       <p className="mt-1 max-w-2xl text-muted">
         Every Wallmeri artist is hand-picked and verified by our team. Browse their
         collections and bring their work to your walls.
@@ -40,7 +40,7 @@ export default function ArtistsPage() {
                 <div className="min-w-0">
                   <h2 className="font-bold text-ink">{a.name}</h2>
                   <p className="line-clamp-2 text-sm text-muted">{a.bio}</p>
-                  <p className="mt-1 text-xs font-semibold text-brand-700">
+                  <p className="mt-1 text-xs font-semibold text-brand-600">
                     {a.product_count} poster{a.product_count === 1 ? "" : "s"}
                   </p>
                 </div>
@@ -59,7 +59,7 @@ export default function ArtistsPage() {
         </div>
         <Link
           href="/artists/join"
-          className="rounded-xl bg-brand-600 px-6 py-3 font-semibold text-cream hover:bg-brand-700"
+          className="inline-flex h-11 items-center justify-center bg-ink px-6 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:bg-brand-600 active:bg-brand-700"
         >
           Apply to join
         </Link>

@@ -70,7 +70,7 @@ export function ReviewsTab() {
                     {r.author_name} ({r.author_email}) on{" "}
                     <Link
                       href={`/product/${r.product_slug}`}
-                      className="font-semibold text-brand-700 hover:underline"
+                      className="font-semibold text-brand-600 hover:underline"
                     >
                       {r.product_title}
                     </Link>{" "}

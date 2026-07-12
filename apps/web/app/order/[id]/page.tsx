@@ -45,12 +45,12 @@ function OrderContent({ id }: { id: number }) {
   if (error || !order) {
     return (
       <div className="container-page py-24 text-center">
-        <h1 className="text-2xl font-bold text-ink">Order not found</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">Order not found</h1>
         <p className="mt-2 text-muted">
           We couldn&apos;t find this order. If you checked out as a guest, open the
           confirmation link from your email.
         </p>
-        <Link href="/" className="mt-4 inline-block font-semibold text-brand-700 hover:underline">
+        <Link href="/" className="mt-4 inline-block font-semibold text-brand-600 hover:underline">
           Back home
         </Link>
       </div>
@@ -65,7 +65,7 @@ function OrderContent({ id }: { id: number }) {
         <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-brand-50 text-brand-600">
           <CheckCircle2 className="h-9 w-9" />
         </span>
-        <h1 className="mt-4 text-3xl font-bold text-ink">Thank you for your order!</h1>
+        <h1 className="mt-4 text-3xl font-bold uppercase tracking-tight text-ink">Thank you for your order!</h1>
         <p className="mt-2 text-muted">
           Order <span className="font-semibold text-ink">#{order.id}</span> ·{" "}
           {statusLabel(order.status)}

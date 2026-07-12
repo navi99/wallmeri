@@ -68,7 +68,7 @@ export function ApplicationsTab() {
                   href={app.portfolio_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:underline"
+                  className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:underline"
                 >
                   Portfolio <ExternalLink className="h-3.5 w-3.5" />
                 </a>

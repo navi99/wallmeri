@@ -76,7 +76,7 @@ export default function CheckoutPage() {
   if (mounted && items.length === 0) {
     return (
       <div className="container-page py-20 text-center">
-        <h1 className="text-2xl font-bold text-ink">Your cart is empty</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">Your cart is empty</h1>
         <Link href="/catalog" className="mt-4 inline-block">
           <Button size="lg">Browse posters</Button>
         </Link>
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
           email: values.email,
           contact: values.phone,
         },
-        theme: { color: "#810100" },
+        theme: { color: "#b32624" },
         handler: async (response: any) => {
           try {
             await api.verifyPayment({
@@ -175,7 +175,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-3xl font-bold text-ink">Checkout</h1>
+      <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Checkout</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -186,7 +186,7 @@ export default function CheckoutPage() {
           {!user && (
             <p className="mt-1 text-sm text-muted">
               Checking out as a guest.{" "}
-              <Link href="/login?next=/checkout" className="font-semibold text-brand-700 hover:underline">
+              <Link href="/login?next=/checkout" className="font-semibold text-brand-600 hover:underline">
                 Log in
               </Link>{" "}
               to save your orders.

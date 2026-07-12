@@ -91,7 +91,7 @@ export default function AdminPage() {
   return (
     <div className="container-page py-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-3xl font-bold text-ink">Admin</h1>
+        <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Admin</h1>
         {tab === "posters" && (
           <Button
             onClick={() => {
@@ -111,7 +111,7 @@ export default function AdminPage() {
             onClick={() => setTab(t)}
             className={`-mb-px shrink-0 border-b-2 px-4 py-2.5 text-sm font-semibold capitalize ${
               tab === t
-                ? "border-brand-600 text-brand-700"
+                ? "border-brand-600 text-brand-600"
                 : "border-transparent text-muted hover:text-ink"
             }`}
           >
@@ -184,7 +184,7 @@ export default function AdminPage() {
                                 setEditing(p);
                                 setFormOpen(true);
                               }}
-                              className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-700"
+                              className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-600"
                               aria-label={`Edit ${p.title}`}
                             >
                               <Pencil className="h-4 w-4" />
@@ -193,7 +193,7 @@ export default function AdminPage() {
                               onClick={() => {
                                 if (confirm(`Delete "${p.title}"?`)) deleteMutation.mutate(p.id);
                               }}
-                              className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-700"
+                              className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-600"
                               aria-label={`Delete ${p.title}`}
                             >
                               <Trash2 className="h-4 w-4" />

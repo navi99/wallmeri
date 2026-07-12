@@ -142,7 +142,7 @@ export function ArtistsTab() {
                         setEditing(a);
                         setFormOpen(true);
                       }}
-                      className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-700"
+                      className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-600"
                       aria-label={`Edit ${a.name}`}
                     >
                       <Pencil className="h-4 w-4" />

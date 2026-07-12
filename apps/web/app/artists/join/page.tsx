@@ -49,7 +49,7 @@ export default function ArtistJoinPage() {
       <div className="container-page flex justify-center py-20">
         <Card className="w-full max-w-lg p-10 text-center">
           <CheckCircle2 className="mx-auto h-12 w-12 text-green-600" />
-          <h1 className="mt-4 text-2xl font-bold text-ink">Application received!</h1>
+          <h1 className="mt-4 text-2xl font-bold uppercase tracking-tight text-ink">Application received!</h1>
           <p className="mt-2 text-muted">
             Thanks for reaching out. The Wallmeri team reviews every application personally
             and will get back to you by email.
@@ -62,7 +62,7 @@ export default function ArtistJoinPage() {
   return (
     <div className="container-page grid gap-10 py-12 lg:grid-cols-2">
       <div>
-        <h1 className="text-3xl font-bold text-ink">Become a Wallmeri artist</h1>
+        <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Become a Wallmeri artist</h1>
         <p className="mt-3 max-w-lg leading-relaxed text-muted">
           Wallmeri is a curated gallery — we work with a small set of artists we love.
           You send us your art; we take care of everything else and you earn on every sale.

@@ -37,7 +37,7 @@ export default function OrdersPage() {
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-3xl font-bold text-ink">Your orders</h1>
+      <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Your orders</h1>
 
       {isLoading ? (
         <div className="grid place-items-center py-24"><Spinner /></div>

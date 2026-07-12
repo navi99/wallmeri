@@ -34,10 +34,10 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
     const notFound = artistQuery.error instanceof ApiError && artistQuery.error.status === 404;
     return (
       <div className="container-page py-24 text-center">
-        <h1 className="text-2xl font-bold text-ink">
+        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">
           {notFound ? "Artist not found" : "Something went wrong"}
         </h1>
-        <Link href="/artists" className="mt-4 inline-block font-semibold text-brand-700 hover:underline">
+        <Link href="/artists" className="mt-4 inline-block font-semibold text-brand-600 hover:underline">
           Browse all artists
         </Link>
       </div>
@@ -48,7 +48,7 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
     <div className="container-page py-8">
       <Link
         href="/artists"
-        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-brand-700"
+        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-brand-600"
       >
         <ChevronLeft className="h-4 w-4" /> All artists
       </Link>
@@ -68,7 +68,7 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
                 href={artist.website_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 font-semibold text-brand-700 hover:underline"
+                className="inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:underline"
               >
                 <Globe className="h-4 w-4" /> Website
               </a>
@@ -78,7 +78,7 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
                 href={artist.instagram_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 font-semibold text-brand-700 hover:underline"
+                className="inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:underline"
               >
                 <Instagram className="h-4 w-4" /> Instagram
               </a>

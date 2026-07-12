@@ -36,10 +36,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     const notFound = error instanceof ApiError && error.status === 404;
     return (
       <div className="container-page py-24 text-center">
-        <h1 className="text-2xl font-bold text-ink">
+        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">
           {notFound ? "Poster not found" : "Something went wrong"}
         </h1>
-        <Link href="/catalog" className="mt-4 inline-block font-semibold text-brand-700 hover:underline">
+        <Link href="/catalog" className="mt-4 inline-block font-semibold text-brand-600 hover:underline">
           Back to catalog
         </Link>
       </div>
@@ -66,7 +66,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     <div className="container-page py-8">
       <Link
         href="/catalog"
-        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-brand-700"
+        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-brand-600"
       >
         <ChevronLeft className="h-4 w-4" /> Back to catalog
       </Link>
@@ -100,7 +100,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 Art by{" "}
                 <Link
                   href={`/artist/${product.artist.slug}`}
-                  className="font-semibold text-brand-700 hover:underline"
+                  className="font-semibold text-brand-600 hover:underline"
                 >
                   {product.artist.name}
                 </Link>

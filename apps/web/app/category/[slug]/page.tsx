@@ -42,14 +42,14 @@ function CategoryContent({ slug }: { slug: string }) {
     <div className="container-page py-8">
       <Link
         href="/catalog"
-        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-brand-700"
+        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-brand-600"
       >
         <ChevronLeft className="h-4 w-4" /> All posters
       </Link>
 
       <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-ink">
+          <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">
             {category?.name ?? slug}
           </h1>
           <p className="text-sm text-muted">
@@ -126,7 +126,7 @@ function CategoryContent({ slug }: { slug: string }) {
           <p className="text-lg font-semibold text-ink">Nothing here yet</p>
           <Link
             href="/catalog"
-            className="mt-3 inline-block font-semibold text-brand-700 hover:underline"
+            className="mt-3 inline-block font-semibold text-brand-600 hover:underline"
           >
             View all posters
           </Link>

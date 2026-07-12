@@ -43,7 +43,7 @@ function CatalogContent() {
   return (
     <div className="container-page py-8">
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold text-ink">
+        <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">
           {q ? `Results for “${q}”` : category ? categoryName(category, categoriesQuery.data) : "All metal posters"}
         </h1>
         <p className="text-sm text-muted">
@@ -82,7 +82,7 @@ function CatalogContent() {
         {(q || category) && (
           <Link
             href="/catalog"
-            className="text-sm font-semibold text-brand-700 hover:underline"
+            className="text-sm font-semibold text-brand-600 hover:underline"
           >
             Clear filters
           </Link>
@@ -130,7 +130,7 @@ function CatalogContent() {
           <p className="mt-1 text-muted">Try a different search or clear your filters.</p>
           <Link
             href="/catalog"
-            className="mt-4 inline-block font-semibold text-brand-700 hover:underline"
+            className="mt-4 inline-block font-semibold text-brand-600 hover:underline"
           >
             View all posters
           </Link>

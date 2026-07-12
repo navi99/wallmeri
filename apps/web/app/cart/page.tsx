@@ -34,7 +34,7 @@ export default function CartPage() {
         <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-brand-50 text-brand-600">
           <ShoppingBag className="h-8 w-8" />
         </span>
-        <h1 className="mt-5 text-2xl font-bold text-ink">Your cart is empty</h1>
+        <h1 className="mt-5 text-2xl font-bold uppercase tracking-tight text-ink">Your cart is empty</h1>
         <p className="mt-2 text-muted">Find a poster you love and add it here.</p>
         <Link href="/catalog" className="mt-6 inline-block">
           <Button size="lg">Browse posters</Button>
@@ -45,7 +45,7 @@ export default function CartPage() {
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-3xl font-bold text-ink">Your cart</h1>
+      <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Your cart</h1>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
@@ -62,12 +62,12 @@ export default function CartPage() {
               </Link>
               <div className="flex flex-1 flex-col">
                 <div className="flex items-start justify-between gap-3">
-                  <Link href={`/product/${item.slug}`} className="font-semibold text-ink hover:text-brand-700">
+                  <Link href={`/product/${item.slug}`} className="font-semibold text-ink hover:text-brand-600">
                     {item.title}
                   </Link>
                   <button
                     onClick={() => remove(item.product_id)}
-                    className="text-muted hover:text-brand-700"
+                    className="text-muted hover:text-brand-600"
                     aria-label={`Remove ${item.title}`}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -115,7 +115,7 @@ export default function CartPage() {
               </dd>
             </div>
             {shipping > 0 && (
-              <p className="rounded-lg bg-brand-50 px-3 py-2 text-xs text-brand-700">
+              <p className="rounded-lg bg-brand-50 px-3 py-2 text-xs text-brand-600">
                 Add {formatINR(FREE_SHIPPING - subtotal)} more for free shipping.
               </p>
             )}
@@ -131,7 +131,7 @@ export default function CartPage() {
           </Link>
           <Link
             href="/catalog"
-            className="mt-3 block text-center text-sm font-medium text-brand-700 hover:underline"
+            className="mt-3 block text-center text-sm font-medium text-brand-600 hover:underline"
           >
             Continue shopping
           </Link>

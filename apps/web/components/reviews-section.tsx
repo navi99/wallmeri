@@ -124,7 +124,7 @@ export function ReviewsSection({ slug }: { slug: string }) {
       {hydrated && !user && (
         <p className="mt-3 text-sm text-muted">
           Bought this poster?{" "}
-          <Link href={`/login?next=/product/${slug}`} className="font-semibold text-brand-700 hover:underline">
+          <Link href={`/login?next=/product/${slug}`} className="font-semibold text-brand-600 hover:underline">
             Log in
           </Link>{" "}
           with your order email to leave a review.

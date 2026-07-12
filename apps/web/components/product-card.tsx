@@ -51,23 +51,23 @@ export function ProductCard({
       <div className="flex flex-col gap-1">
         <div className="flex items-baseline justify-between gap-2.5">
           <Link href={`/product/${product.slug}`} className="min-w-0">
-            <h3 className="line-clamp-1 text-sm font-medium tracking-[0.04em] text-ink hover:text-brand-600">
+            <h3 className="line-clamp-1 text-[15px] font-medium tracking-[0.04em] text-ink hover:text-brand-600">
               {product.title}
             </h3>
           </Link>
-          <span className="shrink-0 text-[13px] font-medium text-brand-600">
+          <span className="shrink-0 text-sm font-medium text-brand-600">
             {formatINR(product.price_inr)}
           </span>
         </div>
         <div className="flex items-center justify-between gap-2.5">
-          <p className="line-clamp-1 text-[11px] text-ink/50">
+          <p className="line-clamp-1 text-xs text-ink/50">
             {product.artist
               ? `by ${product.artist.name}`
               : (product.categories[0]?.name ?? "Metal Art")}
           </p>
           <button
             onClick={onAdd}
-            className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink underline-offset-4 hover:text-brand-600 hover:underline"
+            className="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] text-ink underline-offset-4 hover:text-brand-600 hover:underline"
           >
             Add to cart
           </button>

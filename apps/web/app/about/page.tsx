@@ -173,13 +173,13 @@ export default function AboutPage() {
           </h2>
         </div>
         <div className="flex min-w-[300px] max-w-[520px] flex-1 flex-col gap-[22px]">
-          <p className="text-[15px] leading-[1.7] text-ink/70">
+          <p className="text-base leading-[1.7] text-ink/70">
             Every day, talented Indian artists create work full of emotion,
             skill and identity, yet much of it remains trapped on a screen:
             seen for a few seconds, liked, and eventually lost in an endless
             feed.
           </p>
-          <p className="text-[15px] font-semibold leading-[1.7] text-ink">
+          <p className="text-base font-semibold leading-[1.7] text-ink">
             That felt wrong to us. So we built Wallmeri, a bridge between
             Indian artists and the walls their work belongs on.
           </p>
@@ -193,12 +193,12 @@ export default function AboutPage() {
           <h2 className={sectionHeading}>
             Our mission is <em className={accentRed}>simple.</em>
           </h2>
-          <p className="text-[15px] leading-[1.7] text-ink/70">
+          <p className="text-base leading-[1.7] text-ink/70">
             Give independent Indian artists a fair way to turn their work into
             recognition and income &mdash; and help people put something
             genuine, personal and meaningful on their walls.
           </p>
-          <p className="text-[15px] font-semibold leading-[1.7] text-ink">
+          <p className="text-base font-semibold leading-[1.7] text-ink">
             Every purchase helps creative work find a home.
           </p>
         </div>
@@ -213,7 +213,7 @@ export default function AboutPage() {
                   {v.title}
                 </div>
               </div>
-              <p className="mt-3 text-sm leading-[1.7] text-muted">{v.body}</p>
+              <p className="mt-3 text-[15px] leading-[1.7] text-muted">{v.body}</p>
             </div>
           ))}
         </div>
@@ -238,7 +238,7 @@ export default function AboutPage() {
                 <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-ink">
                   {step.title}
                 </div>
-                <p className="text-sm leading-[1.7] text-muted">{step.body}</p>
+                <p className="text-[15px] leading-[1.7] text-muted">{step.body}</p>
               </div>
             ))}
           </div>
@@ -252,7 +252,7 @@ export default function AboutPage() {
                   <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-ink">
                     {item.title}
                   </div>
-                  <p className="mt-2.5 text-sm leading-[1.7] text-muted">
+                  <p className="mt-2.5 text-[15px] leading-[1.7] text-muted">
                     {item.body}
                   </p>
                 </div>
@@ -270,7 +270,7 @@ export default function AboutPage() {
             A trusted home for Indian{" "}
             <em className={`${accent} text-cream`}>creative work.</em>
           </h2>
-          <p className="mx-auto mt-5 max-w-[560px] text-[15px] leading-[1.7] text-cream/90">
+          <p className="mx-auto mt-5 max-w-[560px] text-base leading-[1.7] text-cream/90">
             A place where photographers, illustrators, designers and
             independent creators of every kind get seen, credited and
             rewarded.
@@ -282,7 +282,7 @@ export default function AboutPage() {
               <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100">
                 {v.label}
               </div>
-              <p className="mt-3.5 text-sm leading-[1.7] text-cream/90">
+              <p className="mt-3.5 text-[15px] leading-[1.7] text-cream/90">
                 {v.body}
               </p>
             </div>
@@ -298,7 +298,7 @@ export default function AboutPage() {
             Proudly made in India.{" "}
             <em className={accentRed}>Built in Bengaluru.</em>
           </h2>
-          <p className="text-[15px] leading-[1.7] text-ink/70">
+          <p className="text-base leading-[1.7] text-ink/70">
             This is only the beginning &mdash; for Wallmeri, for the artists
             already creating with us, and for the thousands of talented
             creators we are yet to discover.

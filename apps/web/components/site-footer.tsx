@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 const colHeading =
-  "text-[11px] font-semibold uppercase tracking-[0.16em] text-cream";
-const colLink = "text-[13px] text-cream/65 transition-colors hover:text-cream";
+  "text-xs font-semibold uppercase tracking-[0.16em] text-cream";
+const colLink = "text-sm text-cream/65 transition-colors hover:text-cream";
 
 export function SiteFooter() {
   return (
@@ -10,7 +10,7 @@ export function SiteFooter() {
       <div className="container-page flex flex-wrap items-start justify-between gap-12 py-14">
         <div className="flex flex-col gap-3.5">
           <div className="text-lg font-bold tracking-[0.24em]">WALLMERI</div>
-          <p className="max-w-[280px] text-[13px] leading-relaxed text-cream/50">
+          <p className="max-w-[280px] text-sm leading-relaxed text-cream/50">
             Premium metal posters, crafted and shipped across India. Designed
             to be collected.
           </p>
@@ -57,18 +57,18 @@ export function SiteFooter() {
             <Link href="/artists/join" className={colLink}>
               Become a Wallmeri artist
             </Link>
-            <span className="text-[13px] text-cream/65">
+            <span className="text-sm text-cream/65">
               Free shipping over ₹2,999
             </span>
-            <span className="text-[13px] text-cream/65">
+            <span className="text-sm text-cream/65">
               Secure Razorpay checkout
             </span>
-            <span className="text-[13px] text-cream/65">Made in India</span>
+            <span className="text-sm text-cream/65">Made in India</span>
           </div>
         </div>
       </div>
       <div className="border-t border-cream/10 py-5">
-        <p className="container-page text-center text-[11px] text-cream/35">
+        <p className="container-page text-center text-xs text-cream/35">
           © {new Date().getFullYear()} Wallmeri. All rights reserved.
         </p>
       </div>

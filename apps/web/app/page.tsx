@@ -27,7 +27,7 @@ const heroSlides = [
 const kicker =
   "text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-600";
 const sectionHeading =
-  "font-sans text-[clamp(26px,2.8vw,34px)] font-bold uppercase tracking-tight text-ink";
+  "font-sans text-[clamp(26px,2.8vw,34px)] font-bold uppercase leading-[1.1] tracking-tight text-ink";
 
 // Steel-poster texture for category tiles (from the handoff design).
 const stripes =
@@ -128,7 +128,7 @@ export default function HomePage() {
 
       {/* Collections */}
       {categories.length > 0 && (
-        <section className="container-page pb-[clamp(56px,7vw,96px)]">
+        <section className="container-page py-[clamp(56px,7vw,96px)]">
           <div className="mb-9 flex flex-wrap items-baseline justify-between gap-4">
             <h2 className={sectionHeading}>Collections</h2>
             <Link
@@ -252,7 +252,7 @@ export default function HomePage() {
           <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100">
             Magnetic mounting
           </div>
-          <h2 className="font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase tracking-tight text-cream">
+          <h2 className="font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase leading-[1.1] tracking-tight text-cream">
             On your wall in{" "}
             <em className="font-display font-medium normal-case italic tracking-normal">
               under a minute
@@ -287,7 +287,7 @@ export default function HomePage() {
               <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-cream">
                 {step.title}
               </div>
-              <p className="max-w-[260px] text-sm leading-[1.7] text-cream/90">
+              <p className="max-w-[260px] text-[15px] leading-[1.7] text-cream/90">
                 {step.body}
               </p>
             </div>
@@ -322,7 +322,7 @@ export default function HomePage() {
               Built to outlast paper.
             </em>
           </h2>
-          <p className="text-[15px] leading-[1.7] text-ink/70">
+          <p className="text-base leading-[1.7] text-ink/70">
             Each piece is printed directly onto rigid steel with UV-cured inks
             — colours that never fade, edges that never curl, a matte finish
             that reads like a gallery print.

@@ -17,6 +17,8 @@ const nextConfig = {
       { protocol: "https", hostname: "**.r2.dev" },
       { protocol: "https", hostname: "**.r2.cloudflarestorage.com" },
       { protocol: "https", hostname: "**.amazonaws.com" },
+      // Custom CDN in front of the R2 bucket (S3_PUBLIC_BASE_URL).
+      { protocol: "https", hostname: "cdn.wallmeri.com" },
     ],
   },
 };

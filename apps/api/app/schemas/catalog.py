@@ -31,8 +31,13 @@ class ProductOut(BaseModel):
     description: str
     price_inr: int
     image_url: str
+    thumb_url: str
+    # Round-tripped so the admin edit form can tell "no managed image" apart
+    # from "has one, just isn't being touched by this save" — see
+    # admin._apply_product_image, which needs the current value to avoid
+    # detaching (and deleting) an unrelated field edit's untouched image.
+    image_id: Optional[int] = None
     material: str
-    stock: int
     is_active: bool
     is_featured: bool
     artist: Optional[ArtistBrief] = None
@@ -56,8 +61,10 @@ class ProductCreate(BaseModel):
     description: str = ""
     price_inr: int = Field(gt=0)
     image_url: str = ""
+    # Set when the image came from the admin uploader (POST /admin/uploads);
+    # left None for a pasted external URL. See admin._apply_product_image.
+    image_id: Optional[int] = None
     material: str = "Metal"
-    stock: int = Field(default=100, ge=0)
     is_active: bool = True
     is_featured: bool = False
     artist_id: Optional[int] = None
@@ -70,8 +77,8 @@ class ProductUpdate(BaseModel):
     description: Optional[str] = None
     price_inr: Optional[int] = Field(default=None, gt=0)
     image_url: Optional[str] = None
+    image_id: Optional[int] = None
     material: Optional[str] = None
-    stock: Optional[int] = Field(default=None, ge=0)
     is_active: Optional[bool] = None
     is_featured: Optional[bool] = None
     artist_id: Optional[int] = None
@@ -80,5 +87,8 @@ class ProductUpdate(BaseModel):
 
 
 class UploadOut(BaseModel):
+    id: int
     image_url: str
     thumb_url: str
+    width: int
+    height: int

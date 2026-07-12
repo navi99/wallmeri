@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/app-image";
 import Link from "next/link";
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -74,7 +74,7 @@ export default function HomePage() {
       <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,96px)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
           <div className="flex min-w-[300px] flex-[1.4] flex-col items-start gap-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100">
+             <div className="text-[15px] font-semibold uppercase tracking-[0.28em] text-premium-100">
               The Wallmeri story
             </div>
             <h1 className="font-sans text-[clamp(38px,5vw,64px)] font-bold uppercase leading-[1.05] tracking-tight text-cream">

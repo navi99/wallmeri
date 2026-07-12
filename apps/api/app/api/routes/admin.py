@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
@@ -12,6 +12,8 @@ from app.models import (
     Artist,
     ArtistApplication,
     Category,
+    MediaAsset,
+    MediaKind,
     Order,
     OrderStatus,
     Product,
@@ -36,7 +38,7 @@ from app.schemas.catalog import (
 )
 from app.schemas.order import OrderOut, OrderStatusUpdate
 from app.schemas.review import ReviewAdminOut, ReviewModerate
-from app.services import email_service, razorpay_service, storage_service
+from app.services import email_service, media_service, razorpay_service, storage_service
 
 router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(get_current_admin)])
 
@@ -58,13 +60,28 @@ def _unique_slug(db: Session, model, base: str, exclude_id: int | None = None) -
 # ── Image upload ─────────────────────────────────────────────────────────────
 
 @router.post("/uploads", response_model=UploadOut)
-async def upload_image(file: UploadFile = File(...)):
+async def upload_image(
+    file: UploadFile = File(...),
+    kind: str = Form("product"),
+    db: Session = Depends(get_db),
+):
+    try:
+        media_kind = MediaKind(kind)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid kind")
+
     data = await file.read()
     try:
-        stored = storage_service.store_image(data, file.content_type or "")
+        asset = media_service.create_asset(db, data, file.content_type or "", media_kind)
     except storage_service.UploadError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
-    return UploadOut(image_url=stored.image_url, thumb_url=stored.thumb_url)
+    return UploadOut(
+        id=asset.id,
+        image_url=storage_service.public_url(asset.web_key),
+        thumb_url=storage_service.public_url(asset.thumb_key),
+        width=asset.width,
+        height=asset.height,
+    )
 
 
 # ── Products ─────────────────────────────────────────────────────────────────
@@ -91,11 +108,39 @@ def _check_artist(db: Session, artist_id: int | None) -> None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown artist id")
 
 
+def _apply_product_image(
+    db: Session, product: Product, image_id: int | None, image_url: str | None
+) -> None:
+    """Sync product.image_id/image_url with a submitted image_id (managed
+    upload) or image_url (pasted external link), deleting any previously
+    attached MediaAsset this call replaces. Only call when the caller's
+    payload actually included an `image_id` key — see admin_update_product.
+    """
+    old_asset_id = product.image_id
+    if image_id is not None:
+        if image_id != old_asset_id:
+            asset = db.get(MediaAsset, image_id)
+            if asset is None or asset.kind != MediaKind.product:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown image_id")
+            media_service.attach(asset)
+            product.image_id = asset.id
+            product.image_url = storage_service.public_url(asset.web_key)
+    else:
+        product.image_id = None
+        if image_url is not None:
+            product.image_url = image_url
+
+    if old_asset_id is not None and old_asset_id != product.image_id:
+        old_asset = db.get(MediaAsset, old_asset_id)
+        if old_asset is not None:
+            media_service.delete_asset(db, old_asset)
+
+
 @router.get("/products", response_model=list[ProductOut])
 def admin_list_products(db: Session = Depends(get_db)):
     products = (
         db.query(Product)
-        .options(joinedload(Product.categories), joinedload(Product.artist))
+        .options(joinedload(Product.categories), joinedload(Product.artist), joinedload(Product.image))
         .order_by(Product.created_at.desc())
         .all()
     )
@@ -110,14 +155,13 @@ def admin_create_product(payload: ProductCreate, db: Session = Depends(get_db)):
         title=payload.title,
         description=payload.description,
         price_inr=payload.price_inr,
-        image_url=payload.image_url,
         material=payload.material,
-        stock=payload.stock,
         is_active=payload.is_active,
         is_featured=payload.is_featured,
         artist_id=payload.artist_id,
         categories=_resolve_categories(db, payload.category_ids),
     )
+    _apply_product_image(db, product, payload.image_id, payload.image_url)
     _validate_publishable(product)
     db.add(product)
     db.commit()
@@ -138,6 +182,8 @@ def admin_update_product(product_id: int, payload: ProductUpdate, db: Session = 
         product.categories = _resolve_categories(db, data.pop("category_ids") or [])
     if "slug" in data and data["slug"]:
         data["slug"] = _unique_slug(db, Product, data["slug"], exclude_id=product.id)
+    if "image_id" in data:
+        _apply_product_image(db, product, data.pop("image_id"), data.pop("image_url", None))
     for key, value in data.items():
         setattr(product, key, value)
 
@@ -152,6 +198,10 @@ def admin_delete_product(product_id: int, db: Session = Depends(get_db)):
     product = db.get(Product, product_id)
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+    if product.image_id:
+        asset = db.get(MediaAsset, product.image_id)
+        if asset is not None:
+            media_service.delete_asset(db, asset)
     db.delete(product)
     db.commit()
     return None
@@ -197,6 +247,30 @@ def _artist_out(artist: Artist) -> ArtistAdminOut:
     return dto
 
 
+def _apply_artist_avatar(
+    db: Session, artist: Artist, avatar_id: int | None, avatar_url: str | None
+) -> None:
+    """Mirror of _apply_product_image for Artist.avatar_id/avatar_url."""
+    old_asset_id = artist.avatar_id
+    if avatar_id is not None:
+        if avatar_id != old_asset_id:
+            asset = db.get(MediaAsset, avatar_id)
+            if asset is None or asset.kind != MediaKind.avatar:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown avatar_id")
+            media_service.attach(asset)
+            artist.avatar_id = asset.id
+            artist.avatar_url = storage_service.public_url(asset.web_key)
+    else:
+        artist.avatar_id = None
+        if avatar_url is not None:
+            artist.avatar_url = avatar_url
+
+    if old_asset_id is not None and old_asset_id != artist.avatar_id:
+        old_asset = db.get(MediaAsset, old_asset_id)
+        if old_asset is not None:
+            media_service.delete_asset(db, old_asset)
+
+
 @router.get("/artists", response_model=list[ArtistAdminOut])
 def admin_list_artists(db: Session = Depends(get_db)):
     artists = (
@@ -211,10 +285,10 @@ def admin_create_artist(payload: ArtistCreate, db: Session = Depends(get_db)):
         slug=_unique_slug(db, Artist, payload.slug or payload.name),
         name=payload.name.strip(),
         bio=payload.bio,
-        avatar_url=payload.avatar_url,
         website_url=payload.website_url,
         instagram_url=payload.instagram_url,
     )
+    _apply_artist_avatar(db, artist, payload.avatar_id, payload.avatar_url)
     db.add(artist)
     db.commit()
     db.refresh(artist)
@@ -230,6 +304,8 @@ def admin_update_artist(artist_id: int, payload: ArtistUpdate, db: Session = Dep
     data = payload.model_dump(exclude_unset=True)
     if "slug" in data and data["slug"]:
         data["slug"] = _unique_slug(db, Artist, data["slug"], exclude_id=artist.id)
+    if "avatar_id" in data:
+        _apply_artist_avatar(db, artist, data.pop("avatar_id"), data.pop("avatar_url", None))
     for key, value in data.items():
         setattr(artist, key, value)
 

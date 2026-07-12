@@ -146,7 +146,6 @@ def seed() -> None:
                 price_inr=price,
                 image_url=_img(slug),
                 material="Brushed Metal",
-                stock=50,
                 is_active=True,
                 is_featured=featured,
                 artist_id=artist_by_slug[artist_slug].id if artist_slug else None,

@@ -4,14 +4,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
-import { Badge, Card, Select, Spinner } from "@/components/ui";
+import { Badge, Card, Select, Spinner, type BadgeTone } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 
-const STATUS_BADGE: Record<string, string> = {
-  new: "bg-blue-100 text-blue-800",
-  contacted: "bg-amber-100 text-amber-800",
-  onboarded: "bg-green-100 text-green-800",
-  rejected: "bg-gray-100 text-gray-600",
+// "New" shouts because it's the only one waiting on a human.
+const STATUS_TONE: Record<string, BadgeTone> = {
+  new: "attention",
+  contacted: "progress",
+  onboarded: "done",
+  rejected: "inert",
 };
 
 export function ApplicationsTab() {
@@ -54,7 +55,7 @@ export function ApplicationsTab() {
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="font-bold text-ink">{app.name}</h3>
-                <Badge className={STATUS_BADGE[app.status] ?? ""}>{app.status}</Badge>
+                <Badge tone={STATUS_TONE[app.status] ?? "neutral"}>{app.status}</Badge>
                 <span className="text-xs text-muted">
                   {new Date(app.created_at).toLocaleDateString("en-IN")}
                 </span>

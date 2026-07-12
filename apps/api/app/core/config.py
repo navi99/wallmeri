@@ -52,6 +52,12 @@ class Settings(BaseSettings):
     # http://localhost:8000 locally or https://wallmeri-api.onrender.com in prod.
     PUBLIC_API_BASE_URL: str = "http://localhost:8000"
 
+    # Upload limits and derivative sizes (apps/api/app/services/storage_service.py).
+    MAX_UPLOAD_BYTES: int = 15 * 1024 * 1024  # 15 MB
+    IMAGE_WEB_MAX_PX: int = 1600
+    IMAGE_THUMB_MAX_PX: int = 480
+    IMAGE_JPEG_QUALITY: int = 85
+
     # Google sign-in (optional — button hidden on the web when unset)
     GOOGLE_CLIENT_ID: str = ""
 

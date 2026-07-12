@@ -201,9 +201,13 @@ export const api = {
       body: JSON.stringify(body),
     }),
 
-  adminUpload: async (file: File): Promise<UploadResult> => {
+  adminUpload: async (
+    file: File,
+    kind: "product" | "avatar" = "product",
+  ): Promise<UploadResult> => {
     const form = new FormData();
     form.append("file", file);
+    form.append("kind", kind);
     const token = getAccessToken();
     const res = await fetch(`${BASE_URL}/admin/uploads`, {
       method: "POST",

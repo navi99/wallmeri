@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/app-image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -91,7 +91,7 @@ export default function AdminPage() {
   return (
     <div className="container-page py-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Admin</h1>
+        <h1 className="text-3xl font-bold uppercase tracking-[0.03em] text-ink">Admin</h1>
         {tab === "posters" && (
           <Button
             onClick={() => {
@@ -104,12 +104,12 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="mt-5 flex gap-1 overflow-x-auto border-b border-brand-100">
+      <div className="mt-5 flex gap-1 overflow-x-auto border-b border-ink/10">
         {TABS.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`-mb-px shrink-0 border-b-2 px-4 py-2.5 text-sm font-semibold capitalize ${
+            className={`-mb-px shrink-0 border-b-2 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors ${
               tab === t
                 ? "border-brand-600 text-brand-600"
                 : "border-transparent text-muted hover:text-ink"
@@ -130,26 +130,25 @@ export default function AdminPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-cream text-left text-muted">
+                  <thead className="border-b border-ink/10 bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
                     <tr>
-                      <th className="px-4 py-3 font-semibold">Poster</th>
-                      <th className="px-4 py-3 font-semibold">Artist</th>
-                      <th className="px-4 py-3 font-semibold">Categories</th>
-                      <th className="px-4 py-3 font-semibold">Price</th>
-                      <th className="px-4 py-3 font-semibold">Stock</th>
-                      <th className="px-4 py-3 font-semibold">Status</th>
-                      <th className="px-4 py-3 font-semibold text-right">Actions</th>
+                      <th className="px-4 py-3">Poster</th>
+                      <th className="px-4 py-3">Artist</th>
+                      <th className="px-4 py-3">Categories</th>
+                      <th className="px-4 py-3">Price</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-brand-50">
+                  <tbody className="divide-y divide-ink/10">
                     {productsQuery.data?.map((p) => (
                       <tr key={p.id} className="hover:bg-cream/50">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
-                            <div className="relative h-12 w-10 shrink-0 overflow-hidden rounded-md bg-brand-50">
-                              {p.image_url && (
+                            <div className="relative h-12 w-10 shrink-0 overflow-hidden bg-ink/5">
+                              {p.thumb_url && (
                                 <Image
-                                  src={p.image_url}
+                                  src={p.thumb_url}
                                   alt={p.title}
                                   fill
                                   className="object-cover"
@@ -169,12 +168,11 @@ export default function AdminPage() {
                         <td className="px-4 py-3 font-semibold text-ink">
                           {formatINR(p.price_inr)}
                         </td>
-                        <td className="px-4 py-3 text-ink">{p.stock}</td>
                         <td className="px-4 py-3">
                           {p.is_active ? (
-                            <Badge className="bg-green-100 text-green-800">Active</Badge>
+                            <Badge tone="progress">Active</Badge>
                           ) : (
-                            <Badge>Hidden</Badge>
+                            <Badge tone="inert">Hidden</Badge>
                           )}
                         </td>
                         <td className="px-4 py-3">
@@ -184,7 +182,7 @@ export default function AdminPage() {
                                 setEditing(p);
                                 setFormOpen(true);
                               }}
-                              className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-600"
+                              className="p-2 text-muted transition-colors hover:bg-ink/5 hover:text-brand-600"
                               aria-label={`Edit ${p.title}`}
                             >
                               <Pencil className="h-4 w-4" />
@@ -193,7 +191,7 @@ export default function AdminPage() {
                               onClick={() => {
                                 if (confirm(`Delete "${p.title}"?`)) deleteMutation.mutate(p.id);
                               }}
-                              className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-600"
+                              className="p-2 text-muted transition-colors hover:bg-ink/5 hover:text-brand-600"
                               aria-label={`Delete ${p.title}`}
                             >
                               <Trash2 className="h-4 w-4" />

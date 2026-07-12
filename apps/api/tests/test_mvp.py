@@ -75,14 +75,60 @@ class TestStorageValidation:
         with pytest.raises(storage_service.UploadError):
             storage_service.store_image(b"not an image at all", "image/png")
 
-    def test_stores_valid_png_locally(self, tmp_path, monkeypatch):
+    def test_stores_original_plus_two_derivatives_locally(self, tmp_path, monkeypatch):
+        from app.core.config import settings
+
+        monkeypatch.setattr(settings, "UPLOADS_DIR", str(tmp_path))
+        png = self._png_bytes()
+        stored = storage_service.store_image(png, "image/png", kind="product")
+
+        # Original is retained byte-for-byte (not re-encoded) — MVP S-M2.1.
+        assert stored.original_key.endswith(".png")
+        assert stored.web_key.endswith(".jpg")
+        assert stored.thumb_key.endswith("_thumb.jpg")
+        assert stored.width == 100
+        assert stored.height == 130
+        assert stored.size_bytes == len(png)
+        assert len(stored.content_hash) == 64  # sha256 hex digest
+
+        for key in (stored.original_key, stored.web_key, stored.thumb_key):
+            assert (tmp_path / key).is_file()
+        assert (tmp_path / stored.original_key).read_bytes() == png
+        assert len([p for p in tmp_path.rglob("*") if p.is_file()]) == 3
+
+    def test_public_url_local(self, monkeypatch):
+        from app.core.config import settings
+
+        monkeypatch.setattr(settings, "S3_BUCKET", "")
+        monkeypatch.setattr(settings, "PUBLIC_API_BASE_URL", "http://localhost:8000")
+        assert (
+            storage_service.public_url("product/abc.jpg")
+            == "http://localhost:8000/uploads/product/abc.jpg"
+        )
+
+    def test_public_url_s3(self, monkeypatch):
+        from app.core.config import settings
+
+        monkeypatch.setattr(settings, "S3_BUCKET", "wallmeri-media")
+        monkeypatch.setattr(settings, "S3_ACCESS_KEY_ID", "key")
+        monkeypatch.setattr(settings, "S3_SECRET_ACCESS_KEY", "secret")
+        monkeypatch.setattr(settings, "S3_PUBLIC_BASE_URL", "https://media.wallmeri.in")
+        assert (
+            storage_service.public_url("product/abc.jpg")
+            == "https://media.wallmeri.in/product/abc.jpg"
+        )
+
+    def test_delete_keys_is_idempotent(self, tmp_path, monkeypatch):
         from app.core.config import settings
 
         monkeypatch.setattr(settings, "UPLOADS_DIR", str(tmp_path))
         stored = storage_service.store_image(self._png_bytes(), "image/png")
-        assert stored.image_url.endswith(".jpg")
-        assert stored.thumb_url.endswith("_thumb.jpg")
-        assert len(list(tmp_path.rglob("*.jpg"))) == 2
+        keys = [stored.original_key, stored.web_key, stored.thumb_key]
+
+        storage_service.delete_keys(keys)
+        assert not any((tmp_path / k).exists() for k in keys)
+        storage_service.delete_keys(keys)  # already gone — must not raise
+        storage_service.delete_keys([])  # empty list — must not raise
 
 
 def test_intake_honeypot_returns_ok_without_storing():

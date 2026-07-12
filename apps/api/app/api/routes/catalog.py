@@ -59,7 +59,7 @@ def list_products(
 ):
     query = (
         db.query(Product)
-        .options(joinedload(Product.categories), joinedload(Product.artist))
+        .options(joinedload(Product.categories), joinedload(Product.artist), joinedload(Product.image))
         .filter(Product.is_active.is_(True))
     )
 
@@ -103,7 +103,7 @@ def list_products(
 def get_product(slug: str, db: Session = Depends(get_db)):
     product = (
         db.query(Product)
-        .options(joinedload(Product.categories), joinedload(Product.artist))
+        .options(joinedload(Product.categories), joinedload(Product.artist), joinedload(Product.image))
         .filter(Product.slug == slug, Product.is_active.is_(True))
         .first()
     )

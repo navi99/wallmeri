@@ -29,8 +29,6 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
         product = found.get(product_id)
         if product is None:
             raise ValueError(f"Product {product_id} is unavailable")
-        if product.stock < qty:
-            raise ValueError(f"'{product.title}' has only {product.stock} in stock")
         line_total = product.price_inr * qty
         subtotal += line_total
         lines.append(

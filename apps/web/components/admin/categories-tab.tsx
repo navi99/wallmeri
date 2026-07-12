@@ -73,7 +73,7 @@ export function CategoriesTab() {
             <div className="flex items-center gap-2">
               <span className="font-medium text-ink">{c.name}</span>
               <span className="text-xs text-muted">/{c.slug}</span>
-              {c.is_active === false && <Badge>Hidden</Badge>}
+              {c.is_active === false && <Badge tone="inert">Hidden</Badge>}
             </div>
             <Button
               size="sm"

@@ -26,6 +26,11 @@ class ArtistAdminOut(ArtistOut):
     contact_verified: bool
     is_active: bool
     created_at: datetime
+    # Round-tripped so the admin edit form can tell "no managed avatar" apart
+    # from "has one, just isn't being touched by this save" — see
+    # admin._apply_artist_avatar, which needs the current value to avoid
+    # detaching (and deleting) an unrelated field edit's untouched avatar.
+    avatar_id: Optional[int] = None
 
 
 class ArtistCreate(BaseModel):
@@ -33,6 +38,9 @@ class ArtistCreate(BaseModel):
     slug: Optional[str] = None
     bio: str = ""
     avatar_url: str = ""
+    # Set when the avatar came from the admin uploader (POST /admin/uploads);
+    # left None for a pasted external URL. See admin._apply_artist_avatar.
+    avatar_id: Optional[int] = None
     website_url: str = ""
     instagram_url: str = ""
 
@@ -42,6 +50,7 @@ class ArtistUpdate(BaseModel):
     slug: Optional[str] = None
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
+    avatar_id: Optional[int] = None
     website_url: Optional[str] = None
     instagram_url: Optional[str] = None
     identity_verified: Optional[bool] = None

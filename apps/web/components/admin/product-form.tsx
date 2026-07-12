@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/app-image";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,8 +17,11 @@ const schema = z.object({
   price_inr: z.coerce.number().int().positive("Enter a price in ₹"),
   description: z.string().optional(),
   image_url: z.string().url("Upload an image or paste a valid URL").or(z.literal("")),
+  // Set only when image_url came from the uploader below; null for a pasted
+  // URL. Sent as an explicit null (not omitted) so the backend can tell
+  // "cleared" apart from "untouched" — see apps/api's _apply_product_image.
+  image_id: z.number().int().nullable(),
   material: z.string().optional(),
-  stock: z.coerce.number().int().min(0),
   artist_id: z.coerce.number().int().optional(),
   category_ids: z.array(z.coerce.number().int()).min(1, "Pick at least one category"),
   is_active: z.boolean(),
@@ -57,8 +60,8 @@ export function ProductForm({
       price_inr: product?.price_inr ?? 1499,
       description: product?.description ?? "",
       image_url: product?.image_url ?? "",
+      image_id: product?.image_id ?? null,
       material: product?.material ?? "Brushed Metal",
-      stock: product?.stock ?? 50,
       artist_id: product?.artist?.id ?? undefined,
       category_ids: product?.categories.map((c) => c.id) ?? [],
       is_active: product?.is_active ?? true,
@@ -82,8 +85,9 @@ export function ProductForm({
     if (!file) return;
     setUploading(true);
     try {
-      const res = await api.adminUpload(file);
+      const res = await api.adminUpload(file, "product");
       setValue("image_url", res.image_url, { shouldValidate: true });
+      setValue("image_id", res.id);
       toast.success("Image uploaded");
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "Upload failed");
@@ -93,13 +97,13 @@ export function ProductForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-paper p-6 shadow-xl">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-4">
+      <div className="w-full max-w-lg border border-ink/10 bg-paper p-6 shadow-lift">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-ink">
+          <h2 className="text-lg font-bold uppercase tracking-[0.04em] text-ink">
             {product ? "Edit poster" : "Add poster"}
           </h2>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-muted hover:bg-brand-50" aria-label="Close">
+          <button onClick={onClose} className="p-1.5 text-muted transition-colors hover:bg-ink/5 hover:text-ink" aria-label="Close">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -121,7 +125,7 @@ export function ProductForm({
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="relative grid h-28 w-24 shrink-0 place-items-center overflow-hidden rounded-xl border-2 border-dashed border-brand-200 bg-cream text-muted hover:border-brand-400"
+                className="relative grid h-28 w-24 shrink-0 place-items-center overflow-hidden border border-dashed border-ink/25 bg-cream text-muted transition-colors hover:border-ink"
                 aria-label="Upload image"
               >
                 {uploading ? (
@@ -133,7 +137,10 @@ export function ProductForm({
                 )}
               </button>
               <div className="flex-1">
-                <Input placeholder="…or paste an image URL" {...register("image_url")} />
+                <Input
+                  placeholder="…or paste an image URL"
+                  {...register("image_url", { onChange: () => setValue("image_id", null) })}
+                />
                 <p className="mt-1 text-xs text-muted">JPEG, PNG or WebP, up to 15 MB.</p>
                 <FieldError>{errors.image_url?.message}</FieldError>
               </div>
@@ -147,17 +154,10 @@ export function ProductForm({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="price_inr">Price (₹)</Label>
-              <Input id="price_inr" type="number" {...register("price_inr")} />
-              <FieldError>{errors.price_inr?.message}</FieldError>
-            </div>
-            <div>
-              <Label htmlFor="stock">Stock</Label>
-              <Input id="stock" type="number" {...register("stock")} />
-              <FieldError>{errors.stock?.message}</FieldError>
-            </div>
+          <div>
+            <Label htmlFor="price_inr">Price (₹)</Label>
+            <Input id="price_inr" type="number" {...register("price_inr")} />
+            <FieldError>{errors.price_inr?.message}</FieldError>
           </div>
 
           {/* Category tags */}
@@ -171,10 +171,10 @@ export function ProductForm({
                     key={c.id}
                     type="button"
                     onClick={() => toggleCategory(c.id)}
-                    className={`rounded-full border px-3 py-1 text-sm font-medium ${
+                    className={`border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors ${
                       active
-                        ? "border-brand-600 bg-brand-600 text-cream"
-                        : "border-brand-200 bg-paper text-ink hover:bg-brand-50"
+                        ? "border-ink bg-ink text-cream"
+                        : "border-ink/20 bg-paper text-ink hover:border-ink"
                     }`}
                   >
                     {c.name}

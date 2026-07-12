@@ -1,4 +1,4 @@
-"""Order lifecycle: idempotent payment confirmation with atomic stock decrement.
+"""Order lifecycle: idempotent payment confirmation.
 
 Shared by the checkout verify endpoint and the Razorpay webhook so both paths
 behave identically no matter which fires first.
@@ -15,11 +15,8 @@ from app.services import email_service
 def mark_order_paid(db: Session, order: Order, payment_id: str | None) -> bool:
     """Transition an order to paid exactly once. Returns True if this call did it.
 
-    Stock is decremented atomically (conditional UPDATE) so two concurrent
-    confirmations of the last unit can't oversell; if stock ran out between
-    order creation and payment we still honour the paid order (stock floors at
-    the conditional guard, ops resolves manually) rather than taking money and
-    erroring.
+    Every product is made to order, so there is no inventory to reserve or
+    decrement here — confirmation only moves the order's own state.
     """
     # Row-lock the order so verify + webhook serialize on the same order.
     locked = db.execute(
@@ -33,16 +30,6 @@ def mark_order_paid(db: Session, order: Order, payment_id: str | None) -> bool:
     order.paid_at = datetime.now(timezone.utc)
     if payment_id:
         order.razorpay_payment_id = payment_id
-
-    for item in order.items:
-        if item.product_id:
-            db.execute(
-                text(
-                    "UPDATE products SET stock = stock - :qty "
-                    "WHERE id = :pid AND stock >= :qty"
-                ),
-                {"qty": item.qty, "pid": item.product_id},
-            )
 
     db.commit()
     db.refresh(order)

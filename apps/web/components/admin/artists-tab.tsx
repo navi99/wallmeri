@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/app-image";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus } from "lucide-react";
@@ -85,7 +85,7 @@ export function ArtistsTab() {
             return (
               <Card key={a.id} className="p-5">
                 <div className="flex flex-wrap items-start gap-4">
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-brand-50">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-ink/5">
                     {a.avatar_url && (
                       <Image src={a.avatar_url} alt={a.name} fill sizes="56px" className="object-cover" />
                     )}
@@ -94,9 +94,9 @@ export function ArtistsTab() {
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-bold text-ink">{a.name}</h3>
                       {a.is_active ? (
-                        <Badge className="bg-green-100 text-green-800">Live</Badge>
+                        <Badge tone="progress">Live</Badge>
                       ) : (
-                        <Badge>Not live</Badge>
+                        <Badge tone="inert">Not live</Badge>
                       )}
                       <span className="text-xs text-muted">
                         {a.product_count} poster{a.product_count === 1 ? "" : "s"}
@@ -142,7 +142,7 @@ export function ArtistsTab() {
                         setEditing(a);
                         setFormOpen(true);
                       }}
-                      className="rounded-lg p-2 text-muted hover:bg-brand-50 hover:text-brand-600"
+                      className="p-2 text-muted transition-colors hover:bg-ink/5 hover:text-brand-600"
                       aria-label={`Edit ${a.name}`}
                     >
                       <Pencil className="h-4 w-4" />

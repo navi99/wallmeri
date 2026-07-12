@@ -1,7 +1,7 @@
 """End-to-end MVP smoke test against a running API (mock payment mode).
 
 Usage (local): docker compose exec api python scripts/smoke_mvp.py
-Exercises: register → checkout → mock pay → stock decrement → admin ship/deliver
+Exercises: register → checkout → mock pay → idempotent confirm → admin ship/deliver
 → verified review → moderation → public rating → artist application pipeline.
 """
 import os
@@ -36,7 +36,6 @@ def main() -> None:
     auth = {"Authorization": f"Bearer {token}"}
 
     product = c.get("/products?page_size=1").json()["items"][0]
-    stock_before = c.get(f"/products/{product['slug']}").json()["stock"]
 
     r = c.post(
         "/checkout/create-payment",
@@ -60,14 +59,19 @@ def main() -> None:
     })
     check("verify payment", r.status_code == 200 and r.json()["status"] == "paid", r.text)
 
-    # Idempotency: second verify must not decrement stock again.
-    c.post("/checkout/verify", json={
+    # Idempotency: replaying verify (webhook + client race) must be a no-op, not
+    # a second transition. Products are made to order, so the observable is the
+    # order's own state — it stays paid, and paid_at doesn't move.
+    paid_at = c.get(f"/orders/{order_id}", headers=auth).json()["paid_at"]
+    r = c.post("/checkout/verify", json={
         "order_id": order_id, "razorpay_order_id": "mock", "razorpay_payment_id": "mock_pay",
         "razorpay_signature": "mock_signature",
     })
-    stock_after = c.get(f"/products/{product['slug']}").json()["stock"]
-    check("stock decremented exactly once", stock_after == stock_before - 1,
-          f"{stock_before} -> {stock_after}")
+    check("replayed verify is idempotent", r.status_code == 200, r.text)
+    replayed = c.get(f"/orders/{order_id}", headers=auth).json()
+    check("order paid exactly once",
+          replayed["status"] == "paid" and replayed["paid_at"] == paid_at,
+          f"{paid_at} -> {replayed['paid_at']} ({replayed['status']})")
 
     # ── Review gate: not eligible before delivery ────────────────────────────
     r = c.get(f"/products/{product['slug']}/reviews/eligibility", headers=auth)

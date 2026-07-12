@@ -1,8 +1,17 @@
 """Image storage: S3-compatible object store when configured, local disk otherwise.
 
-Uploads are re-encoded with Pillow (strips EXIF, normalizes format) into a large
-web size and a thumbnail. Returns public URLs for both.
+Every upload keeps the **original** bytes untouched (satisfies the "originals
+retained" requirement — see docs/backlog/MVP.md S-M2.1 and E10's later need to
+crop/print from the source file) alongside two Pillow-generated JPEG
+derivatives: a large web size and a thumbnail.
+
+Functions here only touch bytes/keys — they know nothing about the database.
+`app.services.media_service` is the DB-aware layer that turns a `StoredImage`
+into a `MediaAsset` row and later cleans one up. Storage *keys* (not URLs) are
+the thing callers should persist; call `public_url(key)` at read time so a
+row stays valid across an `S3_PUBLIC_BASE_URL` change or a local<->S3 move.
 """
+import hashlib
 import io
 import secrets
 from dataclasses import dataclass
@@ -13,10 +22,19 @@ from PIL import Image
 from app.core.config import settings
 
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}
-MAX_UPLOAD_BYTES = 15 * 1024 * 1024  # 15 MB
-WEB_MAX_PX = 1600
-THUMB_MAX_PX = 480
-JPEG_QUALITY = 85
+_EXT_BY_CONTENT_TYPE = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+}
+
+# Mirrors settings at import time (env-configurable); kept as module
+# constants since callers/tests reference them directly, e.g.
+# storage_service.MAX_UPLOAD_BYTES.
+MAX_UPLOAD_BYTES = settings.MAX_UPLOAD_BYTES
+WEB_MAX_PX = settings.IMAGE_WEB_MAX_PX
+THUMB_MAX_PX = settings.IMAGE_THUMB_MAX_PX
+JPEG_QUALITY = settings.IMAGE_JPEG_QUALITY
 
 
 class UploadError(ValueError):
@@ -25,8 +43,14 @@ class UploadError(ValueError):
 
 @dataclass
 class StoredImage:
-    image_url: str
-    thumb_url: str
+    original_key: str
+    web_key: str
+    thumb_key: str
+    content_type: str
+    width: int
+    height: int
+    size_bytes: int
+    content_hash: str
 
 
 def is_s3_configured() -> bool:
@@ -60,30 +84,73 @@ def _process(data: bytes, max_px: int) -> bytes:
     return out.getvalue()
 
 
-def _put(key: str, body: bytes) -> str:
+def _put(key: str, body: bytes, content_type: str) -> None:
     if is_s3_configured():
         _s3_client().put_object(
-            Bucket=settings.S3_BUCKET, Key=key, Body=body, ContentType="image/jpeg"
+            Bucket=settings.S3_BUCKET, Key=key, Body=body, ContentType=content_type
         )
+        return
+    path = Path(settings.UPLOADS_DIR) / key
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(body)
+
+
+def public_url(key: str) -> str:
+    """Compute the public URL for a previously-stored key."""
+    if is_s3_configured():
         base = settings.S3_PUBLIC_BASE_URL.rstrip("/")
         if not base:
             # Fall back to path-style URL via the endpoint (works for public buckets).
             base = f"{settings.S3_ENDPOINT_URL.rstrip('/')}/{settings.S3_BUCKET}"
         return f"{base}/{key}"
-
-    path = Path(settings.UPLOADS_DIR) / key
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(body)
     return f"{settings.PUBLIC_API_BASE_URL.rstrip('/')}/uploads/{key}"
 
 
-def store_image(data: bytes, content_type: str, prefix: str = "products") -> StoredImage:
+def delete_keys(keys: list[str]) -> None:
+    """Delete storage objects. Tolerant of keys that are already gone."""
+    keys = [k for k in keys if k]
+    if not keys:
+        return
+    if is_s3_configured():
+        _s3_client().delete_objects(
+            Bucket=settings.S3_BUCKET, Delete={"Objects": [{"Key": k} for k in keys]}
+        )
+        return
+    for key in keys:
+        (Path(settings.UPLOADS_DIR) / key).unlink(missing_ok=True)
+
+
+def store_image(data: bytes, content_type: str, kind: str = "product") -> StoredImage:
     if content_type not in ALLOWED_CONTENT_TYPES:
         raise UploadError("Only JPEG, PNG or WebP images are allowed")
     if len(data) > MAX_UPLOAD_BYTES:
         raise UploadError("Image is too large (max 15 MB)")
 
+    try:
+        probe = Image.open(io.BytesIO(data))
+        probe.load()
+        width, height = probe.size
+    except Exception as exc:  # Pillow raises many types for corrupt images
+        raise UploadError("File is not a readable image") from exc
+
     token = secrets.token_hex(8)
-    image_url = _put(f"{prefix}/{token}.jpg", _process(data, WEB_MAX_PX))
-    thumb_url = _put(f"{prefix}/{token}_thumb.jpg", _process(data, THUMB_MAX_PX))
-    return StoredImage(image_url=image_url, thumb_url=thumb_url)
+    ext = _EXT_BY_CONTENT_TYPE[content_type]
+
+    original_key = f"{kind}/{token}_orig.{ext}"
+    web_key = f"{kind}/{token}.jpg"
+    thumb_key = f"{kind}/{token}_thumb.jpg"
+
+    _put(original_key, data, content_type)
+    _put(web_key, _process(data, WEB_MAX_PX), "image/jpeg")
+    _put(thumb_key, _process(data, THUMB_MAX_PX), "image/jpeg")
+
+    return StoredImage(
+        original_key=original_key,
+        web_key=web_key,
+        thumb_key=thumb_key,
+        content_type=content_type,
+        width=width,
+        height=height,
+        size_bytes=len(data),
+        content_hash=hashlib.sha256(data).hexdigest(),
+    )

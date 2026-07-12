@@ -53,7 +53,7 @@ def artist_products(slug: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Artist not found")
     products = (
         db.query(Product)
-        .options(joinedload(Product.categories), joinedload(Product.artist))
+        .options(joinedload(Product.categories), joinedload(Product.artist), joinedload(Product.image))
         .filter(Product.artist_id == artist.id, Product.is_active.is_(True))
         .order_by(Product.created_at.desc())
         .all()

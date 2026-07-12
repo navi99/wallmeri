@@ -67,9 +67,9 @@ docker-compose.yml
 - **Admin console** (`/admin`) — posters (image upload, category tags, artist
   attribution), categories, artists, applications, orders (paid → shipped →
   delivered with tracking + emails), review moderation.
-- **Checkout** — Razorpay (or mock mode), idempotent payment confirmation with
-  exactly-once stock decrement, order confirmation email, guest order tracking
-  at `/track`.
+- **Checkout** — Razorpay (or mock mode), idempotent payment confirmation, order
+  confirmation email, guest order tracking at `/track`. Posters are made to
+  order, so there is no inventory to reserve.
 - **Reviews** — verified purchase only (delivered orders), admin-moderated,
   star ratings across the storefront.
 - **Auth** — email/password + optional Google sign-in (auto-links to an existing

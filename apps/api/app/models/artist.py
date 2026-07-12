@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Enum as SAEnum, String, Text
+from sqlalchemy import Boolean, DateTime, Enum as SAEnum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -21,6 +21,14 @@ class Artist(Base):
     avatar_url: Mapped[str] = mapped_column(String(500), nullable=False, default="")
     website_url: Mapped[str] = mapped_column(String(500), nullable=False, default="")
     instagram_url: Mapped[str] = mapped_column(String(500), nullable=False, default="")
+
+    # Set only for admin-uploaded avatars (see app.services.media_service);
+    # NULL for pasted external URLs and seeded picsum placeholders, which
+    # `avatar_url` alone continues to serve.
+    avatar_id: Mapped[int | None] = mapped_column(
+        ForeignKey("media_assets.id", ondelete="SET NULL"), nullable=True
+    )
+    avatar: Mapped["MediaAsset | None"] = relationship()  # noqa: F821
 
     # Verification checklist — all must be true before the artist can go active.
     identity_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)

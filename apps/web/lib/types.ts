@@ -25,6 +25,9 @@ export interface ArtistAdmin extends Artist {
   contact_verified: boolean;
   is_active: boolean;
   created_at: string;
+  // Set only when avatar_url came from the admin uploader — round-tripped so
+  // the edit form can preserve it across saves that don't touch the avatar.
+  avatar_id: number | null;
 }
 
 export interface ArtistApplication {
@@ -46,8 +49,11 @@ export interface Product {
   description: string;
   price_inr: number;
   image_url: string;
+  thumb_url: string;
+  // Set only when image_url came from the admin uploader — round-tripped so
+  // the edit form can preserve it across saves that don't touch the image.
+  image_id: number | null;
   material: string;
-  stock: number;
   is_active: boolean;
   is_featured: boolean;
   artist: ArtistBrief | null;
@@ -191,6 +197,9 @@ export interface ShippingAddress {
 }
 
 export interface UploadResult {
+  id: number;
   image_url: string;
   thumb_url: string;
+  width: number;
+  height: number;
 }

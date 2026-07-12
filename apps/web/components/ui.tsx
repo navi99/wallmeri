@@ -128,17 +128,41 @@ export function Card({
   );
 }
 
+/* Status tones. The tone encodes *urgency* — what the operator has to do about
+   the row — while the label text carries the identity. That's why "paid" is the
+   loudest chip on the orders table (it's the ship queue) and "delivered" is
+   merely solid. Filled-vs-outlined does the scanning work a rainbow used to. */
+export type BadgeTone =
+  | "neutral" // default chip
+  | "attention" // needs an operator action
+  | "progress" // in flight, no action yet
+  | "done" // terminal, positive
+  | "inert" // dormant, hidden, closed
+  | "danger"; // error
+
+const badgeTones: Record<BadgeTone, string> = {
+  neutral: "bg-ink/5 text-brand-700",
+  attention: "bg-brand-600 text-cream",
+  progress: "bg-ink/10 text-ink",
+  done: "bg-ink text-cream",
+  inert: "border border-ink/25 text-muted",
+  danger: "bg-brand-700 text-cream",
+};
+
 export function Badge({
   className,
+  tone = "neutral",
   children,
 }: {
   className?: string;
+  tone?: BadgeTone;
   children: React.ReactNode;
 }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center bg-ink/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-brand-700",
+        "inline-flex items-center px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em]",
+        badgeTones[tone],
         className,
       )}
     >

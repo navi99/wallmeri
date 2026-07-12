@@ -38,10 +38,10 @@ export function ReviewsTab() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`rounded-full border px-4 py-1.5 text-sm font-medium capitalize ${
+            className={`border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors ${
               filter === f
-                ? "border-brand-600 bg-brand-600 text-cream"
-                : "border-brand-200 bg-paper text-ink hover:bg-brand-50"
+                ? "border-ink bg-ink text-cream"
+                : "border-ink/20 bg-paper text-ink hover:border-ink"
             }`}
           >
             {f}

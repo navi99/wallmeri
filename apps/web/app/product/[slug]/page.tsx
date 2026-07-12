@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/app-image";
 import Link from "next/link";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +13,10 @@ import { Badge, Button, Spinner } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
+
+// Made to order, so nothing caps quantity but us. A per-line ceiling keeps the
+// stepper honest; bulk buyers should go through the contact form.
+const MAX_QTY = 10;
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const [qty, setQty] = useState(1);
@@ -45,8 +49,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       </div>
     );
   }
-
-  const inStock = product.stock > 0;
 
   const onAdd = () => {
     add(
@@ -127,38 +129,30 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <dt className="text-muted">Material</dt>
               <dd className="font-semibold text-ink">{product.material}</dd>
             </div>
-            <div className="rounded-xl border border-brand-100 bg-paper px-4 py-3">
-              <dt className="text-muted">Availability</dt>
-              <dd className="font-semibold text-ink">
-                {inStock ? `${product.stock} in stock` : "Out of stock"}
-              </dd>
-            </div>
           </dl>
 
-          {inStock && (
-            <div className="mt-6 flex items-center gap-4">
-              <div className="flex items-center rounded-xl border border-brand-200">
-                <button
-                  onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  className="grid h-11 w-11 place-items-center text-ink hover:bg-brand-50"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus className="h-4 w-4" />
-                </button>
-                <span className="w-10 text-center font-semibold">{qty}</span>
-                <button
-                  onClick={() => setQty((q) => Math.min(product.stock, q + 1))}
-                  className="grid h-11 w-11 place-items-center text-ink hover:bg-brand-50"
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
-              <Button size="lg" onClick={onAdd} className="flex-1 sm:flex-none">
-                Add to cart
-              </Button>
+          <div className="mt-6 flex items-center gap-4">
+            <div className="flex items-center rounded-xl border border-brand-200">
+              <button
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                className="grid h-11 w-11 place-items-center text-ink hover:bg-brand-50"
+                aria-label="Decrease quantity"
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <span className="w-10 text-center font-semibold">{qty}</span>
+              <button
+                onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
+                className="grid h-11 w-11 place-items-center text-ink hover:bg-brand-50"
+                aria-label="Increase quantity"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
             </div>
-          )}
+            <Button size="lg" onClick={onAdd} className="flex-1 sm:flex-none">
+              Add to cart
+            </Button>
+          </div>
 
           <ul className="mt-7 space-y-2 text-sm text-muted">
             <li className="flex items-center gap-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/app-image";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,10 @@ const schema = z.object({
   name: z.string().min(2, "Name is required"),
   bio: z.string().optional(),
   avatar_url: z.string().url("Upload an avatar or paste a valid URL").or(z.literal("")),
+  // Set only when avatar_url came from the uploader below; null for a pasted
+  // URL. Sent as an explicit null (not omitted) so the backend can tell
+  // "cleared" apart from "untouched" — see apps/api's _apply_artist_avatar.
+  avatar_id: z.number().int().nullable(),
   website_url: z.string().url("Enter a valid URL").or(z.literal("")),
   instagram_url: z.string().url("Enter a valid URL").or(z.literal("")),
 });
@@ -47,6 +51,7 @@ export function ArtistForm({
       name: artist?.name ?? "",
       bio: artist?.bio ?? "",
       avatar_url: artist?.avatar_url ?? "",
+      avatar_id: artist?.avatar_id ?? null,
       website_url: artist?.website_url ?? "",
       instagram_url: artist?.instagram_url ?? "",
     },
@@ -58,8 +63,12 @@ export function ArtistForm({
     if (!file) return;
     setUploading(true);
     try {
-      const res = await api.adminUpload(file);
-      setValue("avatar_url", res.thumb_url, { shouldValidate: true });
+      const res = await api.adminUpload(file, "avatar");
+      // Store the web-size derivative, not the 480px thumb — next/image
+      // handles further downscaling for the 56-112px avatar contexts fine,
+      // and this way the full-size image isn't silently discarded.
+      setValue("avatar_url", res.image_url, { shouldValidate: true });
+      setValue("avatar_id", res.id);
       toast.success("Avatar uploaded");
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "Upload failed");
@@ -69,13 +78,13 @@ export function ArtistForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-paper p-6 shadow-xl">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-4">
+      <div className="w-full max-w-lg border border-ink/10 bg-paper p-6 shadow-lift">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-ink">
+          <h2 className="text-lg font-bold uppercase tracking-[0.04em] text-ink">
             {artist ? "Edit artist" : "Add artist"}
           </h2>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-muted hover:bg-brand-50" aria-label="Close">
+          <button onClick={onClose} className="p-1.5 text-muted transition-colors hover:bg-ink/5 hover:text-ink" aria-label="Close">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -85,7 +94,7 @@ export function ArtistForm({
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-dashed border-brand-200 bg-cream text-muted hover:border-brand-400"
+              className="relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full border border-dashed border-ink/25 bg-cream text-muted transition-colors hover:border-ink"
               aria-label="Upload avatar"
             >
               {uploading ? (

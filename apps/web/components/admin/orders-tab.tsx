@@ -4,19 +4,21 @@ import { Fragment, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { Badge, Button, Card, Input, Label, Spinner } from "@/components/ui";
+import { Badge, Button, Card, Input, Label, Spinner, type BadgeTone } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import type { Order, OrderStatus } from "@/lib/types";
 import { formatINR } from "@/lib/utils";
 
-const STATUS_BADGE: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-800",
-  paid: "bg-green-100 text-green-800",
-  shipped: "bg-blue-100 text-blue-800",
-  delivered: "bg-emerald-100 text-emerald-800",
-  failed: "bg-red-100 text-red-700",
-  cancelled: "bg-gray-100 text-gray-600",
-  refunded: "bg-purple-100 text-purple-800",
+// Paid is the loudest chip on purpose: it's the ship queue. Closed states
+// (cancelled/refunded) go quiet — the label already says which is which.
+const STATUS_TONE: Record<string, BadgeTone> = {
+  pending: "inert",
+  paid: "attention",
+  shipped: "progress",
+  delivered: "done",
+  failed: "danger",
+  cancelled: "inert",
+  refunded: "inert",
 };
 
 // Mirrors the server-side transition map (the server enforces it regardless).
@@ -47,9 +49,11 @@ function ShipDialog({
   const [courier, setCourier] = useState(order.courier_name);
   const [tracking, setTracking] = useState(order.tracking_number);
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-paper p-6 shadow-xl">
-        <h2 className="text-lg font-bold text-ink">Ship order #{order.id}</h2>
+    <div className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-4">
+      <div className="w-full max-w-sm border border-ink/10 bg-paper p-6 shadow-lift">
+        <h2 className="text-lg font-bold uppercase tracking-[0.04em] text-ink">
+          Ship order #{order.id}
+        </h2>
         <div className="mt-4 space-y-3">
           <div>
             <Label htmlFor="courier">Courier</Label>
@@ -135,17 +139,17 @@ export function OrdersTab() {
     <Card className="mt-4 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-cream text-left text-muted">
+          <thead className="border-b border-ink/10 bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
             <tr>
-              <th className="px-4 py-3 font-semibold">Order</th>
-              <th className="px-4 py-3 font-semibold">Customer</th>
-              <th className="px-4 py-3 font-semibold">Total</th>
-              <th className="px-4 py-3 font-semibold">Status</th>
-              <th className="px-4 py-3 font-semibold">Date</th>
-              <th className="px-4 py-3 font-semibold text-right">Actions</th>
+              <th className="px-4 py-3">Order</th>
+              <th className="px-4 py-3">Customer</th>
+              <th className="px-4 py-3">Total</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Date</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-brand-50">
+          <tbody className="divide-y divide-ink/10">
             {orders.map((o) => (
               <Fragment key={o.id}>
                 <tr
@@ -156,7 +160,7 @@ export function OrdersTab() {
                   <td className="px-4 py-3 text-muted">{o.email}</td>
                   <td className="px-4 py-3 font-semibold text-ink">{formatINR(o.total_inr)}</td>
                   <td className="px-4 py-3">
-                    <Badge className={STATUS_BADGE[o.status] ?? ""}>{o.status}</Badge>
+                    <Badge tone={STATUS_TONE[o.status] ?? "neutral"}>{o.status}</Badge>
                   </td>
                   <td className="px-4 py-3 text-muted">
                     {new Date(o.created_at).toLocaleDateString("en-IN")}

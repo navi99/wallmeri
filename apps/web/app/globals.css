@@ -12,7 +12,6 @@ body {
   background-color: #faf9f6; /* Cotton */
   color: #1b1717; /* Noir Black */
   font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {

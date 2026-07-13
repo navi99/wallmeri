@@ -109,7 +109,7 @@ export default function AdminPage() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`-mb-px shrink-0 border-b-2 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors ${
+            className={`-mb-px shrink-0 border-b-2 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
               tab === t
                 ? "border-brand-600 text-brand-600"
                 : "border-transparent text-muted hover:text-ink"
@@ -130,7 +130,7 @@ export default function AdminPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="border-b border-ink/10 bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+                  <thead className="border-b border-ink/10 bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">
                     <tr>
                       <th className="px-4 py-3">Poster</th>
                       <th className="px-4 py-3">Artist</th>

@@ -35,7 +35,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center gap-2 font-semibold uppercase tracking-[0.16em] transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex items-center justify-center gap-2 font-semibold uppercase tracking-[0.06em] transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60",
         buttonVariants[variant],
         buttonSizes[size],
         className,

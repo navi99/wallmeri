@@ -38,7 +38,7 @@ export function ReviewsTab() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+            className={`border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.05em] transition-colors ${
               filter === f
                 ? "border-ink bg-ink text-cream"
                 : "border-ink/20 bg-paper text-ink hover:border-ink"

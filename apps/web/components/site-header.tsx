@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/store/auth";
 import { useCart } from "@/lib/store/cart";
 
 const navLink =
-  "text-xs font-medium uppercase tracking-[0.14em] text-ink transition-colors hover:text-brand-600";
+  "text-xs font-medium uppercase tracking-[0.05em] text-ink transition-colors hover:text-brand-600";
 
 export function SiteHeader() {
   const router = useRouter();
@@ -44,11 +44,11 @@ export function SiteHeader() {
   };
 
   const mobileLink =
-    "flex min-h-11 items-center px-3 py-2.5 text-xs font-medium uppercase tracking-[0.14em] text-ink hover:bg-ink/5 hover:text-brand-600";
+    "flex min-h-11 items-center px-3 py-2.5 text-xs font-medium uppercase tracking-[0.05em] text-ink hover:bg-ink/5 hover:text-brand-600";
 
   return (
     <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur">
-      <p className="bg-ink px-4 py-2.5 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-cream">
+      <p className="bg-ink px-4 py-2.5 text-center text-[11px] font-medium uppercase tracking-[0.07em] text-cream">
         Free shipping across India on orders over ₹2,999
       </p>
 
@@ -66,7 +66,7 @@ export function SiteHeader() {
         <Link
           href="/"
           onClick={closePanels}
-          className="shrink-0 text-lg font-bold tracking-[0.24em] text-ink sm:text-xl"
+          className="shrink-0 text-lg font-semibold tracking-[0.08em] text-ink sm:text-xl"
         >
           WALLMERI
         </Link>

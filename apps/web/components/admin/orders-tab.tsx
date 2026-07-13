@@ -130,6 +130,26 @@ export function OrdersTab() {
     );
   }
 
+  if (ordersQuery.isError) {
+    return (
+      <Card className="mt-4 p-10 text-center">
+        <p className="text-muted">
+          {ordersQuery.error instanceof ApiError
+            ? ordersQuery.error.message
+            : "Couldn't load orders."}
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-4"
+          onClick={() => ordersQuery.refetch()}
+        >
+          Retry
+        </Button>
+      </Card>
+    );
+  }
+
   const orders = ordersQuery.data ?? [];
   if (orders.length === 0) {
     return <Card className="mt-4 p-10 text-center text-muted">No orders yet.</Card>;
@@ -139,7 +159,7 @@ export function OrdersTab() {
     <Card className="mt-4 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="border-b border-ink/10 bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+          <thead className="border-b border-ink/10 bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">
             <tr>
               <th className="px-4 py-3">Order</th>
               <th className="px-4 py-3">Customer</th>

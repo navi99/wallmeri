@@ -25,7 +25,7 @@ const heroSlides = [
 ];
 
 const kicker =
-  "text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-600";
+  "text-[11px] font-semibold uppercase tracking-[0.08em] text-brand-600";
 const sectionHeading =
   "font-sans text-[clamp(26px,2.8vw,34px)] font-bold uppercase leading-[1.1] tracking-tight text-ink";
 
@@ -74,7 +74,7 @@ export default function HomePage() {
       <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,96px)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
           <div className="flex min-w-[300px] flex-[1.4] flex-col items-start gap-6">
-             <div className="text-[15px] font-semibold uppercase tracking-[0.28em] text-premium-100">
+             <div className="text-[15px] font-semibold uppercase tracking-[0.08em] text-premium-100">
               The Wallmeri story
             </div>
             <h1 className="font-sans text-[clamp(38px,5vw,64px)] font-bold uppercase leading-[1.05] tracking-tight text-cream">
@@ -91,13 +91,13 @@ export default function HomePage() {
             <div className="mt-2 flex flex-wrap gap-3.5">
               <Link
                 href="/catalog"
-                className="inline-flex h-[52px] items-center justify-center bg-ink px-9 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:bg-cream hover:text-ink"
+                className="inline-flex h-[52px] items-center justify-center bg-ink px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-cream hover:text-ink"
               >
                 Explore the art
               </Link>
               <Link
                 href="/artists/join"
-                className="inline-flex h-[52px] items-center justify-center border border-cream/50 px-9 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
+                className="inline-flex h-[52px] items-center justify-center border border-cream/50 px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
               >
                 Join as an artist
               </Link>
@@ -133,7 +133,7 @@ export default function HomePage() {
             <h2 className={sectionHeading}>Collections</h2>
             <Link
               href="/catalog"
-              className="text-xs font-medium uppercase tracking-[0.16em] text-brand-600 hover:text-ink"
+              className="text-xs font-medium uppercase tracking-[0.06em] text-brand-600 hover:text-ink"
             >
               View all →
             </Link>
@@ -249,7 +249,7 @@ export default function HomePage() {
       {/* How it works — magnetic mounting. Premium Red drench, matching the About page bands */}
       <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,88px)]">
         <div className="mb-16 text-center">
-          <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100">
+          <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100">
             Magnetic mounting
           </div>
           <h2 className="font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase leading-[1.1] tracking-tight text-cream">
@@ -284,7 +284,7 @@ export default function HomePage() {
               <div className="font-display text-[52px] italic leading-none text-premium-100">
                 {step.n}
               </div>
-              <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-cream">
+              <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-cream">
                 {step.title}
               </div>
               <p className="max-w-[260px] text-[15px] leading-[1.7] text-cream/90">

@@ -59,7 +59,7 @@ export default function ArtistsPage() {
         </div>
         <Link
           href="/artists/join"
-          className="inline-flex h-11 items-center justify-center bg-ink px-6 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:bg-brand-600 active:bg-brand-700"
+          className="inline-flex h-11 items-center justify-center bg-ink px-6 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-brand-600 active:bg-brand-700"
         >
           Apply to join
         </Link>

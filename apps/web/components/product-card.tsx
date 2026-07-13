@@ -43,7 +43,7 @@ export function ProductCard({
           className="object-cover"
         />
         {showFeaturedBadge && product.is_featured && (
-          <span className="absolute left-3 top-3 bg-brand-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-cream">
+          <span className="absolute left-3 top-3 bg-brand-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.05em] text-cream">
             Featured
           </span>
         )}
@@ -67,7 +67,7 @@ export function ProductCard({
           </p>
           <button
             onClick={onAdd}
-            className="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] text-ink underline-offset-4 hover:text-brand-600 hover:underline"
+            className="shrink-0 text-xs font-semibold uppercase tracking-[0.05em] text-ink underline-offset-4 hover:text-brand-600 hover:underline"
           >
             Add to cart
           </button>

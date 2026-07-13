@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 };
 
 const kicker =
-  "text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-600";
+  "text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-600";
 const kickerOnRed =
-  "text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100";
+  "text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100";
 const sectionHeading =
   "font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase leading-[1.1] tracking-tight text-ink";
 const accent =
@@ -128,13 +128,13 @@ export default function AboutPage() {
             <div className="mt-2 flex flex-wrap gap-3.5">
               <Link
                 href="/catalog"
-                className="inline-flex h-[52px] items-center justify-center bg-ink px-9 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:bg-cream hover:text-ink"
+                className="inline-flex h-[52px] items-center justify-center bg-ink px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-cream hover:text-ink"
               >
                 Explore the art
               </Link>
               <Link
                 href="/artists/join"
-                className="inline-flex h-[52px] items-center justify-center border border-cream/50 px-9 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
+                className="inline-flex h-[52px] items-center justify-center border border-cream/50 px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
               >
                 Join as an artist
               </Link>
@@ -209,7 +209,7 @@ export default function AboutPage() {
                 <div className="font-display text-[32px] italic leading-none text-premium-600">
                   {v.n}
                 </div>
-                <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-ink">
+                <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
                   {v.title}
                 </div>
               </div>
@@ -235,7 +235,7 @@ export default function AboutPage() {
                 <div className="font-display text-[52px] italic leading-none text-premium-600">
                   {step.n}
                 </div>
-                <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-ink">
+                <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
                   {step.title}
                 </div>
                 <p className="text-[15px] leading-[1.7] text-muted">{step.body}</p>
@@ -249,7 +249,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-x-10 gap-y-8">
               {materialFacts.map((item) => (
                 <div key={item.title}>
-                  <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-ink">
+                  <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
                     {item.title}
                   </div>
                   <p className="mt-2.5 text-[15px] leading-[1.7] text-muted">
@@ -279,7 +279,7 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-[1100px] grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-5">
           {vision.map((v) => (
             <div key={v.label} className="border border-cream/30 p-7">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100">
                 {v.label}
               </div>
               <p className="mt-3.5 text-[15px] leading-[1.7] text-cream/90">
@@ -307,13 +307,13 @@ export default function AboutPage() {
         <div className="flex flex-wrap gap-3.5">
           <Link
             href="/catalog"
-            className="inline-flex h-[52px] items-center justify-center bg-premium-600 px-9 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-colors hover:bg-ink"
+            className="inline-flex h-[52px] items-center justify-center bg-premium-600 px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-ink"
           >
             Shop the gallery
           </Link>
           <Link
             href="/artists/join"
-            className="inline-flex h-[52px] items-center justify-center border border-ink px-9 text-xs font-semibold uppercase tracking-[0.16em] text-ink transition-colors hover:bg-ink hover:text-cream"
+            className="inline-flex h-[52px] items-center justify-center border border-ink px-9 text-xs font-semibold uppercase tracking-[0.06em] text-ink transition-colors hover:bg-ink hover:text-cream"
           >
             Become a Wallmeri artist
           </Link>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const colHeading =
-  "text-xs font-semibold uppercase tracking-[0.16em] text-cream";
+  "text-xs font-semibold uppercase tracking-[0.06em] text-cream";
 const colLink = "text-sm text-cream/65 transition-colors hover:text-cream";
 
 export function SiteFooter() {
@@ -9,7 +9,7 @@ export function SiteFooter() {
     <footer className="mt-16 bg-ink text-cream">
       <div className="container-page flex flex-wrap items-start justify-between gap-12 py-14">
         <div className="flex flex-col gap-3.5">
-          <div className="text-lg font-bold tracking-[0.24em]">WALLMERI</div>
+          <div className="text-lg font-semibold tracking-[0.08em]">WALLMERI</div>
           <p className="max-w-[280px] text-sm leading-relaxed text-cream/50">
             Premium metal posters, crafted and shipped across India. Designed
             to be collected.

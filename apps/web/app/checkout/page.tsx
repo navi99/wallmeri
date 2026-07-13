@@ -8,11 +8,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button, Card, FieldError, Input, Label } from "@/components/ui";
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError, type CheckoutLine } from "@/lib/api";
 import { useAuth } from "@/lib/store/auth";
-import { useCart } from "@/lib/store/cart";
+import { lineId, useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
 
 const FREE_SHIPPING = 2999;
@@ -49,6 +50,7 @@ function loadRazorpayScript(): Promise<boolean> {
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [mounted, setMounted] = useState(false);
   const [paying, setPaying] = useState(false);
 
@@ -72,6 +74,7 @@ export default function CheckoutPage() {
   const subtotal = items.reduce((n, i) => n + i.price_inr * i.qty, 0);
   const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING ? 0 : FLAT_SHIPPING;
   const total = subtotal + shipping;
+  const hasCustom = items.some((i) => i.kind === "custom");
 
   if (mounted && items.length === 0) {
     return (
@@ -86,6 +89,7 @@ export default function CheckoutPage() {
 
   const finishOrder = (orderId: number, email: string) => {
     clear();
+    queryClient.invalidateQueries({ queryKey: ["my-orders"] });
     toast.success("Payment successful!");
     router.push(`/order/${orderId}?email=${encodeURIComponent(email)}`);
   };
@@ -95,7 +99,12 @@ export default function CheckoutPage() {
     try {
       const payload = {
         email: values.email,
-        items: items.map((i) => ({ product_id: i.product_id, qty: i.qty })),
+        items: items.map(
+          (i): CheckoutLine =>
+            i.kind === "custom"
+              ? { custom_upload_id: i.custom_upload_id, qty: i.qty }
+              : { product_id: i.product_id, size_code: i.size_code, qty: i.qty },
+        ),
         shipping_address: {
           full_name: values.full_name,
           phone: values.phone,
@@ -240,7 +249,7 @@ export default function CheckoutPage() {
           <h2 className="text-lg font-bold text-ink">Your order</h2>
           <div className="mt-4 space-y-3">
             {items.map((item) => (
-              <div key={item.product_id} className="flex items-center gap-3">
+              <div key={lineId(item)} className="flex items-center gap-3">
                 <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-brand-50">
                   <Image src={item.image_url} alt={item.title} fill className="object-cover" sizes="48px" />
                 </div>
@@ -278,6 +287,12 @@ export default function CheckoutPage() {
           <p className="mt-3 text-center text-xs text-muted">
             Secured by Razorpay. UPI, cards, netbanking & wallets.
           </p>
+          {hasCustom && (
+            <p className="mt-3 text-center text-xs text-muted">
+              Custom designs are reviewed before printing (1-2 business days) — no returns for
+              customer-error content.
+            </p>
+          )}
         </aside>
       </form>
     </div>

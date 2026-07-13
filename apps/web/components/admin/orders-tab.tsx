@@ -117,6 +117,11 @@ export function OrdersTab() {
     onSuccess: (_, vars) => {
       toast.success(`Order #${vars.id} → ${vars.status}`);
       qc.invalidateQueries({ queryKey: ["admin-orders"] });
+      // Same order data is cached by the customer-facing order list/detail
+      // pages — invalidate those too so status changes show up without a
+      // manual refresh.
+      qc.invalidateQueries({ queryKey: ["my-orders"] });
+      qc.invalidateQueries({ queryKey: ["order"] });
       setShipping(null);
     },
     onError: (err) => toast.error(err instanceof ApiError ? err.message : "Update failed"),

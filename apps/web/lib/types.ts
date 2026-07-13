@@ -42,6 +42,14 @@ export interface ArtistApplication {
   created_at: string;
 }
 
+export interface ProductImage {
+  id: number;
+  image_id: number;
+  image_url: string;
+  thumb_url: string;
+  position: number;
+}
+
 export interface Product {
   id: number;
   slug: string;
@@ -53,6 +61,9 @@ export interface Product {
   // Set only when image_url came from the admin uploader — round-tripped so
   // the edit form can preserve it across saves that don't touch the image.
   image_id: number | null;
+  // Ordered gallery (up to 6). images[0] is always the main image and stays
+  // in sync with image_url/image_id.
+  images: ProductImage[];
   material: string;
   is_active: boolean;
   is_featured: boolean;
@@ -60,6 +71,44 @@ export interface Product {
   categories: Category[];
   rating_avg: number | null;
   rating_count: number;
+}
+
+export interface PosterSize {
+  id: number;
+  code: string;
+  label: string;
+  width_cm: number;
+  height_cm: number;
+  // Absolute price for a "Create your own" custom upload at this size.
+  price_inr: number;
+  // Adjustment applied to a catalog product's price_inr (quoted for A4) to
+  // get its price at this size — 0 at A4, negative below, positive above.
+  delta_inr: number;
+  is_enabled: boolean;
+  position: number;
+}
+
+export type Orientation = "portrait" | "landscape";
+
+export interface CropRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+// "ok": clean print. "warning": may look soft but allowed. "blocked": rejected server-side.
+export type DpiBand = "ok" | "warning" | "blocked";
+
+export interface CustomItem {
+  custom_upload_id: number;
+  preview_url: string;
+  size_code: string;
+  size_label: string;
+  orientation: Orientation;
+  price_inr: number;
+  dpi: number;
+  dpi_band: DpiBand;
 }
 
 export interface ProductList {
@@ -124,7 +173,10 @@ export interface AuthResponse {
 }
 
 export interface QuoteLine {
-  product_id: number;
+  kind: "product" | "custom";
+  product_id: number | null;
+  custom_upload_id: number | null;
+  size_code: string | null;
   slug: string;
   title: string;
   image_url: string;
@@ -156,11 +208,16 @@ export interface OrderItem {
   image_snapshot: string;
   price_inr: number;
   qty: number;
+  is_custom: boolean;
+  custom_upload_id: number | null;
+  size_code: string | null;
 }
 
 export type OrderStatus =
   | "pending"
   | "paid"
+  // Held for admin moderation — set only on a paid order with a custom line.
+  | "in_review"
   | "shipped"
   | "delivered"
   | "failed"
@@ -182,8 +239,36 @@ export interface Order {
   paid_at: string | null;
   shipped_at: string | null;
   delivered_at: string | null;
+  review_note: string;
+  reviewed_at: string | null;
+  has_custom_items: boolean;
   created_at: string;
   items: OrderItem[];
+}
+
+export interface CustomReviewLine {
+  order_item_id: number;
+  custom_upload_id: number;
+  title: string;
+  preview_url: string;
+  size_code: string;
+  orientation: Orientation;
+  dpi: number;
+  dpi_band: DpiBand;
+  crop: CropRect;
+  qty: number;
+  price_inr: number;
+}
+
+export interface CustomReviewOrder {
+  id: number;
+  email: string;
+  status: OrderStatus;
+  total_inr: number;
+  created_at: string;
+  shipping_address: Record<string, string>;
+  custom_lines: CustomReviewLine[];
+  other_lines: OrderItem[];
 }
 
 export interface ShippingAddress {

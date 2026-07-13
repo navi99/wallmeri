@@ -1,13 +1,15 @@
 "use client";
 
-import Image from "@/components/app-image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronLeft, Minus, Plus, ShieldCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
 
+import { InstallGuide } from "@/components/install-guide";
+import { ProductGallery } from "@/components/product-gallery";
 import { ReviewsSection } from "@/components/reviews-section";
+import { SizePicker } from "@/components/custom/size-picker";
 import { Stars } from "@/components/stars";
 import { Badge, Button, Spinner } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
@@ -20,6 +22,7 @@ const MAX_QTY = 10;
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const [qty, setQty] = useState(1);
+  const [sizeCode, setSizeCode] = useState<string | null>(null);
   const add = useCart((s) => s.add);
 
   const { data: product, isLoading, error } = useQuery({
@@ -27,6 +30,27 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     queryFn: () => api.getProduct(params.slug),
     retry: false,
   });
+
+  const sizesQuery = useQuery({ queryKey: ["poster-sizes"], queryFn: () => api.posterSizes() });
+  const sizes = sizesQuery.data ?? [];
+
+  useEffect(() => {
+    if (!sizeCode && sizes.length > 0) {
+      const a4 = sizes.find((s) => s.code === "A4");
+      const cheapest = sizes.reduce((min, s) => (s.delta_inr < min.delta_inr ? s : min));
+      setSizeCode((a4 ?? cheapest).code);
+    }
+  }, [sizes, sizeCode]);
+
+  // Product.price_inr is always quoted for A4; each size's price here is
+  // that base plus its delta (0 at A4) — so the SizePicker shows the
+  // product's real price at each size, not the shared custom-upload price.
+  const basePrice = product?.price_inr ?? 0;
+  const displaySizes = sizes.map((s) => ({ ...s, price_inr: basePrice + s.delta_inr }));
+  const selectedSize = displaySizes.find((s) => s.code === sizeCode) ?? null;
+  // Falls back to the product's flat price if sizes haven't loaded yet, or
+  // none are configured — keeps the PDP usable rather than blocking on them.
+  const displayPrice = selectedSize ? selectedSize.price_inr : basePrice;
 
   if (isLoading) {
     return (
@@ -50,14 +74,21 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     );
   }
 
+  const sizeRequired = sizes.length > 0;
+  const canAdd = !sizeRequired || !!selectedSize;
+
   const onAdd = () => {
+    if (!canAdd) return;
     add(
       {
+        kind: "product",
         product_id: product.id,
         slug: product.slug,
         title: product.title,
         image_url: product.image_url,
-        price_inr: product.price_inr,
+        price_inr: displayPrice,
+        size_code: selectedSize?.code,
+        size_label: selectedSize?.label,
       },
       qty,
     );
@@ -74,16 +105,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       </Link>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-2">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-brand-100 bg-brand-50">
-          <Image
-            src={product.image_url}
-            alt={product.title}
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-            priority
-          />
-        </div>
+        <ProductGallery images={product.images} fallbackImageUrl={product.image_url} title={product.title} />
 
         <div>
           {product.categories.length > 0 && (
@@ -118,9 +140,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               className="mt-2"
             />
           )}
-          <p className="mt-3 text-3xl font-bold text-brand-600">
-            {formatINR(product.price_inr)}
-          </p>
+          <p className="mt-3 text-3xl font-bold text-brand-600">{formatINR(displayPrice)}</p>
 
           <p className="mt-5 leading-relaxed text-muted">{product.description}</p>
 
@@ -130,6 +150,15 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <dd className="font-semibold text-ink">{product.material}</dd>
             </div>
           </dl>
+
+          {sizeRequired && (
+            <div className="mt-6">
+              <div className="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Size</div>
+              <div className="mt-2">
+                <SizePicker sizes={displaySizes} selected={sizeCode} onSelect={setSizeCode} />
+              </div>
+            </div>
+          )}
 
           <div className="mt-6 flex items-center gap-4">
             <div className="flex items-center rounded-xl border border-brand-200">
@@ -149,7 +178,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 <Plus className="h-4 w-4" />
               </button>
             </div>
-            <Button size="lg" onClick={onAdd} className="flex-1 sm:flex-none">
+            <Button size="lg" onClick={onAdd} disabled={!canAdd} className="flex-1 sm:flex-none">
               Add to cart
             </Button>
           </div>
@@ -167,6 +196,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </ul>
         </div>
       </div>
+
+      <InstallGuide />
 
       <ReviewsSection slug={product.slug} />
     </div>

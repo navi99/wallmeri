@@ -2,10 +2,10 @@
 
 import Image from "@/components/app-image";
 import Link from "next/link";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
 import { Stars } from "@/components/stars";
-import { useCart } from "@/lib/store/cart";
+import { api } from "@/lib/api";
 import type { Product } from "@/lib/types";
 import { formatINR } from "@/lib/utils";
 
@@ -16,18 +16,13 @@ export function ProductCard({
   product: Product;
   showFeaturedBadge?: boolean;
 }) {
-  const add = useCart((s) => s.add);
-
-  const onAdd = () => {
-    add({
-      product_id: product.id,
-      slug: product.slug,
-      title: product.title,
-      image_url: product.image_url,
-      price_inr: product.price_inr,
-    });
-    toast.success(`Added "${product.title}" to cart`);
-  };
+  // Shares the ["poster-sizes"] cache with the product page — one network
+  // request no matter how many cards are on screen. product.price_inr is
+  // always quoted for A4, so the cheapest enabled size's delta gives this
+  // product's true "starting from" price.
+  const { data: sizes } = useQuery({ queryKey: ["poster-sizes"], queryFn: () => api.posterSizes() });
+  const minDelta = sizes?.length ? Math.min(...sizes.map((s) => s.delta_inr)) : null;
+  const displayPrice = minDelta !== null ? product.price_inr + minDelta : product.price_inr;
 
   return (
     <div className="group flex flex-col gap-3.5">
@@ -56,22 +51,15 @@ export function ProductCard({
             </h3>
           </Link>
           <span className="shrink-0 text-sm font-medium text-brand-600">
-            {formatINR(product.price_inr)}
+            {minDelta !== null && <span className="text-ink/50">From </span>}
+            {formatINR(displayPrice)}
           </span>
         </div>
-        <div className="flex items-center justify-between gap-2.5">
-          <p className="line-clamp-1 text-xs text-ink/50">
-            {product.artist
-              ? `by ${product.artist.name}`
-              : (product.categories[0]?.name ?? "Metal Art")}
-          </p>
-          <button
-            onClick={onAdd}
-            className="shrink-0 text-xs font-semibold uppercase tracking-[0.05em] text-ink underline-offset-4 hover:text-brand-600 hover:underline"
-          >
-            Add to cart
-          </button>
-        </div>
+        <p className="line-clamp-1 text-xs text-ink/50">
+          {product.artist
+            ? `by ${product.artist.name}`
+            : (product.categories[0]?.name ?? "Metal Art")}
+        </p>
         {product.rating_count > 0 && (
           <Stars
             rating={product.rating_avg ?? 0}

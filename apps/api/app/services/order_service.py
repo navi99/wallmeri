@@ -13,10 +13,14 @@ from app.services import email_service
 
 
 def mark_order_paid(db: Session, order: Order, payment_id: str | None) -> bool:
-    """Transition an order to paid exactly once. Returns True if this call did it.
+    """Transition a paid order out of `pending`/`failed` exactly once.
+    Returns True if this call did it.
 
     Every product is made to order, so there is no inventory to reserve or
-    decrement here — confirmation only moves the order's own state.
+    decrement here — confirmation only moves the order's own state. An order
+    with any custom-upload line lands in `in_review` instead of `paid` —
+    admin approval (or rejection + refund) is required before it can proceed
+    to fulfilment; see the custom-review endpoints in app.api.routes.admin.
     """
     # Row-lock the order so verify + webhook serialize on the same order.
     locked = db.execute(
@@ -26,7 +30,7 @@ def mark_order_paid(db: Session, order: Order, payment_id: str | None) -> bool:
     if locked not in (OrderStatus.pending.value, OrderStatus.failed.value):
         return False  # already paid (or beyond) — idempotent no-op
 
-    order.status = OrderStatus.paid
+    order.status = OrderStatus.in_review if order.has_custom_items else OrderStatus.paid
     order.paid_at = datetime.now(timezone.utc)
     if payment_id:
         order.razorpay_payment_id = payment_id

@@ -43,10 +43,17 @@ def send_order_confirmation(order: Order) -> None:
     )
     addr = order.shipping_address or {}
     track_url = f"{settings.PUBLIC_WEB_BASE_URL.rstrip('/')}/order/{order.id}"
+    review_note = (
+        "\nYour order includes a custom design — we review every custom upload before "
+        "printing (usually within 1-2 business days) and will email you once it's approved.\n"
+        if order.has_custom_items
+        else ""
+    )
     body = (
         f"Hi {addr.get('full_name', '')},\n\n"
         f"Thanks for your order! We've received your payment and are getting your "
-        f"metal poster{'s' if len(order.items) > 1 else ''} ready.\n\n"
+        f"metal poster{'s' if len(order.items) > 1 else ''} ready.\n"
+        f"{review_note}\n"
         f"Order #{order.id}\n{lines}\n\n"
         f"  Subtotal: ₹{order.subtotal_inr}\n"
         f"  Shipping: ₹{order.shipping_inr}\n"
@@ -59,6 +66,32 @@ def send_order_confirmation(order: Order) -> None:
         f"— Team Wallmeri"
     )
     send(order.email, f"Wallmeri order #{order.id} confirmed", body)
+
+
+def send_custom_review_approved(order: Order) -> None:
+    track_url = f"{settings.PUBLIC_WEB_BASE_URL.rstrip('/')}/order/{order.id}"
+    body = (
+        f"Good news — your custom design on order #{order.id} passed review and is now "
+        f"in production. We'll email you again once it ships.\n\n"
+        f"Track your order: {track_url}\n\n"
+        f"— Team Wallmeri"
+    )
+    send(order.email, f"Wallmeri order #{order.id} — custom design approved", body)
+
+
+def send_custom_review_rejected(order: Order, reason: str) -> None:
+    track_url = f"{settings.PUBLIC_WEB_BASE_URL.rstrip('/')}/order/{order.id}"
+    body = (
+        f"We're sorry — we couldn't approve the custom design on order #{order.id} for "
+        f"printing.\n\n"
+        f"Reason: {reason}\n\n"
+        f"Your payment of ₹{order.total_inr} has been fully refunded and should reflect in "
+        f"5-7 business days.\n\n"
+        f"Questions? Just reply to this email.\n\n"
+        f"Order: {track_url}\n\n"
+        f"— Team Wallmeri"
+    )
+    send(order.email, f"Wallmeri order #{order.id} — custom design not approved", body)
 
 
 def send_shipping_update(order: Order) -> None:

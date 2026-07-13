@@ -13,7 +13,7 @@ const kicker =
 const kickerOnRed =
   "text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100";
 const sectionHeading =
-  "font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase leading-[1.1] tracking-tight text-ink";
+  "font-sans text-[32px] sm:text-[40px] font-bold uppercase leading-[44px] tracking-tight text-ink";
 const accent =
   "font-display font-medium normal-case italic tracking-normal";
 const accentRed = `${accent} text-premium-600`;
@@ -59,7 +59,7 @@ const steps = [
 const materialFacts = [
   {
     title: "Premium metal",
-    body: "A rigid, lightweight sheet with a distinctive modern finish. Steel, not paper.",
+    body: "A rigid, lightweight 1 mm aluminium sheet with a distinctive modern finish. Aluminium, not paper.",
   },
   {
     title: "Sublimation print",
@@ -67,7 +67,7 @@ const materialFacts = [
   },
   {
     title: "Magnetic mounting",
-    body: "Snaps onto the wall with no drilling or damage. Swap artwork in seconds.",
+    body: "One magnet on the poster, one on the wall — no drilling, no damage. Swap artwork in seconds.",
   },
 ];
 
@@ -116,7 +116,7 @@ export default function AboutPage() {
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
           <div className="flex min-w-[300px] flex-[1.4] flex-col items-start gap-6">
             <div className={kickerOnRed}>The Wallmeri story</div>
-            <h1 className="font-sans text-[clamp(38px,5vw,64px)] font-bold uppercase leading-[1.05] tracking-tight text-cream">
+            <h1 className="font-sans text-[40px] sm:text-[56px] lg:text-[64px] font-bold uppercase leading-[68px] tracking-tight text-cream">
               Every artist deserves{" "}
               <em className={`${accent} text-cream`}>a wall.</em>
             </h1>
@@ -266,7 +266,7 @@ export default function AboutPage() {
       <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,88px)]">
         <div className="mb-14 text-center">
           <div className={`${kickerOnRed} mb-4`}>Our vision</div>
-          <h2 className="mx-auto max-w-[720px] font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase leading-[1.15] tracking-tight text-cream [text-wrap:balance]">
+          <h2 className="mx-auto max-w-[720px] font-sans text-[32px] sm:text-[40px] font-bold uppercase leading-[46px] tracking-tight text-cream [text-wrap:balance]">
             A trusted home for Indian{" "}
             <em className={`${accent} text-cream`}>creative work.</em>
           </h2>
@@ -294,7 +294,7 @@ export default function AboutPage() {
       <section className="container-page flex flex-wrap items-center justify-between gap-x-[clamp(32px,4vw,56px)] gap-y-7 py-[clamp(40px,5vw,64px)]">
         <div className="flex min-w-[300px] max-w-[620px] flex-1 flex-col gap-3">
           <div className={kicker}>Where we come from</div>
-          <h2 className="font-sans text-[clamp(24px,2.8vw,34px)] font-bold uppercase leading-[1.12] tracking-tight text-ink">
+          <h2 className="font-sans text-[24px] sm:text-[32px] font-bold uppercase leading-[36px] tracking-tight text-ink">
             Proudly made in India.{" "}
             <em className={accentRed}>Built in Bengaluru.</em>
           </h2>

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.deps import get_optional_user
-from app.models import Order, OrderItem, OrderStatus, User
+from app.models import CustomUpload, CustomUploadStatus, Order, OrderItem, OrderStatus, User
 from app.services.order_service import mark_order_paid
 from app.schemas.order import (
     CheckoutRequest,
@@ -13,7 +13,7 @@ from app.schemas.order import (
     QuoteResponse,
     VerifyPaymentRequest,
 )
-from app.services import razorpay_service
+from app.services import media_service, razorpay_service
 from app.services.pricing import compute_quote
 
 router = APIRouter(tags=["checkout"])
@@ -54,6 +54,8 @@ def create_payment(
         order.items.append(
             OrderItem(
                 product_id=line.product_id,
+                custom_upload_id=line.custom_upload_id,
+                size_code=line.size_code,
                 title_snapshot=line.title,
                 slug_snapshot=line.slug,
                 image_snapshot=line.image_url,
@@ -63,6 +65,17 @@ def create_payment(
         )
     db.add(order)
     db.flush()  # assign order.id
+
+    # Custom lines: lock in the design (a repriced/disabled size can no
+    # longer be re-quoted against it) and attach its source asset so GC
+    # never reclaims a photo that's now part of a real order.
+    custom_ids = [line.custom_upload_id for line in lines if line.custom_upload_id is not None]
+    if custom_ids:
+        customs = db.query(CustomUpload).filter(CustomUpload.id.in_(custom_ids)).all()
+        for custom in customs:
+            custom.status = CustomUploadStatus.ordered
+            media_service.attach(custom.media)
+        db.flush()
 
     rzp_order_id = razorpay_service.create_order(total, receipt=f"wallmeri_{order.id}")
     order.razorpay_order_id = rzp_order_id

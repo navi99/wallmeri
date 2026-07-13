@@ -47,7 +47,10 @@ export function SiteHeader() {
     "flex min-h-11 items-center px-3 py-2.5 text-xs font-medium uppercase tracking-[0.05em] text-ink hover:bg-ink/5 hover:text-brand-600";
 
   return (
-    <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur">
+    <header className="sticky top-0 z-40">
+      {/* Blur lives on its own layer so the sticky header's text isn't
+          co-rasterized with the GPU-composited backdrop-filter surface. */}
+      <div className="absolute inset-0 -z-10 bg-cream/95 backdrop-blur" aria-hidden="true" />
       <p className="bg-ink px-4 py-2.5 text-center text-[11px] font-medium uppercase tracking-[0.07em] text-cream">
         Free shipping across India on orders over ₹2,999
       </p>
@@ -79,20 +82,13 @@ export function SiteHeader() {
           <Link href="/artists" className={navLink}>
             Artists
           </Link>
-          <Link href="/track" className={`${navLink} hidden lg:block`}>
-            Track order
+          <Link href="/create" className={navLink}>
+            Custom Poster
           </Link>
-          {mounted && user && (
-            <>
-              {user.is_admin && (
-                <Link href="/admin" className={`hidden md:block ${navLink}`}>
-                  Admin
-                </Link>
-              )}
-              <Link href="/orders" className={navLink}>
-                Orders
-              </Link>
-            </>
+          {mounted && user?.is_admin && (
+            <Link href="/admin" className={`hidden md:block ${navLink}`}>
+              Admin
+            </Link>
           )}
         </nav>
 
@@ -192,14 +188,11 @@ export function SiteHeader() {
             <Link href="/artists" onClick={closePanels} className={mobileLink}>
               Artists
             </Link>
-            <Link href="/track" onClick={closePanels} className={mobileLink}>
-              Track an order
+            <Link href="/create" onClick={closePanels} className={mobileLink}>
+              Custom Poster
             </Link>
             {mounted && user ? (
               <>
-                <Link href="/orders" onClick={closePanels} className={mobileLink}>
-                  Orders
-                </Link>
                 {user.is_admin && (
                   <Link href="/admin" onClick={closePanels} className={mobileLink}>
                     Admin

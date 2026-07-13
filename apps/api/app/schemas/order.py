@@ -1,12 +1,26 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, model_validator
 
 
 class CartItemIn(BaseModel):
-    product_id: int
+    # Exactly one of the two is set — a catalog line or a custom-upload line.
+    product_id: Optional[int] = None
+    custom_upload_id: Optional[int] = None
+    # Poster size for a product line (optional — a size-less product line
+    # still prices from Product.price_inr). Meaningless for a custom line,
+    # which already carries its size via the custom_upload row.
+    size_code: Optional[str] = None
     qty: int = Field(gt=0, le=99)
+
+    @model_validator(mode="after")
+    def _exactly_one_line_kind(self) -> "CartItemIn":
+        if (self.product_id is None) == (self.custom_upload_id is None):
+            raise ValueError("Set exactly one of product_id or custom_upload_id")
+        if self.custom_upload_id is not None and self.size_code is not None:
+            raise ValueError("size_code is only valid for product lines")
+        return self
 
 
 class ShippingAddress(BaseModel):
@@ -24,8 +38,11 @@ class QuoteRequest(BaseModel):
 
 
 class QuoteLine(BaseModel):
-    product_id: int
-    slug: str
+    kind: str = "product"  # "product" | "custom"
+    product_id: Optional[int] = None
+    custom_upload_id: Optional[int] = None
+    size_code: Optional[str] = None
+    slug: str = ""
     title: str
     image_url: str
     price_inr: int
@@ -70,6 +87,9 @@ class OrderItemOut(BaseModel):
     image_snapshot: str
     price_inr: int
     qty: int
+    is_custom: bool = False
+    custom_upload_id: Optional[int] = None
+    size_code: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
@@ -89,6 +109,9 @@ class OrderOut(BaseModel):
     paid_at: Optional[datetime] = None
     shipped_at: Optional[datetime] = None
     delivered_at: Optional[datetime] = None
+    review_note: str = ""
+    reviewed_at: Optional[datetime] = None
+    has_custom_items: bool = False
     created_at: datetime
     items: list[OrderItemOut]
 

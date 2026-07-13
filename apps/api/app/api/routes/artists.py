@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session, joinedload
 from app.api.routes.catalog import serialize_products
 from app.core.database import get_db
 from app.core.ratelimit import check_rate_limit
-from app.models import Artist, ArtistApplication, Product
+from app.models import Artist, ArtistApplication, Product, ProductImage
 from app.schemas.artist import ApplicationCreate, ArtistBrief, ArtistOut
 from app.schemas.catalog import ProductOut
 
@@ -53,7 +53,12 @@ def artist_products(slug: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Artist not found")
     products = (
         db.query(Product)
-        .options(joinedload(Product.categories), joinedload(Product.artist), joinedload(Product.image))
+        .options(
+            joinedload(Product.categories),
+            joinedload(Product.artist),
+            joinedload(Product.image),
+            joinedload(Product.images).joinedload(ProductImage.image),
+        )
         .filter(Product.artist_id == artist.id, Product.is_active.is_(True))
         .order_by(Product.created_at.desc())
         .all()

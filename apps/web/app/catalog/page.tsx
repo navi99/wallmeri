@@ -89,6 +89,20 @@ function CatalogContent() {
         )}
       </div>
 
+      {/* Create-your-own callout — modest, off to the side of the browsing flow */}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border border-ink/10 bg-paper px-5 py-4">
+        <p className="text-sm text-ink">
+          <span className="font-semibold">Don&apos;t see what you&apos;re after?</span>{" "}
+          <span className="text-muted">Upload your own photo and we&apos;ll print it on aluminium.</span>
+        </p>
+        <Link
+          href="/create"
+          className="shrink-0 text-xs font-semibold uppercase tracking-[0.06em] text-brand-600 hover:underline"
+        >
+          Create your own →
+        </Link>
+      </div>
+
       {/* Grid */}
       {productsQuery.isLoading ? (
         <div className="grid place-items-center py-24">

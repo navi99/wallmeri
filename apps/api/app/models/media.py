@@ -14,6 +14,7 @@ def _utcnow() -> datetime:
 class MediaKind(str, enum.Enum):
     product = "product"
     avatar = "avatar"
+    custom = "custom"
 
 
 class MediaAsset(Base):

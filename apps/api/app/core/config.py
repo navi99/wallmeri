@@ -58,6 +58,14 @@ class Settings(BaseSettings):
     IMAGE_THUMB_MAX_PX: int = 480
     IMAGE_JPEG_QUALITY: int = 85
 
+    # Custom poster upload (apps/api/app/services/custom_upload_service.py).
+    # Effective DPI of the customer's crop at the chosen print size:
+    # >= OK is a clean print, [MIN, OK) shows a "may look soft" warning but is
+    # still allowed, < MIN is blocked outright.
+    CUSTOM_DPI_OK: int = 150
+    CUSTOM_DPI_MIN: int = 100
+    CUSTOM_PREVIEW_MAX_PX: int = 1600
+
     # Google sign-in (optional — button hidden on the web when unset)
     GOOGLE_CLIENT_ID: str = ""
 

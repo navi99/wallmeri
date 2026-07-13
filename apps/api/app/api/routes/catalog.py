@@ -6,7 +6,15 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
-from app.models import Artist, Category, Product, Review, ReviewStatus, product_categories
+from app.models import (
+    Artist,
+    Category,
+    Product,
+    ProductImage,
+    Review,
+    ReviewStatus,
+    product_categories,
+)
 from app.schemas.catalog import CategoryOut, ProductListOut, ProductOut
 
 router = APIRouter(tags=["catalog"])
@@ -59,7 +67,12 @@ def list_products(
 ):
     query = (
         db.query(Product)
-        .options(joinedload(Product.categories), joinedload(Product.artist), joinedload(Product.image))
+        .options(
+            joinedload(Product.categories),
+            joinedload(Product.artist),
+            joinedload(Product.image),
+            joinedload(Product.images).joinedload(ProductImage.image),
+        )
         .filter(Product.is_active.is_(True))
     )
 
@@ -103,7 +116,12 @@ def list_products(
 def get_product(slug: str, db: Session = Depends(get_db)):
     product = (
         db.query(Product)
-        .options(joinedload(Product.categories), joinedload(Product.artist), joinedload(Product.image))
+        .options(
+            joinedload(Product.categories),
+            joinedload(Product.artist),
+            joinedload(Product.image),
+            joinedload(Product.images).joinedload(ProductImage.image),
+        )
         .filter(Product.slug == slug, Product.is_active.is_(True))
         .first()
     )

@@ -10,7 +10,9 @@ import { toast } from "sonner";
 import { ApplicationsTab } from "@/components/admin/applications-tab";
 import { ArtistsTab } from "@/components/admin/artists-tab";
 import { CategoriesTab } from "@/components/admin/categories-tab";
+import { CustomReviewTab } from "@/components/admin/custom-review-tab";
 import { OrdersTab } from "@/components/admin/orders-tab";
+import { PosterSizesTab } from "@/components/admin/poster-sizes-tab";
 import { ProductForm, type ProductFormValues } from "@/components/admin/product-form";
 import { ReviewsTab } from "@/components/admin/reviews-tab";
 import { Badge, Button, Card, Spinner } from "@/components/ui";
@@ -19,7 +21,16 @@ import { useAuth } from "@/lib/store/auth";
 import type { Product } from "@/lib/types";
 import { formatINR } from "@/lib/utils";
 
-const TABS = ["posters", "categories", "artists", "applications", "orders", "reviews"] as const;
+const TABS = [
+  "posters",
+  "categories",
+  "artists",
+  "applications",
+  "orders",
+  "custom review",
+  "poster sizes",
+  "reviews",
+] as const;
 type Tab = (typeof TABS)[number];
 
 export default function AdminPage() {
@@ -211,6 +222,8 @@ export default function AdminPage() {
         {tab === "artists" && <ArtistsTab />}
         {tab === "applications" && <ApplicationsTab />}
         {tab === "orders" && <OrdersTab />}
+        {tab === "custom review" && <CustomReviewTab />}
+        {tab === "poster sizes" && <PosterSizesTab />}
         {tab === "reviews" && <ReviewsTab />}
       </div>
 

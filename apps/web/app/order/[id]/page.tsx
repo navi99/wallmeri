@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2 } from "lucide-react";
 
-import { Button, Card, Spinner } from "@/components/ui";
+import { Badge, Button, Card, Spinner } from "@/components/ui";
 import { api } from "@/lib/api";
 import { formatINR } from "@/lib/utils";
 
@@ -15,6 +15,7 @@ function statusLabel(status: string) {
   const map: Record<string, string> = {
     paid: "Paid — being prepared",
     pending: "Pending payment",
+    in_review: "In review — checking your custom design",
     shipped: "Shipped",
     delivered: "Delivered",
     failed: "Payment failed",
@@ -22,6 +23,13 @@ function statusLabel(status: string) {
     refunded: "Refunded",
   };
   return map[status] ?? status;
+}
+
+function customApprovalBadge(status: string) {
+  if (status === "in_review") return <Badge tone="attention">Pending review</Badge>;
+  if (status === "refunded") return <Badge tone="danger">Rejected</Badge>;
+  if (status === "pending" || status === "failed" || status === "cancelled") return null;
+  return <Badge tone="done">Approved</Badge>;
 }
 
 function OrderContent({ id }: { id: number }) {
@@ -72,6 +80,25 @@ function OrderContent({ id }: { id: number }) {
         </p>
       </div>
 
+      {order.status === "in_review" && (
+        <Card className="mt-8 border-brand-100 bg-brand-50 p-5 text-center">
+          <p className="text-sm text-ink">
+            We&apos;re reviewing your custom design before it goes to print — you&apos;ll get an
+            email once it&apos;s approved, usually within 1-2 business days.
+          </p>
+        </Card>
+      )}
+
+      {order.status === "refunded" && order.has_custom_items && (
+        <Card className="mt-8 border-brand-100 bg-brand-50 p-5 text-center">
+          <p className="text-sm text-ink">
+            Your custom design couldn&apos;t be approved for printing
+            {order.review_note ? <> — {order.review_note}</> : "."} We&apos;ve refunded your
+            payment in full.
+          </p>
+        </Card>
+      )}
+
       <Card className="mt-8 p-6">
         <h2 className="text-lg font-bold text-ink">Items</h2>
         <div className="mt-4 space-y-3">
@@ -85,6 +112,21 @@ function OrderContent({ id }: { id: number }) {
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium text-ink">{item.title_snapshot}</p>
                 <p className="text-sm text-muted">Qty {item.qty}</p>
+                {item.is_custom ? (
+                  <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                    <Badge tone="neutral">Custom design</Badge>
+                    {customApprovalBadge(order.status)}
+                  </div>
+                ) : (
+                  item.slug_snapshot && (
+                    <Link
+                      href={`/product/${item.slug_snapshot}`}
+                      className="text-sm font-semibold text-brand-600 hover:underline"
+                    >
+                      View product
+                    </Link>
+                  )
+                )}
               </div>
               <span className="font-semibold text-ink">
                 {formatINR(item.price_inr * item.qty)}

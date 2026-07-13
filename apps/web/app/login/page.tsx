@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,7 +23,17 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next") ?? "/";
+  const expired = params.get("expired") === "1";
   const setAuth = useAuth((s) => s.setAuth);
+
+  useEffect(() => {
+    if (expired) {
+      toast.error("Your session has expired. Please log in again.", {
+        id: "session-expired",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expired]);
 
   const {
     register,

@@ -14,7 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.core.database import SessionLocal  # noqa: E402
-from app.services import media_service  # noqa: E402
+from app.services import custom_upload_service, media_service  # noqa: E402
 
 
 def main() -> None:
@@ -22,6 +22,8 @@ def main() -> None:
     try:
         count = media_service.sweep_unattached(db)
         print(f"Deleted {count} unattached media asset(s).")
+        draft_count = custom_upload_service.sweep_drafts(db)
+        print(f"Deleted {draft_count} abandoned custom-upload draft(s).")
     finally:
         db.close()
 

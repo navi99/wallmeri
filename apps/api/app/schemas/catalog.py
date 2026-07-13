@@ -24,6 +24,16 @@ class CategoryUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 
+class ProductImageOut(BaseModel):
+    id: int
+    image_id: int
+    image_url: str
+    thumb_url: str
+    position: int
+
+    model_config = {"from_attributes": True}
+
+
 class ProductOut(BaseModel):
     id: int
     slug: str
@@ -34,9 +44,12 @@ class ProductOut(BaseModel):
     thumb_url: str
     # Round-tripped so the admin edit form can tell "no managed image" apart
     # from "has one, just isn't being touched by this save" — see
-    # admin._apply_product_image, which needs the current value to avoid
+    # admin._apply_product_images, which needs the current value to avoid
     # detaching (and deleting) an unrelated field edit's untouched image.
     image_id: Optional[int] = None
+    # Ordered gallery (up to 6). images[0] is always the main image and stays
+    # in sync with image_url/image_id — see admin._sync_main_image.
+    images: list[ProductImageOut] = []
     material: str
     is_active: bool
     is_featured: bool
@@ -61,9 +74,10 @@ class ProductCreate(BaseModel):
     description: str = ""
     price_inr: int = Field(gt=0)
     image_url: str = ""
-    # Set when the image came from the admin uploader (POST /admin/uploads);
-    # left None for a pasted external URL. See admin._apply_product_image.
-    image_id: Optional[int] = None
+    # Ordered managed-asset ids (from POST /admin/uploads) making up the
+    # gallery; images[0] becomes the main image. Empty when relying on the
+    # pasted image_url fallback instead. See admin._apply_product_images.
+    image_ids: list[int] = []
     material: str = "Metal"
     is_active: bool = True
     is_featured: bool = False
@@ -77,7 +91,7 @@ class ProductUpdate(BaseModel):
     description: Optional[str] = None
     price_inr: Optional[int] = Field(default=None, gt=0)
     image_url: Optional[str] = None
-    image_id: Optional[int] = None
+    image_ids: Optional[list[int]] = None
     material: Optional[str] = None
     is_active: Optional[bool] = None
     is_featured: Optional[bool] = None

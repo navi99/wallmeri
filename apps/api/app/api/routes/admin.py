@@ -1,6 +1,8 @@
+import io
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
@@ -12,11 +14,16 @@ from app.models import (
     Artist,
     ArtistApplication,
     Category,
+    CustomUpload,
+    CustomUploadStatus,
     MediaAsset,
     MediaKind,
     Order,
+    OrderItem,
     OrderStatus,
+    PosterSize,
     Product,
+    ProductImage,
     Review,
     ReviewStatus,
 )
@@ -36,9 +43,24 @@ from app.schemas.catalog import (
     ProductUpdate,
     UploadOut,
 )
-from app.schemas.order import OrderOut, OrderStatusUpdate
+from app.schemas.custom import (
+    CropRect,
+    CustomReviewAction,
+    CustomReviewLineOut,
+    CustomReviewOrderOut,
+    PosterSizeCreate,
+    PosterSizeOut,
+    PosterSizeUpdate,
+)
+from app.schemas.order import OrderItemOut, OrderOut, OrderStatusUpdate
 from app.schemas.review import ReviewAdminOut, ReviewModerate
-from app.services import email_service, media_service, razorpay_service, storage_service
+from app.services import (
+    custom_upload_service,
+    email_service,
+    media_service,
+    razorpay_service,
+    storage_service,
+)
 
 router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(get_current_admin)])
 
@@ -108,39 +130,69 @@ def _check_artist(db: Session, artist_id: int | None) -> None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown artist id")
 
 
-def _apply_product_image(
-    db: Session, product: Product, image_id: int | None, image_url: str | None
+MAX_PRODUCT_IMAGES = 6
+
+
+def _apply_product_images(
+    db: Session, product: Product, image_ids: list[int] | None, image_url: str | None
 ) -> None:
-    """Sync product.image_id/image_url with a submitted image_id (managed
-    upload) or image_url (pasted external link), deleting any previously
-    attached MediaAsset this call replaces. Only call when the caller's
-    payload actually included an `image_id` key — see admin_update_product.
+    """Sync product.images (the ordered gallery; index 0 = main image) with a
+    submitted ordered list of managed-asset ids, deleting any attached
+    MediaAsset this call drops from the gallery. Falls back to a pasted
+    image_url when image_ids is empty. Only call when the caller's payload
+    actually included an `image_ids` key — see admin_update_product.
     """
-    old_asset_id = product.image_id
-    if image_id is not None:
-        if image_id != old_asset_id:
-            asset = db.get(MediaAsset, image_id)
+    image_ids = image_ids or []
+    if len(image_ids) > MAX_PRODUCT_IMAGES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"A poster can have at most {MAX_PRODUCT_IMAGES} images",
+        )
+    if len(set(image_ids)) != len(image_ids):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Duplicate image_id")
+
+    existing_by_asset = {pi.image_id: pi for pi in product.images}
+    kept_ids = set(image_ids)
+
+    # Drop images no longer in the gallery, freeing their storage + row.
+    for asset_id, pi in existing_by_asset.items():
+        if asset_id not in kept_ids:
+            product.images.remove(pi)
+            media_service.delete_asset(db, pi.image)
+
+    # Rebuild the ordered gallery, reusing rows for kept assets.
+    new_images: list[ProductImage] = []
+    for position, asset_id in enumerate(image_ids):
+        pi = existing_by_asset.get(asset_id)
+        if pi is None:
+            asset = db.get(MediaAsset, asset_id)
             if asset is None or asset.kind != MediaKind.product:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown image_id")
             media_service.attach(asset)
-            product.image_id = asset.id
-            product.image_url = storage_service.public_url(asset.web_key)
+            pi = ProductImage(image_id=asset.id, image=asset)
+        pi.position = position
+        new_images.append(pi)
+    product.images = new_images
+
+    if new_images:
+        product.image_id = new_images[0].image_id
+        product.image_url = storage_service.public_url(new_images[0].image.web_key)
     else:
         product.image_id = None
         if image_url is not None:
             product.image_url = image_url
-
-    if old_asset_id is not None and old_asset_id != product.image_id:
-        old_asset = db.get(MediaAsset, old_asset_id)
-        if old_asset is not None:
-            media_service.delete_asset(db, old_asset)
 
 
 @router.get("/products", response_model=list[ProductOut])
 def admin_list_products(db: Session = Depends(get_db)):
     products = (
         db.query(Product)
-        .options(joinedload(Product.categories), joinedload(Product.artist), joinedload(Product.image))
+        .options(
+            joinedload(Product.categories),
+            joinedload(Product.artist),
+            joinedload(Product.image),
+            joinedload(Product.images).joinedload(ProductImage.image),
+        )
         .order_by(Product.created_at.desc())
         .all()
     )
@@ -161,7 +213,7 @@ def admin_create_product(payload: ProductCreate, db: Session = Depends(get_db)):
         artist_id=payload.artist_id,
         categories=_resolve_categories(db, payload.category_ids),
     )
-    _apply_product_image(db, product, payload.image_id, payload.image_url)
+    _apply_product_images(db, product, payload.image_ids, payload.image_url)
     _validate_publishable(product)
     db.add(product)
     db.commit()
@@ -182,8 +234,8 @@ def admin_update_product(product_id: int, payload: ProductUpdate, db: Session = 
         product.categories = _resolve_categories(db, data.pop("category_ids") or [])
     if "slug" in data and data["slug"]:
         data["slug"] = _unique_slug(db, Product, data["slug"], exclude_id=product.id)
-    if "image_id" in data:
-        _apply_product_image(db, product, data.pop("image_id"), data.pop("image_url", None))
+    if "image_ids" in data:
+        _apply_product_images(db, product, data.pop("image_ids"), data.pop("image_url", None))
     for key, value in data.items():
         setattr(product, key, value)
 
@@ -198,10 +250,8 @@ def admin_delete_product(product_id: int, db: Session = Depends(get_db)):
     product = db.get(Product, product_id)
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
-    if product.image_id:
-        asset = db.get(MediaAsset, product.image_id)
-        if asset is not None:
-            media_service.delete_asset(db, asset)
+    for pi in list(product.images):
+        media_service.delete_asset(db, pi.image)
     db.delete(product)
     db.commit()
     return None
@@ -391,6 +441,147 @@ def admin_moderate_review(review_id: int, payload: ReviewModerate, db: Session =
     return dto
 
 
+# ── Poster sizes (custom-upload size -> price table) ────────────────────────
+
+@router.get("/poster-sizes", response_model=list[PosterSizeOut])
+def admin_list_poster_sizes(db: Session = Depends(get_db)):
+    sizes = db.query(PosterSize).order_by(PosterSize.position).all()
+    return [PosterSizeOut.model_validate(s) for s in sizes]
+
+
+@router.post("/poster-sizes", response_model=PosterSizeOut, status_code=status.HTTP_201_CREATED)
+def admin_create_poster_size(payload: PosterSizeCreate, db: Session = Depends(get_db)):
+    if db.query(PosterSize).filter(PosterSize.code == payload.code).first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Code already in use")
+    size = PosterSize(**payload.model_dump())
+    db.add(size)
+    db.commit()
+    db.refresh(size)
+    return PosterSizeOut.model_validate(size)
+
+
+@router.patch("/poster-sizes/{size_id}", response_model=PosterSizeOut)
+def admin_update_poster_size(size_id: int, payload: PosterSizeUpdate, db: Session = Depends(get_db)):
+    size = db.get(PosterSize, size_id)
+    if not size:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Size not found")
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(size, field, value)
+    db.commit()
+    db.refresh(size)
+    return PosterSizeOut.model_validate(size)
+
+
+# ── Custom-upload moderation queue ───────────────────────────────────────────
+# Paid orders containing a custom line land in OrderStatus.in_review (see
+# order_service.mark_order_paid) and wait here for approval before entering
+# normal fulfilment. Rejection refunds the whole order — see the locked
+# product decision in the plan; there is no per-line partial refund.
+
+@router.get("/custom-review", response_model=list[CustomReviewOrderOut])
+def admin_list_custom_review(db: Session = Depends(get_db)):
+    orders = (
+        db.query(Order)
+        .options(joinedload(Order.items).joinedload(OrderItem.custom_upload))
+        .filter(Order.status == OrderStatus.in_review)
+        .order_by(Order.created_at.asc())
+        .all()
+    )
+    result: list[CustomReviewOrderOut] = []
+    for order in orders:
+        custom_lines: list[CustomReviewLineOut] = []
+        other_lines: list[OrderItemOut] = []
+        for item in order.items:
+            cu = item.custom_upload
+            if item.is_custom and cu is not None:
+                custom_lines.append(
+                    CustomReviewLineOut(
+                        order_item_id=item.id,
+                        custom_upload_id=cu.id,
+                        title=item.title_snapshot,
+                        preview_url=cu.preview_url,
+                        size_code=cu.size_code,
+                        orientation=cu.orientation.value,
+                        dpi=cu.dpi,
+                        dpi_band=custom_upload_service.dpi_band(cu.dpi),
+                        crop=CropRect(
+                            x=cu.crop_x, y=cu.crop_y, width=cu.crop_width, height=cu.crop_height
+                        ),
+                        qty=item.qty,
+                        price_inr=item.price_inr,
+                    )
+                )
+            else:
+                other_lines.append(OrderItemOut.model_validate(item))
+        result.append(
+            CustomReviewOrderOut(
+                id=order.id,
+                email=order.email,
+                status=order.status.value,
+                total_inr=order.total_inr,
+                created_at=order.created_at,
+                shipping_address=order.shipping_address,
+                custom_lines=custom_lines,
+                other_lines=other_lines,
+            )
+        )
+    return result
+
+
+@router.post("/orders/{order_id}/custom-review", response_model=OrderOut)
+def admin_custom_review_action(
+    order_id: int, payload: CustomReviewAction, db: Session = Depends(get_db)
+):
+    order = db.query(Order).options(joinedload(Order.items)).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    if order.status != OrderStatus.in_review:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Order is not awaiting review"
+        )
+    if payload.action == "reject" and not payload.note:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="A reason is required to reject"
+        )
+
+    order.review_note = payload.note
+    order.reviewed_at = datetime.now(timezone.utc)
+
+    if payload.action == "approve":
+        order.status = OrderStatus.paid
+        db.commit()
+        db.refresh(order)
+        email_service.send_custom_review_approved(order)
+    else:
+        order.status = OrderStatus.refunded
+        if order.razorpay_payment_id:
+            # Best effort — in mock mode (no keys) this is a no-op.
+            razorpay_service.refund_payment(order.razorpay_payment_id, order.total_inr)
+        db.commit()
+        db.refresh(order)
+        email_service.send_custom_review_rejected(order, payload.note)
+
+    return OrderOut.model_validate(order)
+
+
+@router.get("/custom-items/{custom_upload_id}/print-file")
+def admin_custom_print_file(custom_upload_id: int, db: Session = Depends(get_db)):
+    item = db.get(CustomUpload, custom_upload_id)
+    if item is None or item.status != CustomUploadStatus.ordered:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    original = storage_service.read_bytes(item.media.original_key)
+    # Full resolution, no downscale — this is the production print file.
+    cropped = storage_service.crop_to_jpeg(
+        original, item.crop_x, item.crop_y, item.crop_width, item.crop_height
+    )
+    filename = f"wallmeri_custom_{custom_upload_id}_{item.size_code}.jpg"
+    return StreamingResponse(
+        io.BytesIO(cropped),
+        media_type="image/jpeg",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
 # ── Orders ───────────────────────────────────────────────────────────────────
 
 @router.get("/orders", response_model=list[OrderOut])
@@ -413,6 +604,11 @@ def admin_update_order_status(
     )
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    if order.status == OrderStatus.in_review:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Use the custom-review action to resolve an order awaiting review",
+        )
 
     target = OrderStatus(payload.status)
     if target not in ORDER_TRANSITIONS.get(order.status, set()):

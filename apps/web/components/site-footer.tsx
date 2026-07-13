@@ -54,6 +54,14 @@ export function SiteFooter() {
             <Link href="/about" className={colLink}>
               About us
             </Link>
+            <a
+              href="https://wa.me/916363882696"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={colLink}
+            >
+              Contact us
+            </a>
             <Link href="/artists/join" className={colLink}>
               Become a Wallmeri artist
             </Link>

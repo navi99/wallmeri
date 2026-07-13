@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/app-image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -11,9 +12,17 @@ import { useAuth } from "@/lib/store/auth";
 import { formatINR } from "@/lib/utils";
 
 function statusBadge(status: string) {
-  if (status === "paid") return <Badge className="bg-green-100 text-green-800">Paid</Badge>;
-  if (status === "pending") return <Badge>Pending</Badge>;
-  return <Badge className="bg-brand-100 text-brand-800">{status}</Badge>;
+  if (status === "paid") return <Badge tone="done">Paid</Badge>;
+  if (status === "pending") return <Badge tone="inert">Pending</Badge>;
+  if (status === "in_review") return <Badge tone="attention">In review</Badge>;
+  return <Badge tone="neutral">{status}</Badge>;
+}
+
+function customApprovalBadge(status: string) {
+  if (status === "in_review") return <Badge tone="attention">Pending review</Badge>;
+  if (status === "refunded") return <Badge tone="danger">Rejected</Badge>;
+  if (status === "pending" || status === "failed" || status === "cancelled") return null;
+  return <Badge tone="done">Approved</Badge>;
 }
 
 export default function OrdersPage() {
@@ -77,11 +86,33 @@ export default function OrdersPage() {
                   </Link>
                 </div>
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-3 space-y-2">
                 {order.items.map((item, idx) => (
-                  <span key={idx} className="rounded-lg bg-cream px-2.5 py-1 text-xs text-muted">
-                    {item.title_snapshot} × {item.qty}
-                  </span>
+                  <div key={idx} className="flex flex-wrap items-center gap-2">
+                    <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-cream">
+                      {item.image_snapshot && (
+                        <Image
+                          src={item.image_snapshot}
+                          alt={item.title_snapshot}
+                          fill
+                          className="object-cover"
+                          sizes="36px"
+                        />
+                      )}
+                    </div>
+                    <span className="text-xs text-muted">
+                      {item.title_snapshot} × {item.qty}
+                    </span>
+                    {item.is_custom && customApprovalBadge(order.status)}
+                    {!item.is_custom && item.slug_snapshot && (
+                      <Link
+                        href={`/product/${item.slug_snapshot}`}
+                        className="text-xs font-semibold text-brand-600 hover:underline"
+                      >
+                        View product
+                      </Link>
+                    )}
+                  </div>
                 ))}
               </div>
             </Card>

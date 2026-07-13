@@ -1,14 +1,16 @@
-"use client";
-
 import Image from "@/components/app-image";
 import Link from "next/link";
-import { useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { ProductCard } from "@/components/product-card";
-import { Button } from "@/components/ui";
-import { api } from "@/lib/api";
 
-// Same framed gallery slides as the About hero.
+const kicker =
+  "text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-600";
+const kickerOnRed =
+  "text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100";
+const sectionHeading =
+  "font-sans text-[32px] sm:text-[40px] font-bold uppercase leading-[44px] tracking-tight text-ink";
+const accent =
+  "font-display font-medium normal-case italic tracking-normal";
+const accentRed = `${accent} text-premium-600`;
+
 const heroSlides = [
   {
     src: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=880&q=80",
@@ -24,64 +26,92 @@ const heroSlides = [
   },
 ];
 
-const kicker =
-  "text-[11px] font-semibold uppercase tracking-[0.08em] text-brand-600";
-const sectionHeading =
-  "font-sans text-[clamp(26px,2.8vw,34px)] font-bold uppercase leading-[1.1] tracking-tight text-ink";
+const steps = [
+  {
+    n: "01",
+    title: "Discover",
+    body: "We find and curate original Indian artists whose work deserves more than a scroll. No self-serve uploads, no algorithmic feed.",
+  },
+  {
+    n: "02",
+    title: "License & reward",
+    body: "Artists license their work through a simple, fair agreement and earn on every single sale, with their name on every piece.",
+  },
+  {
+    n: "03",
+    title: "Print on metal",
+    body: "Each artwork is sublimation-printed onto premium metal with colours fused into the surface, made to order in India.",
+  },
+  {
+    n: "04",
+    title: "Find a wall",
+    body: "The piece ships across India and snaps onto a magnetic mount, going from an artist's screen to a wall where it's actually seen.",
+  },
+];
 
-// Steel-poster texture for category tiles (from the handoff design).
-const stripes =
-  "repeating-linear-gradient(45deg, rgba(250,249,246,0.05) 0 2px, transparent 2px 14px)";
-const categoryGradients = [
-  "linear-gradient(160deg,#b32624 0%,#3a0b0a 100%)",
-  "linear-gradient(200deg,#3a3230 0%,#1B1717 100%)",
-  "linear-gradient(180deg,#4a4340 0%,#241f1e 100%)",
-  "linear-gradient(140deg,#1B1717 0%,#1B1717 60%,#6d1413 100%)",
+const materialFacts = [
+  {
+    title: "Premium metal",
+    body: "A rigid, lightweight 1 mm aluminium sheet with a distinctive modern finish. Aluminium, not paper.",
+  },
+  {
+    title: "Sublimation print",
+    body: "Colours are fused into the surface for sharp, vivid, long-lasting artwork.",
+  },
+  {
+    title: "Magnetic mounting",
+    body: "One magnet on the poster, one on the wall — no drilling, no damage. Swap artwork in seconds.",
+  },
+];
+
+const values = [
+  {
+    n: "01",
+    title: "Fair pay",
+    body: "Every decision starts with the question: does this serve the artist? Attribution, fair earnings, and a dignified stage are non-negotiable.",
+  },
+  {
+    n: "02",
+    title: "Honest quality",
+    body: "We oversee materials, printing and packaging ourselves. If a piece wouldn't hang on our own wall, it doesn't ship to yours.",
+  },
+  {
+    n: "03",
+    title: "Responsible growth",
+    body: "We build slowly and deliberately, prioritising a curated catalog and honest relationships over scale for its own sake.",
+  },
+];
+
+const vision = [
+  {
+    label: "Today",
+    body: "Original Indian art on premium metal, curated piece by piece.",
+  },
+  {
+    label: "Next",
+    body: "More artists, more mediums, more walls across India.",
+  },
+  {
+    label: "Growing",
+    body: "A stronger stage for independent Indian creativity, one collection at a time.",
+  },
+  {
+    label: "Always",
+    body: "Back to artists: the recognition and reward they deserve.",
+  },
 ];
 
 export default function HomePage() {
-  const productsQuery = useQuery({
-    queryKey: ["products", { featured: true }],
-    queryFn: () => api.listProducts({ page_size: 8, sort: "newest" }),
-  });
-  const categoriesQuery = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => api.listCategories(),
-  });
-
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const scrollCarousel = (dir: -1 | 1) => {
-    const el = carouselRef.current;
-    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
-  };
-
-  const products = productsQuery.data?.items ?? [];
-  // Featured first, backfilled with the newest of the rest.
-  const gridProducts = [
-    ...products.filter((p) => p.is_featured),
-    ...products.filter((p) => !p.is_featured),
-  ].slice(0, 8);
-  const heroProduct = gridProducts[0];
-  const qualityProduct = gridProducts[1] ?? heroProduct;
-  const categories = categoriesQuery.data ?? [];
-
-  const arrowButton =
-    "grid h-11 w-11 place-items-center border border-ink text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-40";
-
   return (
     <div>
-      {/* Hero — Premium Red drench, story left / framed poster right (mirrors the About hero) */}
+      {/* 1 · Hero — the single emotional anchor. Premium Red drench, story left / framed slider right */}
       <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,96px)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
           <div className="flex min-w-[300px] flex-[1.4] flex-col items-start gap-6">
-             <div className="text-[15px] font-semibold uppercase tracking-[0.08em] text-premium-100">
-              The Wallmeri story
-            </div>
-            <h1 className="font-sans text-[clamp(38px,5vw,64px)] font-bold uppercase leading-[1.05] tracking-tight text-cream">
+            <div className={kickerOnRed}>The Wallmeri story</div>
+            <h1 className="font-sans text-[40px] sm:text-[56px] lg:text-[64px] font-bold uppercase leading-[68px] tracking-tight text-cream">
               Every artist deserves{" "}
-              <em className="font-display font-medium normal-case italic tracking-normal text-cream">
-                a wall.
-              </em>
+              <em className={`${accent} text-cream`}>a wall.</em>
             </h1>
             <p className="max-w-[560px] text-[16px] leading-[1.7] text-cream/90">
               We turn original Indian creativity into premium metal art,
@@ -126,221 +156,160 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Collections */}
-      {categories.length > 0 && (
-        <section className="container-page py-[clamp(56px,7vw,96px)]">
-          <div className="mb-9 flex flex-wrap items-baseline justify-between gap-4">
-            <h2 className={sectionHeading}>Collections</h2>
-            <Link
-              href="/catalog"
-              className="text-xs font-medium uppercase tracking-[0.06em] text-brand-600 hover:text-ink"
-            >
-              View all →
-            </Link>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(230px,1fr))] gap-5">
-            {categories.map((c, i) => (
-              <Link
-                key={c.id}
-                href={`/category/${c.slug}`}
-                className="group flex flex-col gap-3"
-              >
-                <div
-                  className="flex h-[300px] items-end p-[18px] transition-opacity group-hover:opacity-85"
-                  style={{
-                    background: `${stripes}, ${categoryGradients[i % categoryGradients.length]}`,
-                  }}
-                >
-                  <span className="font-display text-3xl italic text-cream">
-                    {c.name}
-                  </span>
-                </div>
-                <span className="text-[15px] font-semibold uppercase tracking-[0.06em] text-ink group-hover:text-brand-600">
-                  {c.name}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Bestsellers carousel */}
-      <section className="pb-[clamp(56px,7vw,96px)]">
-        <div className="container-page mb-9 flex flex-wrap items-baseline justify-between gap-4">
-          <h2 className={sectionHeading}>Bestsellers</h2>
-          <div className="flex gap-2.5">
-            <button
-              onClick={() => scrollCarousel(-1)}
-              aria-label="Scroll bestsellers back"
-              className={arrowButton}
-            >
-              ←
-            </button>
-            <button
-              onClick={() => scrollCarousel(1)}
-              aria-label="Scroll bestsellers forward"
-              className={arrowButton}
-            >
-              →
-            </button>
-          </div>
-        </div>
-
-        {productsQuery.isLoading ? (
-          <div
-            className="container-page flex gap-5 overflow-hidden"
-            aria-hidden="true"
-          >
-            {[0, 1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="aspect-[3/4] w-[280px] flex-none animate-pulse bg-ink/10 motion-reduce:animate-none"
-              />
-            ))}
-          </div>
-        ) : productsQuery.isError ? (
-          <div className="container-page">
-            <div className="border border-ink/10 bg-paper p-10 text-center">
-              <p className="font-display text-2xl italic text-ink">
-                We couldn&apos;t load the gallery.
-              </p>
-              <p className="mt-2 text-sm text-muted">
-                Something went wrong on our side — your connection is probably
-                fine.
-              </p>
-              <Button
-                variant="outline"
-                className="mt-5"
-                onClick={() => productsQuery.refetch()}
-              >
-                Try again
-              </Button>
-            </div>
-          </div>
-        ) : gridProducts.length === 0 ? (
-          <div className="container-page">
-            <div className="border border-ink/10 bg-paper p-10 text-center">
-              <p className="font-display text-2xl italic text-ink">
-                The gallery is being rehung.
-              </p>
-              <p className="mt-2 text-sm text-muted">
-                New pieces are on their way. Meet the artists behind them in
-                the meantime.
-              </p>
-              <Link href="/artists" className="mt-5 inline-block">
-                <Button variant="outline">Meet the artists</Button>
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div
-            ref={carouselRef}
-            className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-2 sm:px-6 lg:px-[max(2rem,calc((100vw-80rem)/2+2rem))]"
-          >
-            {gridProducts.map((p) => (
-              <div key={p.id} className="w-[280px] flex-none snap-start">
-                <ProductCard product={p} showFeaturedBadge={false} />
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* How it works — magnetic mounting. Premium Red drench, matching the About page bands */}
-      <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,88px)]">
-        <div className="mb-16 text-center">
-          <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100">
-            Magnetic mounting
-          </div>
-          <h2 className="font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase leading-[1.1] tracking-tight text-cream">
-            On your wall in{" "}
-            <em className="font-display font-medium normal-case italic tracking-normal">
-              under a minute
-            </em>
+      {/* 2 · Our story — the problem, then the answer, told once */}
+      <section className="container-page flex flex-wrap items-start gap-x-[clamp(40px,5vw,72px)] gap-y-8 py-[clamp(56px,7vw,96px)]">
+        <div className="flex min-w-[300px] max-w-[440px] flex-1 flex-col gap-4">
+          <div className={kicker}>Our story</div>
+          <h2 className={sectionHeading}>
+            Thousands create.{" "}
+            <em className={accentRed}>Too few get seen.</em>
           </h2>
         </div>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-12">
-          {[
-            {
-              n: "01",
-              title: "Stick the magnet",
-              body: "One adhesive magnet pad on the wall. No drill, no holes, no damage.",
-            },
-            {
-              n: "02",
-              title: "Snap the poster",
-              body: "The steel poster clicks onto the magnet — perfectly flat, perfectly level.",
-            },
-            {
-              n: "03",
-              title: "Swap anytime",
-              body: "Change artwork in seconds. One magnet, an entire rotating gallery.",
-            },
-          ].map((step) => (
-            <div
-              key={step.n}
-              className="flex flex-col items-center gap-4 text-center"
-            >
-              <div className="font-display text-[52px] italic leading-none text-premium-100">
-                {step.n}
+        <div className="flex min-w-[300px] max-w-[520px] flex-1 flex-col gap-[22px]">
+          <p className="text-base leading-[1.7] text-ink/70">
+            Every day, talented Indian artists create work full of emotion,
+            skill and identity, yet much of it remains trapped on a screen:
+            seen for a few seconds, liked, and eventually lost in an endless
+            feed.
+          </p>
+          <p className="text-base font-semibold leading-[1.7] text-ink">
+            That felt wrong to us. So we built Wallmeri, a bridge between
+            Indian artists and the walls their work belongs on.
+          </p>
+        </div>
+      </section>
+
+      {/* 3 · Mission — the statement, with our values as its supporting bullets */}
+      <section className="container-page flex flex-wrap items-start gap-[clamp(40px,5vw,72px)] pb-[clamp(56px,7vw,96px)]">
+        <div className="flex min-w-[300px] max-w-[520px] flex-1 flex-col gap-[22px]">
+          <div className={kicker}>Our mission</div>
+          <h2 className={sectionHeading}>
+            Our mission is <em className={accentRed}>simple.</em>
+          </h2>
+          <p className="text-base leading-[1.7] text-ink/70">
+            Give independent Indian artists a fair way to turn their work into
+            recognition and income &mdash; and help people put something
+            genuine, personal and meaningful on their walls.
+          </p>
+          <p className="text-base font-semibold leading-[1.7] text-ink">
+            Every purchase helps creative work find a home.
+          </p>
+        </div>
+        <div className="grid min-w-[280px] flex-1 gap-5">
+          {values.map((v) => (
+            <div key={v.n} className="border border-ink/10 bg-paper p-7">
+              <div className="flex items-baseline gap-4">
+                <div className="font-display text-[32px] italic leading-none text-premium-600">
+                  {v.n}
+                </div>
+                <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
+                  {v.title}
+                </div>
               </div>
-              <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-cream">
-                {step.title}
+              <p className="mt-3 text-[15px] leading-[1.7] text-muted">{v.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 4 · How it works — the four steps, with the material facts as supporting detail */}
+      <section className="border-y border-ink/10 bg-paper">
+        <div className="container-page py-[clamp(56px,7vw,96px)]">
+          <div className="mb-14 max-w-[560px]">
+            <div className={`${kicker} mb-4`}>How it works</div>
+            <h2 className={sectionHeading}>
+              From an artist&apos;s screen{" "}
+              <em className={accentRed}>to your wall.</em>
+            </h2>
+          </div>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-x-10 gap-y-12">
+            {steps.map((step) => (
+              <div key={step.n} className="flex flex-col gap-4">
+                <div className="font-display text-[52px] italic leading-none text-premium-600">
+                  {step.n}
+                </div>
+                <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
+                  {step.title}
+                </div>
+                <p className="text-[15px] leading-[1.7] text-muted">{step.body}</p>
               </div>
-              <p className="max-w-[260px] text-[15px] leading-[1.7] text-cream/90">
-                {step.body}
+            ))}
+          </div>
+          <div className="mt-14 border-t border-ink/10 pt-10">
+            <div className={`${kicker} mb-8`}>
+              The material &mdash; not paper, not canvas
+            </div>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-x-10 gap-y-8">
+              {materialFacts.map((item) => (
+                <div key={item.title}>
+                  <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
+                    {item.title}
+                  </div>
+                  <p className="mt-2.5 text-[15px] leading-[1.7] text-muted">
+                    {item.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5 · Vision — Premium Red drench, paired with Mission above */}
+      <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,88px)]">
+        <div className="mb-14 text-center">
+          <div className={`${kickerOnRed} mb-4`}>Our vision</div>
+          <h2 className="mx-auto max-w-[720px] font-sans text-[32px] sm:text-[40px] font-bold uppercase leading-[46px] tracking-tight text-cream [text-wrap:balance]">
+            A trusted home for Indian{" "}
+            <em className={`${accent} text-cream`}>creative work.</em>
+          </h2>
+          <p className="mx-auto mt-5 max-w-[560px] text-base leading-[1.7] text-cream/90">
+            A place where photographers, illustrators, designers and
+            independent creators of every kind get seen, credited and
+            rewarded.
+          </p>
+        </div>
+        <div className="mx-auto grid max-w-[1100px] grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-5">
+          {vision.map((v) => (
+            <div key={v.label} className="border border-cream/30 p-7">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100">
+                {v.label}
+              </div>
+              <p className="mt-3.5 text-[15px] leading-[1.7] text-cream/90">
+                {v.body}
               </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Quality — the material */}
-      <section className="container-page flex flex-wrap items-center gap-[clamp(40px,5vw,72px)] py-[clamp(56px,7vw,96px)]">
-        <div className="h-[460px] min-w-[300px] flex-1 bg-ink">
-          {qualityProduct ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={qualityProduct.image_url}
-              alt={qualityProduct.title}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div
-              className="h-full w-full"
-              style={{ background: `${stripes}, ${categoryGradients[1]}` }}
-              aria-hidden="true"
-            />
-          )}
-        </div>
-        <div className="flex min-w-[300px] max-w-[440px] flex-1 flex-col gap-[22px]">
-          <div className={kicker}>The material</div>
-          <h2 className="font-sans text-[clamp(28px,3.4vw,40px)] font-bold uppercase leading-[1.1] tracking-tight text-ink">
-            Solid metal.
-            <br />
-            <em className="font-display font-medium normal-case italic tracking-normal">
-              Built to outlast paper.
-            </em>
+      {/* 6 · Sign-off — Made in India, a single compact band */}
+      <section className="container-page flex flex-wrap items-center justify-between gap-x-[clamp(32px,4vw,56px)] gap-y-7 py-[clamp(40px,5vw,64px)]">
+        <div className="flex min-w-[300px] max-w-[620px] flex-1 flex-col gap-3">
+          <div className={kicker}>Where we come from</div>
+          <h2 className="font-sans text-[24px] sm:text-[32px] font-bold uppercase leading-[36px] tracking-tight text-ink">
+            Proudly made in India.{" "}
+            <em className={accentRed}>Built in Bengaluru.</em>
           </h2>
           <p className="text-base leading-[1.7] text-ink/70">
-            Each piece is printed directly onto rigid steel with UV-cured inks
-            — colours that never fade, edges that never curl, a matte finish
-            that reads like a gallery print.
+            This is only the beginning &mdash; for Wallmeri, for the artists
+            already creating with us, and for the thousands of talented
+            creators we are yet to discover.
           </p>
-          <div className="flex flex-wrap gap-10 pt-2">
-            <div>
-              <div className="text-2xl font-bold text-ink">10+ yrs</div>
-              <div className="text-[11px] uppercase tracking-[0.1em] text-ink/50">
-                Colour guarantee
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-ink">100%</div>
-              <div className="text-[11px] uppercase tracking-[0.1em] text-ink/50">
-                Recyclable steel
-              </div>
-            </div>
-          </div>
+        </div>
+        <div className="flex flex-wrap gap-3.5">
+          <Link
+            href="/catalog"
+            className="inline-flex h-[52px] items-center justify-center bg-premium-600 px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-ink"
+          >
+            Shop the gallery
+          </Link>
+          <Link
+            href="/artists/join"
+            className="inline-flex h-[52px] items-center justify-center border border-ink px-9 text-xs font-semibold uppercase tracking-[0.06em] text-ink transition-colors hover:bg-ink hover:text-cream"
+          >
+            Become a Wallmeri artist
+          </Link>
         </div>
       </section>
     </div>

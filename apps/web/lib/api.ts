@@ -5,8 +5,13 @@ import type {
   AuthResponse,
   Category,
   CreatePaymentResponse,
+  CropRect,
+  CustomItem,
+  CustomReviewOrder,
   MyReview,
   Order,
+  Orientation,
+  PosterSize,
   Product,
   ProductList,
   Quote,
@@ -17,6 +22,15 @@ import type {
   TokenPair,
   UploadResult,
 } from "./types";
+
+// A cart line is either a catalog product or a custom-upload design —
+// exactly one id is set (mirrors the backend's CartItemIn validator).
+export interface CheckoutLine {
+  product_id?: number;
+  custom_upload_id?: number;
+  size_code?: string;
+  qty: number;
+}
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
@@ -48,6 +62,19 @@ export class ApiError extends Error {
   }
 }
 
+// Fired whenever an authenticated request comes back 401 (expired/invalid
+// token). A listener mounted near the app root (see AuthExpiredListener)
+// clears auth state and bounces the user to /login. Dispatched as a DOM
+// event rather than calling the zustand store directly so this module
+// doesn't have to import the auth store (which itself imports setTokens
+// from here).
+export const UNAUTHORIZED_EVENT = "wallmeri:unauthorized";
+
+function notifyUnauthorized() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
+}
+
 async function request<T>(
   path: string,
   options: RequestInit & { auth?: boolean } = {},
@@ -73,6 +100,7 @@ async function request<T>(
   const data = text ? JSON.parse(text) : null;
 
   if (!res.ok) {
+    if (res.status === 401 && auth) notifyUnauthorized();
     const detail =
       (data && (data.detail || data.message)) || `Request failed (${res.status})`;
     const message = Array.isArray(detail)
@@ -141,17 +169,49 @@ export const api = {
     }),
 
   // Checkout
-  quote: (items: { product_id: number; qty: number }[]) =>
+  quote: (items: CheckoutLine[]) =>
     request<Quote>(`/checkout/quote`, {
       method: "POST",
       body: JSON.stringify({ items }),
     }),
   createPayment: (body: {
     email: string;
-    items: { product_id: number; qty: number }[];
+    items: CheckoutLine[];
     shipping_address: ShippingAddress;
   }) =>
     request<CreatePaymentResponse>(`/checkout/create-payment`, {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+
+  // Admin-managed size -> price tiers. Shared by regular catalog products
+  // (product page size picker) and "Create your own" custom uploads below.
+  posterSizes: () => request<PosterSize[]>(`/custom/sizes`),
+
+  // Custom poster upload ("Create your own") — guest-friendly, joins the
+  // shared cart/checkout as a custom_upload_id line (see CheckoutLine).
+  customUpload: async (file: File): Promise<UploadResult> => {
+    const form = new FormData();
+    form.append("file", file);
+    const token = getAccessToken();
+    const res = await fetch(`${BASE_URL}/custom/uploads`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: form,
+    });
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      if (res.status === 401 && token) notifyUnauthorized();
+      throw new ApiError(
+        (data && (data.detail || data.message)) || `Upload failed (${res.status})`,
+        res.status,
+      );
+    }
+    return data as UploadResult;
+  },
+  customCreateItem: (body: { media_id: number; size_code: string; orientation: Orientation; crop: CropRect }) =>
+    request<CustomItem>(`/custom/items`, {
       method: "POST",
       auth: true,
       body: JSON.stringify(body),
@@ -216,6 +276,7 @@ export const api = {
     });
     const data = await res.json().catch(() => null);
     if (!res.ok) {
+      if (res.status === 401) notifyUnauthorized();
       throw new ApiError(
         (data && (data.detail || data.message)) || `Upload failed (${res.status})`,
         res.status,
@@ -269,4 +330,52 @@ export const api = {
       auth: true,
       body: JSON.stringify(body),
     }),
+
+  adminListPosterSizes: () => request<PosterSize[]>(`/admin/poster-sizes`, { auth: true }),
+  adminCreatePosterSize: (body: {
+    code: string;
+    label: string;
+    width_cm: number;
+    height_cm: number;
+    price_inr: number;
+    delta_inr: number;
+    is_enabled: boolean;
+    position: number;
+  }) =>
+    request<PosterSize>(`/admin/poster-sizes`, {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+  adminUpdatePosterSize: (id: number, body: Record<string, unknown>) =>
+    request<PosterSize>(`/admin/poster-sizes/${id}`, {
+      method: "PATCH",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+
+  adminListCustomReview: () => request<CustomReviewOrder[]>(`/admin/custom-review`, { auth: true }),
+  adminCustomReview: (orderId: number, body: { action: "approve" | "reject"; note: string }) =>
+    request<Order>(`/admin/orders/${orderId}/custom-review`, {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+  adminDownloadPrintFile: async (customUploadId: number, filename: string) => {
+    const token = getAccessToken();
+    const res = await fetch(`${BASE_URL}/admin/custom-items/${customUploadId}/print-file`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
+    if (!res.ok) {
+      if (res.status === 401) notifyUnauthorized();
+      throw new ApiError(`Download failed (${res.status})`, res.status);
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
 };

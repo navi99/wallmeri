@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 
-import { Button } from "@/components/ui";
-import { useCart } from "@/lib/store/cart";
+import { Badge, Button } from "@/components/ui";
+import { lineId, useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
 
 const FREE_SHIPPING = 2999;
@@ -23,6 +23,7 @@ export default function CartPage() {
   const subtotal = items.reduce((n, i) => n + i.price_inr * i.qty, 0);
   const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING ? 0 : FLAT_SHIPPING;
   const total = subtotal + shipping;
+  const hasCustom = items.some((i) => i.kind === "custom");
 
   if (!mounted) {
     return <div className="container-page py-24" />;
@@ -49,56 +50,76 @@ export default function CartPage() {
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
-          {items.map((item) => (
-            <div
-              key={item.product_id}
-              className="flex gap-4 rounded-2xl border border-brand-100 bg-paper p-4"
-            >
-              <Link
-                href={`/product/${item.slug}`}
-                className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-brand-50"
-              >
+          {items.map((item) => {
+            const id = lineId(item);
+            const thumb = (
+              <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-brand-50">
                 <Image src={item.image_url} alt={item.title} fill className="object-cover" sizes="80px" />
-              </Link>
-              <div className="flex flex-1 flex-col">
-                <div className="flex items-start justify-between gap-3">
-                  <Link href={`/product/${item.slug}`} className="font-semibold text-ink hover:text-brand-600">
-                    {item.title}
+              </div>
+            );
+            return (
+              <div key={id} className="flex gap-4 rounded-2xl border border-brand-100 bg-paper p-4">
+                {item.kind === "product" ? (
+                  <Link href={`/product/${item.slug}`} className="shrink-0 overflow-hidden rounded-xl">
+                    {thumb}
                   </Link>
-                  <button
-                    onClick={() => remove(item.product_id)}
-                    className="text-muted hover:text-brand-600"
-                    aria-label={`Remove ${item.title}`}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-                <p className="text-sm text-muted">{formatINR(item.price_inr)} each</p>
-                <div className="mt-auto flex items-center justify-between pt-3">
-                  <div className="flex items-center rounded-lg border border-brand-200">
+                ) : (
+                  thumb
+                )}
+                <div className="flex flex-1 flex-col">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      {item.kind === "product" ? (
+                        <Link href={`/product/${item.slug}`} className="font-semibold text-ink hover:text-brand-600">
+                          {item.title}
+                        </Link>
+                      ) : (
+                        <span className="font-semibold text-ink">{item.title}</span>
+                      )}
+                      {item.kind === "custom" && (
+                        <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                          <Badge tone="neutral">Custom design</Badge>
+                          {item.dpi_band === "warning" && (
+                            <Badge tone="attention">May look soft when printed</Badge>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     <button
-                      onClick={() => setQty(item.product_id, item.qty - 1)}
-                      className="grid h-9 w-9 place-items-center text-ink hover:bg-brand-50"
-                      aria-label="Decrease quantity"
+                      onClick={() => remove(id)}
+                      className="text-muted hover:text-brand-600"
+                      aria-label={`Remove ${item.title}`}
                     >
-                      <Minus className="h-3.5 w-3.5" />
-                    </button>
-                    <span className="w-8 text-center text-sm font-semibold">{item.qty}</span>
-                    <button
-                      onClick={() => setQty(item.product_id, item.qty + 1)}
-                      className="grid h-9 w-9 place-items-center text-ink hover:bg-brand-50"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus className="h-3.5 w-3.5" />
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
-                  <span className="font-bold text-ink">
-                    {formatINR(item.price_inr * item.qty)}
-                  </span>
+                  <p className="text-sm text-muted">{formatINR(item.price_inr)} each</p>
+                  <div className="mt-auto flex items-center justify-between pt-3">
+                    <div className="flex items-center rounded-lg border border-brand-200">
+                      <button
+                        onClick={() => setQty(id, item.qty - 1)}
+                        className="grid h-9 w-9 place-items-center text-ink hover:bg-brand-50"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus className="h-3.5 w-3.5" />
+                      </button>
+                      <span className="w-8 text-center text-sm font-semibold">{item.qty}</span>
+                      <button
+                        onClick={() => setQty(id, item.qty + 1)}
+                        className="grid h-9 w-9 place-items-center text-ink hover:bg-brand-50"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                    <span className="font-bold text-ink">
+                      {formatINR(item.price_inr * item.qty)}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <aside className="h-fit rounded-2xl border border-brand-100 bg-paper p-6">
@@ -117,6 +138,11 @@ export default function CartPage() {
             {shipping > 0 && (
               <p className="rounded-lg bg-brand-50 px-3 py-2 text-xs text-brand-600">
                 Add {formatINR(FREE_SHIPPING - subtotal)} more for free shipping.
+              </p>
+            )}
+            {hasCustom && (
+              <p className="rounded-lg bg-brand-50 px-3 py-2 text-xs text-brand-600">
+                Custom designs are reviewed before printing — usually within 1-2 business days.
               </p>
             )}
             <div className="flex justify-between border-t border-brand-100 pt-3 text-base">

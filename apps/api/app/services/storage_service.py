@@ -106,6 +106,42 @@ def public_url(key: str) -> str:
     return f"{settings.PUBLIC_API_BASE_URL.rstrip('/')}/uploads/{key}"
 
 
+def read_bytes(key: str) -> bytes:
+    """Fetch a previously stored object's raw bytes (e.g. an original, to
+    re-crop for a custom-upload preview or print file)."""
+    if is_s3_configured():
+        obj = _s3_client().get_object(Bucket=settings.S3_BUCKET, Key=key)
+        return obj["Body"].read()
+    return (Path(settings.UPLOADS_DIR) / key).read_bytes()
+
+
+def crop_to_jpeg(data: bytes, x: int, y: int, width: int, height: int, max_px: int | None = None) -> bytes:
+    """Crop a region (source pixels) out of an image and re-encode as JPEG.
+
+    Callers are responsible for clamping (x, y, width, height) to the source
+    image's bounds — see app.services.custom_upload_service.
+    """
+    img = Image.open(io.BytesIO(data))
+    img.load()
+    if img.mode not in ("RGB", "L"):
+        img = img.convert("RGB")
+    cropped = img.crop((x, y, x + width, y + height))
+    if max_px is not None:
+        cropped.thumbnail((max_px, max_px))
+    out = io.BytesIO()
+    cropped.save(out, format="JPEG", quality=JPEG_QUALITY, optimize=True)
+    return out.getvalue()
+
+
+def store_bytes(kind: str, data: bytes, suffix: str, content_type: str = "image/jpeg") -> str:
+    """Write an already-encoded image under a fresh token key. Returns the key."""
+    token = secrets.token_hex(8)
+    ext = "jpg" if content_type == "image/jpeg" else content_type.split("/")[-1]
+    key = f"{kind}/{token}_{suffix}.{ext}"
+    _put(key, data, content_type)
+    return key
+
+
 def delete_keys(keys: list[str]) -> None:
     """Delete storage objects. Tolerant of keys that are already gone."""
     keys = [k for k in keys if k]

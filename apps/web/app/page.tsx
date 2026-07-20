@@ -1,9 +1,12 @@
 import Image from "@/components/app-image";
 import Link from "next/link";
 
+import { FeaturedArtists } from "@/components/home-featured-artists";
+import { ShopByCategory } from "@/components/home-shop-by-category";
+
 const kicker =
   "text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-600";
-const kickerOnRed =
+const kickerOnDark =
   "text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100";
 const sectionHeading =
   "font-sans text-[32px] sm:text-[40px] font-bold uppercase leading-[44px] tracking-tight text-ink";
@@ -26,78 +29,46 @@ const heroSlides = [
   },
 ];
 
-const steps = [
+const trustBar = [
+  "Curated Indian artists",
+  "Free shipping over ₹2,999",
+  "Secure Razorpay checkout",
+  "Made in India",
+];
+
+const howItWorks = [
   {
     n: "01",
-    title: "Discover",
-    body: "We find and curate original Indian artists whose work deserves more than a scroll. No self-serve uploads, no algorithmic feed.",
+    title: "Browse",
+    body: "Discover original art, curated not crowd-sourced.",
   },
   {
     n: "02",
-    title: "License & reward",
-    body: "Artists license their work through a simple, fair agreement and earn on every single sale, with their name on every piece.",
+    title: "Order",
+    body: "Printed to order on premium metal, made in India.",
   },
   {
     n: "03",
-    title: "Print on metal",
-    body: "Each artwork is sublimation-printed onto premium metal with colours fused into the surface, made to order in India.",
-  },
-  {
-    n: "04",
-    title: "Find a wall",
-    body: "The piece ships across India and snaps onto a magnetic mount, going from an artist's screen to a wall where it's actually seen.",
+    title: "Hang",
+    body: "Snaps onto a magnetic mount. No tools, no wall damage.",
   },
 ];
 
-const materialFacts = [
-  {
-    title: "Premium metal",
-    body: "A rigid, lightweight 1 mm aluminium sheet with a distinctive modern finish. Aluminium, not paper.",
-  },
-  {
-    title: "Sublimation print",
-    body: "Colours are fused into the surface for sharp, vivid, long-lasting artwork.",
-  },
-  {
-    title: "Magnetic mounting",
-    body: "One magnet on the poster, one on the wall — no drilling, no damage. Swap artwork in seconds.",
-  },
-];
-
-const values = [
+const whyWallmeri = [
   {
     n: "01",
-    title: "Fair pay",
-    body: "Every decision starts with the question: does this serve the artist? Attribution, fair earnings, and a dignified stage are non-negotiable.",
+    title: "Not paper, not canvas",
+    body: "1mm premium aluminium, sublimation-printed for sharp, long-lasting colour.",
   },
   {
     n: "02",
-    title: "Honest quality",
-    body: "We oversee materials, printing and packaging ourselves. If a piece wouldn't hang on our own wall, it doesn't ship to yours.",
+    title: "No drilling",
+    body: "A magnetic mount lets you hang or swap art in seconds.",
   },
   {
     n: "03",
-    title: "Responsible growth",
-    body: "We build slowly and deliberately, prioritising a curated catalog and honest relationships over scale for its own sake.",
-  },
-];
-
-const vision = [
-  {
-    label: "Today",
-    body: "Original Indian art on premium metal, curated piece by piece.",
-  },
-  {
-    label: "Next",
-    body: "More artists, more mediums, more walls across India.",
-  },
-  {
-    label: "Growing",
-    body: "A stronger stage for independent Indian creativity, one collection at a time.",
-  },
-  {
-    label: "Always",
-    body: "Back to artists: the recognition and reward they deserve.",
+    title: "Every artist credited and paid fairly",
+    body: "No algorithmic feed, no self-serve uploads.",
   },
 ];
 
@@ -108,28 +79,26 @@ export default function HomePage() {
       <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,96px)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
           <div className="flex min-w-[300px] flex-[1.4] flex-col items-start gap-6">
-            <div className={kickerOnRed}>The Wallmeri story</div>
-            <h1 className="font-sans text-[40px] sm:text-[56px] lg:text-[64px] font-bold uppercase leading-[68px] tracking-tight text-cream">
-              Every artist deserves{" "}
-              <em className={`${accent} text-cream`}>a wall.</em>
+            <h1 className="font-sans text-[40px] sm:text-[56px] lg:text-[64px] font-bold uppercase leading-[68px] tracking-tight text-cream [word-spacing:0.1em]">
+              Every wall deserves{" "}
+              <em className={`${accent} text-cream`}>an art.</em>
             </h1>
             <p className="max-w-[560px] text-[16px] leading-[1.7] text-cream/90">
-              We turn original Indian creativity into premium metal art,
-              helping artists get discovered, recognised and rewarded, while
-              giving every home a wall that means something.
+              Premium metal art from independent Indian artists —
+              sublimation-printed, magnetic-mounted, no drilling required.
             </p>
             <div className="mt-2 flex flex-wrap gap-3.5">
               <Link
                 href="/catalog"
                 className="inline-flex h-[52px] items-center justify-center bg-ink px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-cream hover:text-ink"
               >
-                Explore the art
+                Shop the gallery
               </Link>
               <Link
-                href="/artists/join"
+                href="/artists"
                 className="inline-flex h-[52px] items-center justify-center border border-cream/50 px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
               >
-                Join as an artist
+                Meet the artists
               </Link>
             </div>
           </div>
@@ -156,160 +125,138 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2 · Our story — the problem, then the answer, told once */}
-      <section className="container-page flex flex-wrap items-start gap-x-[clamp(40px,5vw,72px)] gap-y-8 py-[clamp(56px,7vw,96px)]">
-        <div className="flex min-w-[300px] max-w-[440px] flex-1 flex-col gap-4">
-          <div className={kicker}>Our story</div>
-          <h2 className={sectionHeading}>
-            Thousands create.{" "}
-            <em className={accentRed}>Too few get seen.</em>
-          </h2>
-        </div>
-        <div className="flex min-w-[300px] max-w-[520px] flex-1 flex-col gap-[22px]">
-          <p className="text-base leading-[1.7] text-ink/70">
-            Every day, talented Indian artists create work full of emotion,
-            skill and identity, yet much of it remains trapped on a screen:
-            seen for a few seconds, liked, and eventually lost in an endless
-            feed.
-          </p>
-          <p className="text-base font-semibold leading-[1.7] text-ink">
-            That felt wrong to us. So we built Wallmeri, a bridge between
-            Indian artists and the walls their work belongs on.
-          </p>
+      {/* 2 · Trust bar — the badges buyers need before they'll browse, promoted up from the footer */}
+      <section className="border-b border-ink/10 bg-paper">
+        <div className="container-page flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 py-5 text-center">
+          {trustBar.map((item, i) => (
+            <span key={item} className="flex items-center gap-2.5">
+              {i > 0 && <span className="text-premium-600">●</span>}
+              <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/70">
+                {item}
+              </span>
+            </span>
+          ))}
         </div>
       </section>
 
-      {/* 3 · Mission — the statement, with our values as its supporting bullets */}
-      <section className="container-page flex flex-wrap items-start gap-[clamp(40px,5vw,72px)] pb-[clamp(56px,7vw,96px)]">
-        <div className="flex min-w-[300px] max-w-[520px] flex-1 flex-col gap-[22px]">
-          <div className={kicker}>Our mission</div>
+      {/* 3 · How it works — three steps, no more */}
+      <section className="container-page py-[clamp(56px,7vw,96px)]">
+        <div className="mb-14 max-w-[560px]">
+          <div className={`${kicker} mb-4`}>How it works</div>
           <h2 className={sectionHeading}>
-            Our mission is <em className={accentRed}>simple.</em>
+            Browse. Order. <em className={accentRed}>Hang.</em>
           </h2>
-          <p className="text-base leading-[1.7] text-ink/70">
-            Give independent Indian artists a fair way to turn their work into
-            recognition and income &mdash; and help people put something
-            genuine, personal and meaningful on their walls.
-          </p>
-          <p className="text-base font-semibold leading-[1.7] text-ink">
-            Every purchase helps creative work find a home.
-          </p>
         </div>
-        <div className="grid min-w-[280px] flex-1 gap-5">
-          {values.map((v) => (
-            <div key={v.n} className="border border-ink/10 bg-paper p-7">
-              <div className="flex items-baseline gap-4">
-                <div className="font-display text-[32px] italic leading-none text-premium-600">
-                  {v.n}
-                </div>
-                <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
-                  {v.title}
-                </div>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-x-10 gap-y-12">
+          {howItWorks.map((step) => (
+            <div key={step.n} className="flex flex-col gap-4">
+              <div className="font-display text-[52px] italic leading-none text-premium-600">
+                {step.n}
               </div>
-              <p className="mt-3 text-[15px] leading-[1.7] text-muted">{v.body}</p>
+              <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
+                {step.title}
+              </div>
+              <p className="text-[15px] leading-[1.7] text-muted">{step.body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 4 · How it works — the four steps, with the material facts as supporting detail */}
+      {/* 4 · Shop by category — live catalog taxonomy */}
       <section className="border-y border-ink/10 bg-paper">
         <div className="container-page py-[clamp(56px,7vw,96px)]">
-          <div className="mb-14 max-w-[560px]">
-            <div className={`${kicker} mb-4`}>How it works</div>
+          <div className="mb-10 max-w-[560px]">
+            <div className={`${kicker} mb-4`}>Shop by category</div>
             <h2 className={sectionHeading}>
-              From an artist&apos;s screen{" "}
-              <em className={accentRed}>to your wall.</em>
+              Find your <em className={accentRed}>next wall.</em>
             </h2>
           </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-x-10 gap-y-12">
-            {steps.map((step) => (
-              <div key={step.n} className="flex flex-col gap-4">
-                <div className="font-display text-[52px] italic leading-none text-premium-600">
-                  {step.n}
-                </div>
-                <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
-                  {step.title}
-                </div>
-                <p className="text-[15px] leading-[1.7] text-muted">{step.body}</p>
+          <ShopByCategory />
+        </div>
+      </section>
+
+      {/* 5 · Featured artists — a rotating spotlight on the people behind the work, Noir ground so real photos read */}
+      <section className="bg-ink py-[clamp(56px,7vw,88px)]">
+        <div className="container-page mb-12 text-center">
+          <div className={`${kickerOnDark} mb-4`}>Featured artists</div>
+          <h2 className="font-sans text-[28px] sm:text-[36px] font-bold uppercase leading-[44px] tracking-tight text-cream">
+            Artists worth <em className={`${accent} text-cream`}>knowing.</em>
+          </h2>
+          <p className="mx-auto mt-3 max-w-[440px] text-base leading-[1.7] text-cream/60">
+            A rotating spotlight on the people behind the work.
+          </p>
+        </div>
+        <div className="container-page mb-11">
+          <FeaturedArtists />
+        </div>
+        <div className="text-center">
+          <Link
+            href="/artists"
+            className="inline-flex h-[52px] items-center justify-center border border-cream/40 px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
+          >
+            View all artists
+          </Link>
+        </div>
+      </section>
+
+      {/* 6 · Why Wallmeri — the strongest claims from About, surfaced on Home too */}
+      <section className="container-page flex flex-wrap items-center gap-[clamp(40px,5vw,72px)] py-[clamp(56px,7vw,96px)]">
+        <div className="relative h-[460px] min-w-[300px] flex-1 overflow-hidden">
+          <Image
+            src="https://images.unsplash.com/photo-1531913764164-f85c52e6e654?auto=format&fit=crop&w=900&q=80"
+            alt="Bold, colour-saturated abstract artwork, the kind of piece Wallmeri prints on metal"
+            fill
+            sizes="(max-width: 768px) 90vw, 460px"
+            className="object-cover"
+          />
+        </div>
+        <div className="flex min-w-[300px] max-w-[460px] flex-1 flex-col gap-7">
+          <div>
+            <div className={kicker}>Why Wallmeri</div>
+            <h2 className="mt-3 font-sans text-[28px] sm:text-[36px] font-bold uppercase leading-[1.1] tracking-tight text-ink">
+              Built to be <em className={accentRed}>collected.</em>
+            </h2>
+          </div>
+          <div className="flex flex-col">
+            {whyWallmeri.map((v, i) => (
+              <div
+                key={v.n}
+                className={`flex gap-5 border-t border-ink/15 py-[22px] ${
+                  i === whyWallmeri.length - 1 ? "border-b" : ""
+                }`}
+              >
+                <span className="font-display shrink-0 text-[15px] italic text-premium-600">
+                  {v.n}
+                </span>
+                <p className="text-[15px] leading-[1.6] text-muted">
+                  <span className="font-semibold text-ink">{v.title}.</span> {v.body}
+                </p>
               </div>
             ))}
           </div>
-          <div className="mt-14 border-t border-ink/10 pt-10">
-            <div className={`${kicker} mb-8`}>
-              The material &mdash; not paper, not canvas
-            </div>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-x-10 gap-y-8">
-              {materialFacts.map((item) => (
-                <div key={item.title}>
-                  <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink">
-                    {item.title}
-                  </div>
-                  <p className="mt-2.5 text-[15px] leading-[1.7] text-muted">
-                    {item.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* 5 · Vision — Premium Red drench, paired with Mission above */}
+      {/* 7 · Sell on Wallmeri — the artist-facing CTA, Premium Red drench mirroring the hero */}
       <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,88px)]">
-        <div className="mb-14 text-center">
-          <div className={`${kickerOnRed} mb-4`}>Our vision</div>
-          <h2 className="mx-auto max-w-[720px] font-sans text-[32px] sm:text-[40px] font-bold uppercase leading-[46px] tracking-tight text-cream [text-wrap:balance]">
-            A trusted home for Indian{" "}
-            <em className={`${accent} text-cream`}>creative work.</em>
+        <div className="mx-auto max-w-[720px] text-center">
+          <div className={`${kickerOnDark} mb-4`}>Sell on Wallmeri</div>
+          <h2 className="font-sans text-[32px] sm:text-[40px] font-bold uppercase leading-[46px] tracking-tight text-cream [text-wrap:balance]">
+            Your art. Your wall.{" "}
+            <em className={`${accent} text-cream`}>Your earnings.</em>
           </h2>
-          <p className="mx-auto mt-5 max-w-[560px] text-base leading-[1.7] text-cream/90">
-            A place where photographers, illustrators, designers and
-            independent creators of every kind get seen, credited and
-            rewarded.
+          <p className="mx-auto mt-5 max-w-[480px] text-base leading-[1.7] text-cream/90">
+            List your work and reach collectors who want something original on
+            their walls.
           </p>
-        </div>
-        <div className="mx-auto grid max-w-[1100px] grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-5">
-          {vision.map((v) => (
-            <div key={v.label} className="border border-cream/30 p-7">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-premium-100">
-                {v.label}
-              </div>
-              <p className="mt-3.5 text-[15px] leading-[1.7] text-cream/90">
-                {v.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 6 · Sign-off — Made in India, a single compact band */}
-      <section className="container-page flex flex-wrap items-center justify-between gap-x-[clamp(32px,4vw,56px)] gap-y-7 py-[clamp(40px,5vw,64px)]">
-        <div className="flex min-w-[300px] max-w-[620px] flex-1 flex-col gap-3">
-          <div className={kicker}>Where we come from</div>
-          <h2 className="font-sans text-[24px] sm:text-[32px] font-bold uppercase leading-[36px] tracking-tight text-ink">
-            Proudly made in India.{" "}
-            <em className={accentRed}>Built in Bengaluru.</em>
-          </h2>
-          <p className="text-base leading-[1.7] text-ink/70">
-            This is only the beginning &mdash; for Wallmeri, for the artists
-            already creating with us, and for the thousands of talented
-            creators we are yet to discover.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-3.5">
-          <Link
-            href="/catalog"
-            className="inline-flex h-[52px] items-center justify-center bg-premium-600 px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-ink"
-          >
-            Shop the gallery
-          </Link>
-          <Link
-            href="/artists/join"
-            className="inline-flex h-[52px] items-center justify-center border border-ink px-9 text-xs font-semibold uppercase tracking-[0.06em] text-ink transition-colors hover:bg-ink hover:text-cream"
-          >
-            Become a Wallmeri artist
-          </Link>
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/artists/join"
+              className="inline-flex h-[52px] items-center justify-center bg-ink px-9 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-cream hover:text-ink"
+            >
+              Join as an artist
+            </Link>
+          </div>
         </div>
       </section>
     </div>

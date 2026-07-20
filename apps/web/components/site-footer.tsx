@@ -4,15 +4,20 @@ const colHeading =
   "text-xs font-semibold uppercase tracking-[0.06em] text-cream";
 const colLink = "text-sm text-cream/65 transition-colors hover:text-cream";
 
+const trustBadges = [
+  "Free shipping over ₹2,999",
+  "Secure Razorpay checkout",
+  "Made in India",
+];
+
 export function SiteFooter() {
   return (
     <footer className="mt-16 bg-ink text-cream">
       <div className="container-page flex flex-wrap items-start justify-between gap-12 py-14">
         <div className="flex flex-col gap-3.5">
           <div className="text-lg font-semibold tracking-[0.08em]">WALLMERI</div>
-          <p className="max-w-[280px] text-sm leading-relaxed text-cream/50">
-            Premium metal posters, crafted and shipped across India. Designed
-            to be collected.
+          <p className="font-display max-w-[280px] text-base italic leading-relaxed text-cream/70">
+            Designed to be collected.
           </p>
         </div>
 
@@ -65,20 +70,25 @@ export function SiteFooter() {
             <Link href="/artists/join" className={colLink}>
               Become a Wallmeri artist
             </Link>
-            <span className="text-sm text-cream/65">
-              Free shipping over ₹2,999
-            </span>
-            <span className="text-sm text-cream/65">
-              Secure Razorpay checkout
-            </span>
-            <span className="text-sm text-cream/65">Made in India</span>
           </div>
         </div>
       </div>
       <div className="border-t border-cream/10 py-5">
-        <p className="container-page text-center text-xs text-cream/35">
-          © {new Date().getFullYear()} Wallmeri. All rights reserved.
-        </p>
+        <div className="container-page flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-center sm:justify-between">
+          <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2">
+            {trustBadges.map((item, i) => (
+              <span key={item} className="flex items-center gap-2.5">
+                {i > 0 && <span className="text-premium-600">●</span>}
+                <span className="text-[10.5px] font-medium uppercase tracking-[0.12em] text-cream/50">
+                  {item}
+                </span>
+              </span>
+            ))}
+          </div>
+          <p className="text-xs text-cream/35">
+            © {new Date().getFullYear()} Wallmeri. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   );

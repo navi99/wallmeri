@@ -302,7 +302,7 @@ export function ProductForm({
 
           <div>
             <Label htmlFor="description">Description</Label>
-            <Textarea id="description" rows={3} {...register("description")} />
+            <Textarea id="description" rows={7} className="resize-y" {...register("description")} />
           </div>
 
           <div className="flex gap-6">

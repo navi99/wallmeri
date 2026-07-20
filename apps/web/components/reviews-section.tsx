@@ -132,12 +132,12 @@ export function ReviewsSection({ slug }: { slug: string }) {
       )}
       {eligibility && !eligibility.can_review && eligibility.reason === "not_delivered" && (
         <p className="mt-3 text-sm text-muted">
-          Reviews are open to customers after their order is delivered.
+          Reviews are available to verified customers once their order has been delivered.
         </p>
       )}
 
       {reviewsQuery.isLoading ? null : reviews.length === 0 ? (
-        <p className="mt-4 text-muted">No reviews yet — be the first once your order arrives.</p>
+        <p className="mt-4 text-muted">No reviews yet. Be the first to share your experience after your artwork arrives.</p>
       ) : (
         <ul className="mt-5 space-y-4">
           {reviews.map((r) => (

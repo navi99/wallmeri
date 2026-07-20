@@ -29,7 +29,7 @@ export function InstallGuide() {
       <h2 className="text-2xl font-bold text-ink">
         Installation <span className="font-display italic text-brand-600">Guide</span>
       </h2>
-      <p className="mt-1 text-sm text-muted">Magnet-mounted in four steps — no drilling, no damage.</p>
+      <p className="mt-1 text-sm text-muted">Installs in four simple steps. No drilling. No wall damage.</p>
 
       <div className="mt-6 grid gap-px overflow-hidden border border-ink/10 bg-ink/10 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((step) => (

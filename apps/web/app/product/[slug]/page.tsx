@@ -6,12 +6,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronLeft, Minus, Plus, ShieldCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
 
+import { BoxContents } from "@/components/box-contents";
 import { InstallGuide } from "@/components/install-guide";
 import { ProductGallery } from "@/components/product-gallery";
 import { ReviewsSection } from "@/components/reviews-section";
 import { SizePicker } from "@/components/custom/size-picker";
 import { Stars } from "@/components/stars";
 import { Badge, Button, Spinner } from "@/components/ui";
+import { WhyLoveIt } from "@/components/why-love-it";
 import { api, ApiError } from "@/lib/api";
 import { useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
@@ -142,7 +144,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           )}
           <p className="mt-3 text-3xl font-bold text-brand-600">{formatINR(displayPrice)}</p>
 
-          <p className="mt-5 leading-relaxed text-muted">{product.description}</p>
+          <p className="mt-5 whitespace-pre-wrap leading-relaxed text-muted">{product.description}</p>
 
           <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-xl border border-brand-100 bg-paper px-4 py-3">
@@ -196,6 +198,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </ul>
         </div>
       </div>
+
+      <WhyLoveIt />
+
+      <BoxContents />
 
       <InstallGuide />
 

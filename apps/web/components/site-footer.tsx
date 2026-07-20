@@ -16,9 +16,6 @@ export function SiteFooter() {
       <div className="container-page flex flex-wrap items-start justify-between gap-12 py-14">
         <div className="flex flex-col gap-3.5">
           <div className="text-lg font-semibold tracking-[0.08em]">WALLMERI</div>
-          <p className="font-display max-w-[280px] text-base italic leading-relaxed text-cream/70">
-            Designed to be collected.
-          </p>
         </div>
 
         <div className="flex flex-wrap gap-x-16 gap-y-10">
@@ -69,6 +66,22 @@ export function SiteFooter() {
             </a>
             <Link href="/artists/join" className={colLink}>
               Become a Wallmeri artist
+            </Link>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div className={`${colHeading} mb-1`}>Policies</div>
+            <Link href="/terms" className={colLink}>
+              Terms and conditions
+            </Link>
+            <Link href="/refund-policy" className={colLink}>
+              Refund and replacement policy
+            </Link>
+            <Link href="/shipping-policy" className={colLink}>
+              Shipping policy
+            </Link>
+            <Link href="/privacy-policy" className={colLink}>
+              Privacy policy
             </Link>
           </div>
         </div>

@@ -287,6 +287,17 @@ export default function CheckoutPage() {
           <p className="mt-3 text-center text-xs text-muted">
             Secured by Razorpay. UPI, cards, netbanking & wallets.
           </p>
+          <p className="mt-2 text-center text-xs text-muted">
+            By placing this order, you agree to our{" "}
+            <Link href="/terms" className="font-semibold text-premium-600 hover:underline">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/refund-policy" className="font-semibold text-premium-600 hover:underline">
+              Refund Policy
+            </Link>
+            .
+          </p>
           {hasCustom && (
             <p className="mt-3 text-center text-xs text-muted">
               Custom designs are reviewed before printing (1-2 business days) — no returns for

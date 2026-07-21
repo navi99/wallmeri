@@ -178,7 +178,7 @@ export function CategoriesTab() {
       </div>
       <p className="mt-3 text-xs text-muted">
         Hiding a category removes it from the storefront navigation; posters keep the tag. The
-        thumbnail sets the display poster shown on the storefront's category tile — leave it
+        thumbnail sets the display poster shown on the storefront&apos;s category tile — leave it
         empty for a plain gradient tile.
       </p>
     </div>

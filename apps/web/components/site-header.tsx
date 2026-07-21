@@ -51,9 +51,6 @@ export function SiteHeader() {
       {/* Blur lives on its own layer so the sticky header's text isn't
           co-rasterized with the GPU-composited backdrop-filter surface. */}
       <div className="absolute inset-0 -z-10 bg-cream/95 backdrop-blur" aria-hidden="true" />
-      <p className="bg-ink px-4 py-2.5 text-center text-[11px] font-medium uppercase tracking-[0.07em] text-cream">
-        Free shipping across India on orders over ₹2,999
-      </p>
 
       <div className="container-page flex h-[72px] items-center gap-2 border-b border-ink/10 sm:gap-4">
         {/* Left: wordmark (desktop) / menu button + wordmark (mobile) */}

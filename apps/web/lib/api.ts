@@ -19,6 +19,7 @@ import type {
   ReviewAdmin,
   ReviewEligibility,
   ShippingAddress,
+  SiteImage,
   TokenPair,
   UploadResult,
 } from "./types";
@@ -122,6 +123,7 @@ export const api = {
   },
   getProduct: (slug: string) => request<Product>(`/products/${slug}`),
   listCategories: () => request<Category[]>(`/categories`),
+  listSiteImages: () => request<SiteImage[]>(`/site-images`),
 
   // Artists
   listArtists: () => request<Artist[]>(`/artists`),
@@ -263,7 +265,7 @@ export const api = {
 
   adminUpload: async (
     file: File,
-    kind: "product" | "avatar" = "product",
+    kind: "product" | "avatar" | "category" | "site" = "product",
   ): Promise<UploadResult> => {
     const form = new FormData();
     form.append("file", file);
@@ -286,17 +288,28 @@ export const api = {
   },
 
   adminListCategories: () => request<Category[]>(`/admin/categories`, { auth: true }),
-  adminCreateCategory: (body: { name: string }) =>
+  adminCreateCategory: (body: Record<string, unknown>) =>
     request<Category>(`/admin/categories`, {
       method: "POST",
       auth: true,
       body: JSON.stringify(body),
     }),
-  adminUpdateCategory: (id: number, body: { name?: string; is_active?: boolean }) =>
+  adminUpdateCategory: (id: number, body: Record<string, unknown>) =>
     request<Category>(`/admin/categories/${id}`, {
       method: "PATCH",
       auth: true,
       body: JSON.stringify(body),
+    }),
+
+  adminListSiteImages: () => request<SiteImage[]>(`/admin/site-images`, { auth: true }),
+  adminUpdateSiteImageSlot: (
+    slot: string,
+    images: { image_id: number | null; image_url: string; alt_text: string }[],
+  ) =>
+    request<SiteImage[]>(`/admin/site-images/${slot}`, {
+      method: "PUT",
+      auth: true,
+      body: JSON.stringify({ images }),
     }),
 
   adminListArtists: () => request<ArtistAdmin[]>(`/admin/artists`, { auth: true }),

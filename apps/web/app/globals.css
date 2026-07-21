@@ -36,39 +36,6 @@ body {
   }
 }
 
-/* About hero slider: CSS-only crossfade, 3 slides × 4s each (12s cycle).
-   Slides are stacked absolutely; each fades in/out on a staggered delay. */
-.about-slide {
-  opacity: 0;
-  animation: about-slide-fade 12s linear infinite;
-}
-.about-slide:first-child {
-  opacity: 1;
-}
-@keyframes about-slide-fade {
-  0% {
-    opacity: 1;
-  }
-  29% {
-    opacity: 1;
-  }
-  37% {
-    opacity: 0;
-  }
-  92% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  /* Static alternative: hold the first slide, never cycle. */
-  .about-slide {
-    animation: none;
-  }
-}
-
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;

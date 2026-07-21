@@ -1,13 +1,14 @@
 "use client";
 
+import Image from "@/components/app-image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
 import { api } from "@/lib/api";
 
-// Categories have no admin-set imagery yet, so each tile gets a deterministic
-// gradient from this palette (cycled by index) rather than a generic text box —
-// keeps the grid feeling like art, not a filter list.
+// A category without an admin-set display poster gets a deterministic
+// gradient from this palette (cycled by index) rather than a generic text
+// box — keeps the grid feeling like art, not a filter list.
 const tileGradients = [
   "linear-gradient(180deg,#4a4340 0%,#241f1e 100%)",
   "linear-gradient(160deg,#b32624 0%,#2e0503 100%)",
@@ -38,10 +39,22 @@ export function ShopByCategory() {
               href={`/category/${c.slug}`}
               className="group flex flex-col gap-3 transition-transform duration-300 hover:-translate-y-1.5"
             >
-              <div
-                className="h-[280px] shadow-card transition-shadow duration-300 group-hover:shadow-lift"
-                style={{ background: tileGradients[i % tileGradients.length] }}
-              />
+              {c.poster_image_url ? (
+                <div className="relative h-[280px] overflow-hidden shadow-card transition-shadow duration-300 group-hover:shadow-lift">
+                  <Image
+                    src={c.poster_image_url}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 20vw, 45vw"
+                  />
+                </div>
+              ) : (
+                <div
+                  className="h-[280px] shadow-card transition-shadow duration-300 group-hover:shadow-lift"
+                  style={{ background: tileGradients[i % tileGradients.length] }}
+                />
+              )}
               <span className="text-[15px] font-semibold uppercase tracking-[0.06em] text-ink">
                 {c.name}
               </span>

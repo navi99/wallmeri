@@ -1,7 +1,7 @@
-import Image from "@/components/app-image";
 import Link from "next/link";
 
 import { FeaturedArtists } from "@/components/home-featured-artists";
+import { HomeHeroSlideshow, SingleSiteImage } from "@/components/site-image-banner";
 import { ShopByCategory } from "@/components/home-shop-by-category";
 
 const kicker =
@@ -14,27 +14,7 @@ const accent =
   "font-display font-medium normal-case italic tracking-normal";
 const accentRed = `${accent} text-premium-600`;
 
-const heroSlides = [
-  {
-    src: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=880&q=80",
-    alt: "Framed art glowing on a dark living-room wall, lit like a gallery",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1554907984-15263bfd63bd?auto=format&fit=crop&w=880&q=80",
-    alt: "A single framed print hung on a bright, quiet wall",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=880&q=80",
-    alt: "Wall art anchoring a warm contemporary living room",
-  },
-];
-
-const trustBar = [
-  "Curated Indian artists",
-  "Free shipping over ₹2,999",
-  "Secure Razorpay checkout",
-  "Made in India",
-];
+const trustBar = ["Curated Indian artists", "Secure Razorpay checkout", "Made in India"];
 
 const howItWorks = [
   {
@@ -107,18 +87,7 @@ export default function HomePage() {
           <div className="mx-auto w-full min-w-[264px] max-w-[400px] flex-1">
             <div className="bg-ink p-[14px] shadow-[0_30px_60px_rgba(27,23,23,0.35)]">
               <div className="relative aspect-[3/4] overflow-hidden">
-                {heroSlides.map((slide, i) => (
-                  <Image
-                    key={slide.src}
-                    src={slide.src}
-                    alt={slide.alt}
-                    fill
-                    priority={i === 0}
-                    sizes="(max-width: 640px) 90vw, 400px"
-                    className="about-slide object-cover"
-                    style={{ animationDelay: `${i * 4}s` }}
-                  />
-                ))}
+                <HomeHeroSlideshow />
               </div>
             </div>
           </div>
@@ -202,12 +171,10 @@ export default function HomePage() {
       {/* 6 · Why Wallmeri — the strongest claims from About, surfaced on Home too */}
       <section className="container-page flex flex-wrap items-center gap-[clamp(40px,5vw,72px)] py-[clamp(56px,7vw,96px)]">
         <div className="relative h-[460px] min-w-[300px] flex-1 overflow-hidden">
-          <Image
-            src="https://images.unsplash.com/photo-1531913764164-f85c52e6e654?auto=format&fit=crop&w=900&q=80"
-            alt="Bold, colour-saturated abstract artwork, the kind of piece Wallmeri prints on metal"
-            fill
+          <SingleSiteImage
+            slot="home_why_wallmeri"
             sizes="(max-width: 768px) 90vw, 460px"
-            className="object-cover"
+            emptyClassName="bg-gradient-to-br from-brand-50 to-brand-200"
           />
         </div>
         <div className="flex min-w-[300px] max-w-[460px] flex-1 flex-col gap-7">

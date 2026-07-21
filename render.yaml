@@ -46,8 +46,6 @@ services:
         sync: false
       - key: SHIPPING_FLAT_INR
         value: "99"
-      - key: FREE_SHIPPING_THRESHOLD_INR
-        value: "2999"
       # Public base URLs — used to build image/upload URLs and links in emails.
       # Update if your service names/domains differ.
       - key: PUBLIC_API_BASE_URL

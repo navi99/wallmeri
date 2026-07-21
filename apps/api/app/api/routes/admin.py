@@ -10,6 +10,7 @@ from app.core.deps import get_current_admin
 from app.core.utils import slugify
 from app.models import (
     ORDER_TRANSITIONS,
+    SITE_IMAGE_SLOTS,
     ApplicationStatus,
     Artist,
     ArtistApplication,
@@ -26,6 +27,7 @@ from app.models import (
     ProductImage,
     Review,
     ReviewStatus,
+    SiteImage,
 )
 from app.schemas.artist import (
     ApplicationOut,
@@ -41,6 +43,9 @@ from app.schemas.catalog import (
     ProductCreate,
     ProductOut,
     ProductUpdate,
+    SiteImageIn,
+    SiteImageOut,
+    SiteImageSlotUpdate,
     UploadOut,
 )
 from app.schemas.custom import (
@@ -264,12 +269,39 @@ def admin_list_categories(db: Session = Depends(get_db)):
     return db.query(Category).order_by(Category.name).all()
 
 
+def _apply_category_poster(
+    db: Session, category: Category, poster_image_id: int | None, poster_image_url: str | None
+) -> None:
+    """Mirror of _apply_artist_avatar for Category.poster_image_id/poster_image_url."""
+    old_asset_id = category.poster_image_id
+    if poster_image_id is not None:
+        if poster_image_id != old_asset_id:
+            asset = db.get(MediaAsset, poster_image_id)
+            if asset is None or asset.kind != MediaKind.category:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown poster_image_id"
+                )
+            media_service.attach(asset)
+            category.poster_image_id = asset.id
+            category.poster_image_url = storage_service.public_url(asset.web_key)
+    else:
+        category.poster_image_id = None
+        if poster_image_url is not None:
+            category.poster_image_url = poster_image_url
+
+    if old_asset_id is not None and old_asset_id != category.poster_image_id:
+        old_asset = db.get(MediaAsset, old_asset_id)
+        if old_asset is not None:
+            media_service.delete_asset(db, old_asset)
+
+
 @router.post("/categories", response_model=CategoryOut, status_code=status.HTTP_201_CREATED)
 def admin_create_category(payload: CategoryCreate, db: Session = Depends(get_db)):
     category = Category(
         name=payload.name.strip(),
         slug=_unique_slug(db, Category, payload.slug or payload.name),
     )
+    _apply_category_poster(db, category, payload.poster_image_id, payload.poster_image_url)
     db.add(category)
     db.commit()
     db.refresh(category)
@@ -282,11 +314,86 @@ def admin_update_category(category_id: int, payload: CategoryUpdate, db: Session
     if not category:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
     data = payload.model_dump(exclude_unset=True)
+    if "poster_image_id" in data:
+        _apply_category_poster(db, category, data.pop("poster_image_id"), data.pop("poster_image_url", None))
     for key, value in data.items():
         setattr(category, key, value)
     db.commit()
     db.refresh(category)
     return category
+
+
+# ── Site images ──────────────────────────────────────────────────────────────
+
+def _apply_site_images(db: Session, slot: str, items: list[SiteImageIn]) -> list[SiteImage]:
+    """Replace-all for one slot's ordered gallery — same shape as
+    _apply_product_images, scoped by slot instead of a product. Detaches and
+    deletes any attached MediaAsset this call drops from the slot; validates
+    against SITE_IMAGE_SLOTS (unknown slot, too many images) up front.
+    """
+    slot_def = SITE_IMAGE_SLOTS.get(slot)
+    if slot_def is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Unknown slot")
+    max_images = slot_def["max_images"]
+    if len(items) > max_images:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"\"{slot_def['label']}\" allows at most {max_images} image(s)",
+        )
+
+    existing = db.query(SiteImage).filter(SiteImage.slot == slot).order_by(SiteImage.position).all()
+    existing_by_asset = {si.image_id: si for si in existing if si.image_id is not None}
+    kept_asset_ids = {item.image_id for item in items if item.image_id is not None}
+
+    # Drop rows whose managed asset is no longer in the submitted list,
+    # freeing storage + the row itself.
+    for asset_id, si in existing_by_asset.items():
+        if asset_id not in kept_asset_ids:
+            db.delete(si)
+            media_service.delete_asset(db, si.image)
+
+    # Rows with no managed asset (a pasted URL) have no stable id to match
+    # against, so just clear all of these and rebuild fresh below.
+    for si in existing:
+        if si.image_id is None:
+            db.delete(si)
+    db.flush()
+
+    new_rows: list[SiteImage] = []
+    for position, item in enumerate(items):
+        if item.image_id is not None:
+            si = existing_by_asset.get(item.image_id)
+            if si is None:
+                asset = db.get(MediaAsset, item.image_id)
+                if asset is None or asset.kind != MediaKind.site:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown image_id"
+                    )
+                media_service.attach(asset)
+                si = SiteImage(slot=slot, image_id=asset.id, image=asset)
+                db.add(si)
+            si.image_url = storage_service.public_url(si.image.web_key)
+        else:
+            si = SiteImage(slot=slot, image_id=None, image_url=item.image_url)
+            db.add(si)
+        si.position = position
+        si.alt_text = item.alt_text
+        new_rows.append(si)
+
+    db.commit()
+    for si in new_rows:
+        db.refresh(si)
+    return new_rows
+
+
+@router.get("/site-images", response_model=list[SiteImageOut])
+def admin_list_site_images(db: Session = Depends(get_db)):
+    return db.query(SiteImage).order_by(SiteImage.slot, SiteImage.position).all()
+
+
+@router.put("/site-images/{slot}", response_model=list[SiteImageOut])
+def admin_update_site_images(slot: str, payload: SiteImageSlotUpdate, db: Session = Depends(get_db)):
+    return _apply_site_images(db, slot, payload.images)
 
 
 # ── Artists ──────────────────────────────────────────────────────────────────

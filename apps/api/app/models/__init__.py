@@ -1,6 +1,7 @@
 from app.models.user import User
 from app.models.category import Category
 from app.models.media import MediaAsset, MediaKind
+from app.models.site_image import SITE_IMAGE_SLOTS, SiteImage
 from app.models.product import Product, ProductImage, product_categories
 from app.models.artist import ApplicationStatus, Artist, ArtistApplication
 from app.models.review import Review, ReviewStatus
@@ -13,6 +14,8 @@ __all__ = [
     "Category",
     "MediaAsset",
     "MediaKind",
+    "SiteImage",
+    "SITE_IMAGE_SLOTS",
     "Product",
     "ProductImage",
     "product_categories",

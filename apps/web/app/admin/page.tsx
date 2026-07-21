@@ -15,6 +15,7 @@ import { OrdersTab } from "@/components/admin/orders-tab";
 import { PosterSizesTab } from "@/components/admin/poster-sizes-tab";
 import { ProductForm, type ProductFormValues } from "@/components/admin/product-form";
 import { ReviewsTab } from "@/components/admin/reviews-tab";
+import { SiteImagesTab } from "@/components/admin/site-images-tab";
 import { Badge, Button, Card, Spinner } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/store/auth";
@@ -30,6 +31,7 @@ const TABS = [
   "custom review",
   "poster sizes",
   "reviews",
+  "site content",
 ] as const;
 type Tab = (typeof TABS)[number];
 
@@ -225,6 +227,7 @@ export default function AdminPage() {
         {tab === "custom review" && <CustomReviewTab />}
         {tab === "poster sizes" && <PosterSizesTab />}
         {tab === "reviews" && <ReviewsTab />}
+        {tab === "site content" && <SiteImagesTab />}
       </div>
 
       {formOpen && categoriesQuery.data && artistsQuery.data && (

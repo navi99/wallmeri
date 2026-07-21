@@ -36,7 +36,7 @@ const sections: Section[] = [
   {
     title: "3. Shipping Charges",
     paragraphs: [
-      "Free shipping on orders above ₹2,999. Orders below this amount incur a flat shipping fee of ₹99, shown at checkout.",
+      "A flat shipping fee of ₹99 applies to all orders, shown at checkout.",
     ],
   },
   {

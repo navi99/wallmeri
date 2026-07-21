@@ -10,6 +10,11 @@ class CategoryOut(BaseModel):
     name: str
     slug: str
     is_active: bool = True
+    poster_image_url: str = ""
+    # Round-tripped so the admin edit form can tell "no managed poster" apart
+    # from "has one, just isn't being touched by this save" — mirrors
+    # ProductOut.image_id / ArtistAdminOut.avatar_id.
+    poster_image_id: Optional[int] = None
 
     model_config = {"from_attributes": True}
 
@@ -17,11 +22,15 @@ class CategoryOut(BaseModel):
 class CategoryCreate(BaseModel):
     name: str = Field(min_length=2, max_length=120)
     slug: Optional[str] = None
+    poster_image_url: Optional[str] = None
+    poster_image_id: Optional[int] = None
 
 
 class CategoryUpdate(BaseModel):
     name: Optional[str] = Field(default=None, min_length=2, max_length=120)
     is_active: Optional[bool] = None
+    poster_image_url: Optional[str] = None
+    poster_image_id: Optional[int] = None
 
 
 class ProductImageOut(BaseModel):
@@ -106,3 +115,33 @@ class UploadOut(BaseModel):
     thumb_url: str
     width: int
     height: int
+
+
+class SiteImageOut(BaseModel):
+    id: int
+    slot: str
+    position: int
+    image_url: str
+    image_id: Optional[int] = None
+    alt_text: str = ""
+
+    model_config = {"from_attributes": True}
+
+
+class SiteImageIn(BaseModel):
+    """One ordered gallery entry submitted to PUT /admin/site-images/{slot}.
+
+    Exactly one of image_id/image_url should carry the actual image — an
+    admin-uploaded asset sets image_id (image_url is ignored, recomputed
+    server-side from the asset), a pasted external URL sets image_url with
+    image_id left null. Mirrors ProductCreate.image_ids but per-entry since
+    each row also carries its own alt text.
+    """
+
+    image_id: Optional[int] = None
+    image_url: str = ""
+    alt_text: str = ""
+
+
+class SiteImageSlotUpdate(BaseModel):
+    images: list[SiteImageIn] = []

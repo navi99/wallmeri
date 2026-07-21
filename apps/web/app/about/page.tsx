@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Image from "@/components/app-image";
 import Link from "next/link";
+
+import { SingleSiteImage } from "@/components/site-image-banner";
 
 export const metadata: Metadata = {
   title: "About Us | Wallmeri",
@@ -119,14 +120,7 @@ export default function AboutPage() {
           <div className="mx-auto w-full min-w-[300px] max-w-[460px] flex-1">
             <div className="h-[500px] bg-ink p-3.5 shadow-card">
               <div className="relative h-full w-full">
-                <Image
-                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=920&q=80"
-                  alt="A single framed metal print anchoring a warm, modern living room"
-                  fill
-                  priority
-                  sizes="(max-width: 640px) 90vw, 460px"
-                  className="object-cover"
-                />
+                <SingleSiteImage slot="about_hero" sizes="(max-width: 640px) 90vw, 460px" priority />
               </div>
             </div>
           </div>

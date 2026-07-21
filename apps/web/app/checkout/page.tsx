@@ -16,7 +16,6 @@ import { useAuth } from "@/lib/store/auth";
 import { lineId, useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
 
-const FREE_SHIPPING = 2999;
 const FLAT_SHIPPING = 99;
 
 const schema = z.object({
@@ -72,7 +71,7 @@ export default function CheckoutPage() {
   }, [user, setValue]);
 
   const subtotal = items.reduce((n, i) => n + i.price_inr * i.qty, 0);
-  const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING ? 0 : FLAT_SHIPPING;
+  const shipping = subtotal === 0 ? 0 : FLAT_SHIPPING;
   const total = subtotal + shipping;
   const hasCustom = items.some((i) => i.kind === "custom");
 

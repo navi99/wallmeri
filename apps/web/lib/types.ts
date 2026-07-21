@@ -3,6 +3,10 @@ export interface Category {
   name: string;
   slug: string;
   is_active?: boolean;
+  poster_image_url?: string;
+  // Set only when poster_image_url came from the admin uploader — round-tripped
+  // so the edit form can preserve it across saves that don't touch the poster.
+  poster_image_id?: number | null;
 }
 
 export interface ArtistBrief {
@@ -287,4 +291,17 @@ export interface UploadResult {
   thumb_url: string;
   width: number;
   height: number;
+}
+
+// Admin-configurable page banner/hero images. One "slot" (e.g. "home_hero")
+// is an ordered gallery of these — a single-image slot is just a gallery
+// capped at length 1. See apps/api/app/models/site_image.py:SITE_IMAGE_SLOTS
+// for the known slots and their max length.
+export interface SiteImage {
+  id: number;
+  slot: string;
+  position: number;
+  image_url: string;
+  image_id: number | null;
+  alt_text: string;
 }

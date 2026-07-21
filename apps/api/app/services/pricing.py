@@ -102,9 +102,6 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
             )
         )
 
-    if subtotal >= settings.FREE_SHIPPING_THRESHOLD_INR:
-        shipping = 0
-    else:
-        shipping = settings.SHIPPING_FLAT_INR
+    shipping = settings.SHIPPING_FLAT_INR
     total = subtotal + shipping
     return lines, subtotal, shipping, total

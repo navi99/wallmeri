@@ -15,6 +15,8 @@ class MediaKind(str, enum.Enum):
     product = "product"
     avatar = "avatar"
     custom = "custom"
+    category = "category"
+    site = "site"
 
 
 class MediaAsset(Base):

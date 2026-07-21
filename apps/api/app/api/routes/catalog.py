@@ -13,9 +13,10 @@ from app.models import (
     ProductImage,
     Review,
     ReviewStatus,
+    SiteImage,
     product_categories,
 )
-from app.schemas.catalog import CategoryOut, ProductListOut, ProductOut
+from app.schemas.catalog import CategoryOut, ProductListOut, ProductOut, SiteImageOut
 
 router = APIRouter(tags=["catalog"])
 
@@ -52,6 +53,13 @@ def list_categories(db: Session = Depends(get_db)):
         .order_by(Category.name)
         .all()
     )
+
+
+@router.get("/site-images", response_model=list[SiteImageOut])
+def list_site_images(db: Session = Depends(get_db)):
+    """All slots' images, ordered — the storefront groups by `slot` client-side
+    (see apps/web/lib/site-images.ts) rather than one request per banner."""
+    return db.query(SiteImage).order_by(SiteImage.slot, SiteImage.position).all()
 
 
 @router.get("/products", response_model=ProductListOut)

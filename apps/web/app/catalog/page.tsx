@@ -44,7 +44,7 @@ function CatalogContent() {
     <div className="container-page py-8">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">
-          {q ? `Results for “${q}”` : category ? categoryName(category, categoriesQuery.data) : "All metal posters"}
+          {q ? `Results for “${q}”` : category ? categoryName(category, categoriesQuery.data) : "Gallery"}
         </h1>
         <p className="text-sm text-muted">
           {data ? `${data.total} ${data.total === 1 ? "design" : "designs"}` : "Loading…"}

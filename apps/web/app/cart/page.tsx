@@ -9,7 +9,6 @@ import { Badge, Button } from "@/components/ui";
 import { lineId, useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
 
-const FREE_SHIPPING = 2999;
 const FLAT_SHIPPING = 99;
 
 export default function CartPage() {
@@ -21,7 +20,7 @@ export default function CartPage() {
   useEffect(() => setMounted(true), []);
 
   const subtotal = items.reduce((n, i) => n + i.price_inr * i.qty, 0);
-  const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING ? 0 : FLAT_SHIPPING;
+  const shipping = subtotal === 0 ? 0 : FLAT_SHIPPING;
   const total = subtotal + shipping;
   const hasCustom = items.some((i) => i.kind === "custom");
 
@@ -135,11 +134,6 @@ export default function CartPage() {
                 {shipping === 0 ? "Free" : formatINR(shipping)}
               </dd>
             </div>
-            {shipping > 0 && (
-              <p className="rounded-lg bg-brand-50 px-3 py-2 text-xs text-brand-600">
-                Add {formatINR(FREE_SHIPPING - subtotal)} more for free shipping.
-              </p>
-            )}
             {hasCustom && (
               <p className="rounded-lg bg-brand-50 px-3 py-2 text-xs text-brand-600">
                 Custom designs are reviewed before printing — usually within 1-2 business days.

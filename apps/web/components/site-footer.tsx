@@ -4,11 +4,7 @@ const colHeading =
   "text-xs font-semibold uppercase tracking-[0.06em] text-cream";
 const colLink = "text-sm text-cream/65 transition-colors hover:text-cream";
 
-const trustBadges = [
-  "Free shipping over ₹2,999",
-  "Secure Razorpay checkout",
-  "Made in India",
-];
+const trustBadges = ["Secure Razorpay checkout", "Made in India"];
 
 export function SiteFooter() {
   return (
@@ -19,7 +15,7 @@ export function SiteFooter() {
         </div>
 
         <div className="flex flex-wrap gap-x-16 gap-y-10">
-          <div className="flex flex-col gap-3">
+          {/* <div className="flex flex-col gap-3">
             <div className={`${colHeading} mb-1`}>Shop</div>
             <Link href="/catalog" className={colLink}>
               All posters
@@ -33,16 +29,16 @@ export function SiteFooter() {
             <Link href="/cart" className={colLink}>
               Your cart
             </Link>
-          </div>
+          </div> */}
 
           <div className="flex flex-col gap-3">
             <div className={`${colHeading} mb-1`}>Account</div>
-            <Link href="/login" className={colLink}>
+            {/* <Link href="/login" className={colLink}>
               Login
             </Link>
             <Link href="/register" className={colLink}>
               Create account
-            </Link>
+            </Link> */}
             <Link href="/orders" className={colLink}>
               Order history
             </Link>
@@ -52,7 +48,7 @@ export function SiteFooter() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className={`${colHeading} mb-1`}>Wallmeri</div>
+            <div className={`${colHeading} mb-1`}>Company</div>
             <Link href="/about" className={colLink}>
               About us
             </Link>
@@ -64,9 +60,9 @@ export function SiteFooter() {
             >
               Contact us
             </a>
-            <Link href="/artists/join" className={colLink}>
+            {/* <Link href="/artists/join" className={colLink}>
               Become a Wallmeri artist
-            </Link>
+            </Link> */}
           </div>
 
           <div className="flex flex-col gap-3">

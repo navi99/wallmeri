@@ -187,13 +187,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
           <ul className="mt-7 space-y-2 text-sm text-muted">
             <li className="flex items-center gap-2">
-              <Truck className="h-4 w-4 text-brand-600" /> Free shipping over ₹2,999
-            </li>
-            <li className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-brand-600" /> Secure Razorpay checkout
-            </li>
-            <li className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-brand-600" /> Fade-resistant metal print
             </li>
           </ul>
         </div>

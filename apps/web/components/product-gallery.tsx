@@ -331,6 +331,22 @@ export function ProductGallery({
   // in-flight smooth-scroll and briefly report the wrong active index.
   const scrollingFromControl = useRef(false);
 
+  // The thumbnail rail sits beside the main image and must never read taller
+  // than it (flex's default stretch — combined with the main image's
+  // aspect-ratio sizing — inflates the rail past the image's real height
+  // rather than capping it). Measuring the main image directly and capping
+  // the rail to that value sidesteps the mismatch regardless of thumb count.
+  const mainWrapRef = useRef<HTMLDivElement>(null);
+  const [railMaxHeight, setRailMaxHeight] = useState<number>();
+
+  useEffect(() => {
+    const el = mainWrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setRailMaxHeight(entry.contentRect.height));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [images.length]);
+
   // No managed gallery (legacy pasted URL / seeded product) — render exactly
   // like the old single-image layout, no rail, strip, or carousel.
   if (images.length === 0) {
@@ -375,9 +391,14 @@ export function ProductGallery({
   };
 
   return (
-    <div className="flex flex-col gap-3 lg:flex-row lg:gap-4">
-      {/* Desktop: vertical thumbnail rail */}
-      <div className="hidden lg:flex lg:w-20 lg:flex-none lg:flex-col lg:gap-2 lg:overflow-y-auto">
+    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-4">
+      {/* Desktop: vertical thumbnail rail at a fixed 80px tile — capped to the
+          main image's measured height so extra thumbnails scroll internally
+          instead of overhanging past the bottom of the image. */}
+      <div
+        className="hidden lg:flex lg:w-20 lg:flex-none lg:flex-col lg:gap-2 lg:overflow-y-auto"
+        style={{ maxHeight: railMaxHeight }}
+      >
         {images.map((img, i) => (
           <button
             key={img.id}
@@ -397,7 +418,7 @@ export function ProductGallery({
       </div>
 
       {/* Main image: swipe/drag-scroll carousel, snap-aligned per image */}
-      <div className="group relative flex-1">
+      <div ref={mainWrapRef} className="group relative flex-1">
         <div
           ref={trackRef}
           onScroll={onTrackScroll}

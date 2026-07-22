@@ -2,17 +2,19 @@ import { ShieldCheck } from "lucide-react";
 
 export function WhyLoveIt() {
   return (
-    <section className="mt-14 max-w-prose">
+    <section className="mt-14">
       <h2 className="text-2xl font-bold text-ink">
         Why You&rsquo;ll <span className="font-display italic text-brand-600">Love It</span>
       </h2>
 
-      <p className="mt-4 leading-relaxed text-muted">
-        Chosen for those who value exceptional art and thoughtful interiors. Whether displayed as a statement piece or as part of a curated collection, it brings depth, balance, and quiet character to any space.
-      </p>
-      <p className="mt-4 leading-relaxed text-muted">
-        Produced using high-resolution sublimation printing on premium aluminium, every detail is rendered with remarkable clarity and lasting colour. Its refined finish complements living rooms, bedrooms, studios, offices, and other carefully designed interiors.
-      </p>
+      <div className="mt-4 grid gap-8 lg:grid-cols-2">
+        <p className="leading-relaxed text-muted">
+          Chosen for those who value exceptional art and thoughtful interiors. Whether displayed as a statement piece or as part of a curated collection, it brings depth, balance, and quiet character to any space.
+        </p>
+        <p className="leading-relaxed text-muted">
+          Produced using high-resolution sublimation printing on premium aluminium, every detail is rendered with remarkable clarity and lasting colour. Its refined finish complements living rooms, bedrooms, studios, offices, and other carefully designed interiors.
+        </p>
+      </div>
 
       <p className="mt-4 font-display text-2xl italic text-brand-600">&ldquo;A timeless work, crafted to be lived with.&rdquo;</p>
 

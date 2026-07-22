@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "@/components/app-image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from "react";
 
@@ -14,8 +14,12 @@ function altFor(title: string, index: number): string {
   return index === 0 ? title : `${title} — view ${index + 1}`;
 }
 
+// Hero-frame treatment (DESIGN.md §5): the artwork sits inside a Noir mat,
+// like a poster in a gallery frame, rather than bare on the page. Thumbs use
+// the same dark mat with a red ring standing in for a border, since a plain
+// border would sit flush against the frame instead of reading as "selected".
 const THUMB_BASE =
-  "relative aspect-[3/4] flex-none overflow-hidden border transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "relative aspect-[3/4] flex-none overflow-hidden bg-ink p-1 transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 
 const HOVER_ZOOM = 2;
 const MAX_PINCH_ZOOM = 2.5;
@@ -24,11 +28,12 @@ function touchDistance(a: React.Touch, b: React.Touch): number {
   return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
 }
 
-// Wraps a single slide's image with two independent zoom interactions:
-// desktop mouse-hover magnify (scale from cursor position, no pan math
-// needed) and mobile pinch-to-zoom + single-finger pan once zoomed. Touch
-// starts at scale 1 stay "pan-x" so the carousel's native swipe-between-
-// images gesture is untouched; only once zoomed do we take over the finger.
+// Used only inside the full-screen Lightbox (opened on click) — wraps a
+// single image with two independent zoom interactions: desktop mouse-hover
+// magnify (scale from cursor position, no pan math needed) and mobile
+// pinch-to-zoom + single-finger pan once zoomed. Touch starts at scale 1
+// stay "pan-x" so it doesn't fight any native gesture; only once zoomed do
+// we take over the finger.
 function ZoomableSlide({
   src,
   alt,
@@ -167,6 +172,148 @@ function ZoomableSlide({
   );
 }
 
+// Inline main-carousel slide: no hover-zoom, just the image plus a
+// zoom-in affordance. Clicking (or tapping) opens the full-screen Lightbox
+// where the actual hover/pinch zoom interactions live.
+function GallerySlide({
+  src,
+  alt,
+  priority,
+  onOpen,
+}: {
+  src: string;
+  alt: string;
+  priority: boolean;
+  onOpen: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label={`Zoom in on ${alt}`}
+      className="group/zoom relative block h-full w-full cursor-zoom-in focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+    >
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        className="object-cover"
+        priority={priority}
+      />
+      <span className="absolute bottom-2 left-2 hidden h-8 w-8 place-items-center bg-ink/70 text-cream opacity-0 transition-opacity group-hover/zoom:opacity-100 lg:grid">
+        <ZoomIn className="h-4 w-4" />
+      </span>
+    </button>
+  );
+}
+
+// Full-screen viewer opened by clicking the main image. Renders one image
+// at a time (keyed by index so ZoomableSlide's internal zoom state resets
+// cleanly when navigating) with the real zoom interactions: hover-to-magnify
+// on desktop, pinch/pan on mobile.
+function Lightbox({
+  images,
+  fallbackImageUrl,
+  title,
+  index,
+  onIndexChange,
+  onClose,
+}: {
+  images: ProductImage[];
+  fallbackImageUrl: string;
+  title: string;
+  index: number;
+  onIndexChange: (index: number) => void;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowLeft") onIndexChange(Math.max(0, index - 1));
+      else if (e.key === "ArrowRight") onIndexChange(Math.min(images.length - 1, index + 1));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [index, images.length, onClose, onIndexChange]);
+
+  // Lock background scroll while the viewer is open.
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  const src = images.length ? images[index].image_url : fallbackImageUrl;
+  const alt = images.length ? altFor(title, index) : title;
+
+  // Backdrop click closes the viewer; everything the user can interact
+  // with (the image itself, the nav/close buttons) stops propagation so it
+  // doesn't also trigger this handler via bubbling.
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${title} image viewer`}
+      onClick={onClose}
+      className="fixed inset-0 z-[70] bg-ink/95"
+    >
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-label="Close zoom"
+        className="absolute right-3 top-3 z-10 grid h-10 w-10 place-items-center bg-ink/70 text-cream hover:bg-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
+      <div className="mx-auto h-full max-w-5xl p-4 sm:p-10" onClick={(e) => e.stopPropagation()}>
+        <ZoomableSlide key={index} src={src} alt={alt} isActive priority />
+      </div>
+
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onIndexChange(Math.max(0, index - 1));
+            }}
+            disabled={index === 0}
+            aria-label="Previous image"
+            className="absolute left-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center bg-ink/70 text-cream hover:bg-ink disabled:pointer-events-none disabled:opacity-0 sm:left-4"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onIndexChange(Math.min(images.length - 1, index + 1));
+            }}
+            disabled={index === images.length - 1}
+            aria-label="Next image"
+            className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center bg-ink/70 text-cream hover:bg-ink disabled:pointer-events-none disabled:opacity-0 sm:right-4"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+          <div
+            aria-hidden
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-ink/80 px-2 py-1 text-xs font-semibold tracking-wide text-cream"
+          >
+            {index + 1} / {images.length}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function ProductGallery({
   images,
   fallbackImageUrl,
@@ -177,6 +324,7 @@ export function ProductGallery({
   title: string;
 }) {
   const [active, setActive] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   // Suppresses the scroll listener while we're driving the scroll
   // programmatically (thumbnail/arrow click), so it doesn't fight the
@@ -187,8 +335,18 @@ export function ProductGallery({
   // like the old single-image layout, no rail, strip, or carousel.
   if (images.length === 0) {
     return (
-      <div className="relative aspect-[3/4] overflow-hidden border border-brand-100 bg-brand-50">
-        <ZoomableSlide src={fallbackImageUrl} alt={title} isActive priority />
+      <div className="relative aspect-[3/4] overflow-hidden bg-ink p-3 shadow-lift sm:p-4">
+        <GallerySlide src={fallbackImageUrl} alt={title} priority onOpen={() => setLightboxIndex(0)} />
+        {lightboxIndex !== null && (
+          <Lightbox
+            images={images}
+            fallbackImageUrl={fallbackImageUrl}
+            title={title}
+            index={lightboxIndex}
+            onIndexChange={setLightboxIndex}
+            onClose={() => setLightboxIndex(null)}
+          />
+        )}
       </div>
     );
   }
@@ -228,10 +386,12 @@ export function ProductGallery({
             aria-label={`Show image ${i + 1} of ${images.length}`}
             aria-current={i === activeIndex}
             className={`${THUMB_BASE} w-full ${
-              i === activeIndex ? "border-ink" : "border-brand-100 hover:border-ink/40"
+              i === activeIndex ? "ring-2 ring-brand-600" : "ring-1 ring-cream/10 hover:ring-cream/30"
             }`}
           >
-            <Image src={img.thumb_url} alt={altFor(title, i)} fill sizes="80px" className="object-cover" />
+            <div className="relative h-full w-full overflow-hidden">
+              <Image src={img.thumb_url} alt={altFor(title, i)} fill sizes="80px" className="object-cover" />
+            </div>
           </button>
         ))}
       </div>
@@ -252,13 +412,13 @@ export function ProductGallery({
               role="group"
               aria-roledescription="slide"
               aria-label={`Image ${i + 1} of ${images.length}`}
-              className="relative aspect-[3/4] w-full flex-none snap-center overflow-hidden border border-brand-100 bg-brand-50"
+              className="relative aspect-[3/4] w-full flex-none snap-center overflow-hidden bg-ink p-3 shadow-lift sm:p-4"
             >
-              <ZoomableSlide
+              <GallerySlide
                 src={img.image_url}
                 alt={altFor(title, i)}
-                isActive={i === activeIndex}
                 priority={i === 0}
+                onOpen={() => setLightboxIndex(i)}
               />
             </div>
           ))}
@@ -304,12 +464,25 @@ export function ProductGallery({
             onClick={() => scrollToIndex(i)}
             aria-label={`Show image ${i + 1} of ${images.length}`}
             aria-current={i === activeIndex}
-            className={`${THUMB_BASE} w-16 ${i === activeIndex ? "border-ink" : "border-brand-100"}`}
+            className={`${THUMB_BASE} w-16 ${i === activeIndex ? "ring-2 ring-brand-600" : "ring-1 ring-cream/10"}`}
           >
-            <Image src={img.thumb_url} alt={altFor(title, i)} fill sizes="64px" className="object-cover" />
+            <div className="relative h-full w-full overflow-hidden">
+              <Image src={img.thumb_url} alt={altFor(title, i)} fill sizes="64px" className="object-cover" />
+            </div>
           </button>
         ))}
       </div>
+
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={images}
+          fallbackImageUrl={fallbackImageUrl}
+          title={title}
+          index={lightboxIndex}
+          onIndexChange={setLightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 }

@@ -1,11 +1,9 @@
 import { Check } from "lucide-react";
 
 const BOX_CONTENTS = [
-  "One premium aluminium metal poster",
+  "Premium aluminium metal poster",
   "Two adhesive-backed magnetic mounts",
-  "Protective packaging",
   "Installation guide",
-  "A thank-you note from Wallmeri",
 ];
 
 export function BoxContents() {

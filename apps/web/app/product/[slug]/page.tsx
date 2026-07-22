@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Check, ChevronLeft, Minus, Plus, ShieldCheck, Truck } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 
+import Image from "@/components/app-image";
 import { BoxContents } from "@/components/box-contents";
 import { InstallGuide } from "@/components/install-guide";
 import { ProductGallery } from "@/components/product-gallery";
 import { ReviewsSection } from "@/components/reviews-section";
 import { SizePicker } from "@/components/custom/size-picker";
 import { Stars } from "@/components/stars";
-import { Badge, Button, Spinner } from "@/components/ui";
+import { Button, Spinner } from "@/components/ui";
 import { WhyLoveIt } from "@/components/why-love-it";
 import { api, ApiError } from "@/lib/api";
 import { useCart } from "@/lib/store/cart";
@@ -35,6 +36,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   const sizesQuery = useQuery({ queryKey: ["poster-sizes"], queryFn: () => api.posterSizes() });
   const sizes = sizesQuery.data ?? [];
+
+  const artistSlug = product?.artist?.slug;
+  const artistQuery = useQuery({
+    queryKey: ["artist", artistSlug],
+    queryFn: () => api.getArtist(artistSlug!),
+    enabled: !!artistSlug,
+  });
 
   useEffect(() => {
     if (!sizeCode && sizes.length > 0) {
@@ -97,37 +105,43 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     toast.success(`Added ${qty} × "${product.title}" to cart`);
   };
 
+  const primaryCategory = product.categories[0] ?? null;
+
   return (
     <div className="container-page py-8">
-      <Link
-        href="/catalog"
-        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-brand-600"
-      >
-        <ChevronLeft className="h-4 w-4" /> Back to catalog
-      </Link>
+      <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-xs text-muted">
+        <Link href="/catalog" className="hover:text-brand-600">
+          Shop
+        </Link>
+        {primaryCategory && (
+          <>
+            <span aria-hidden>/</span>
+            <Link href={`/category/${primaryCategory.slug}`} className="hover:text-brand-600">
+              {primaryCategory.name}
+            </Link>
+          </>
+        )}
+        <span aria-hidden>/</span>
+        <span className="text-ink">{product.title}</span>
+      </nav>
 
-      <div className="mt-6 grid gap-8 lg:grid-cols-2">
+      <div className="mt-4 grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <ProductGallery images={product.images} fallbackImageUrl={product.image_url} title={product.title} />
 
         <div>
-          {product.categories.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {product.categories.map((c) => (
-                <Link key={c.id} href={`/category/${c.slug}`}>
-                  <Badge className="hover:bg-brand-100">{c.name}</Badge>
-                </Link>
-              ))}
+          {primaryCategory && (
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-600">
+              {primaryCategory.name}
             </div>
           )}
-          <h1 className="mt-3 text-3xl font-bold text-ink">{product.title}</h1>
-          <p className="mt-1 text-sm text-muted">
+          <h1 className="mt-2.5 text-3xl font-bold uppercase leading-[1.1] tracking-tight text-ink sm:text-4xl">
+            {product.title}
+          </h1>
+          <p className="mt-2 font-display text-base italic text-muted">
             {product.artist ? (
               <>
-                Art by{" "}
-                <Link
-                  href={`/artist/${product.artist.slug}`}
-                  className="font-semibold text-brand-600 hover:underline"
-                >
+                by{" "}
+                <Link href={`/artist/${product.artist.slug}`} className="text-brand-600 hover:text-ink">
                   {product.artist.name}
                 </Link>
               </>
@@ -142,31 +156,26 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               className="mt-2"
             />
           )}
-          <p className="mt-3 text-3xl font-bold text-brand-600">{formatINR(displayPrice)}</p>
 
-          <p className="mt-5 whitespace-pre-wrap leading-relaxed text-muted">{product.description}</p>
+          <p className="mt-4 text-3xl font-bold text-brand-600">{formatINR(displayPrice)}</p>
 
-          <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-xl border border-brand-100 bg-paper px-4 py-3">
-              <dt className="text-muted">Material</dt>
-              <dd className="font-semibold text-ink">{product.material}</dd>
-            </div>
-          </dl>
+          <p className="mt-4 whitespace-pre-wrap leading-relaxed text-muted">{product.description}</p>
+          <p className="mt-2 text-xs uppercase tracking-[0.08em] text-muted">Material: {product.material}</p>
 
           {sizeRequired && (
             <div className="mt-6">
-              <div className="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Size</div>
-              <div className="mt-2">
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-ink">Size</div>
+              <div className="mt-3">
                 <SizePicker sizes={displaySizes} selected={sizeCode} onSelect={setSizeCode} />
               </div>
             </div>
           )}
 
-          <div className="mt-6 flex items-center gap-4">
-            <div className="flex items-center rounded-xl border border-brand-200">
+          <div className="mt-6 flex items-stretch gap-3.5">
+            <div className="flex items-center border border-ink/20">
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
-                className="grid h-11 w-11 place-items-center text-ink hover:bg-brand-50"
+                className="grid h-[52px] w-11 place-items-center text-ink hover:bg-ink/5"
                 aria-label="Decrease quantity"
               >
                 <Minus className="h-4 w-4" />
@@ -174,22 +183,44 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <span className="w-10 text-center font-semibold">{qty}</span>
               <button
                 onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
-                className="grid h-11 w-11 place-items-center text-ink hover:bg-brand-50"
+                className="grid h-[52px] w-11 place-items-center text-ink hover:bg-ink/5"
                 aria-label="Increase quantity"
               >
                 <Plus className="h-4 w-4" />
               </button>
             </div>
-            <Button size="lg" onClick={onAdd} disabled={!canAdd} className="flex-1 sm:flex-none">
+            <Button size="lg" onClick={onAdd} disabled={!canAdd} className="flex-1">
               Add to cart
             </Button>
           </div>
 
-          <ul className="mt-7 space-y-2 text-sm text-muted">
-            <li className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-brand-600" /> Secure Razorpay checkout
-            </li>
-          </ul>
+          {product.artist && (
+            <div className="mt-4 flex items-center gap-3.5 bg-brand-50/60 p-4">
+              <div className="relative h-11 w-11 flex-none overflow-hidden rounded-full bg-ink">
+                <Image
+                  src={product.artist.avatar_url}
+                  alt={product.artist.name}
+                  fill
+                  sizes="44px"
+                  className="object-cover"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="truncate font-display text-base italic text-ink">{product.artist.name}</div>
+                <div className="text-xs text-muted">
+                  {artistQuery.data
+                    ? `${artistQuery.data.product_count} work${artistQuery.data.product_count === 1 ? "" : "s"}`
+                    : "Wallmeri artist"}
+                </div>
+              </div>
+              <Link
+                href={`/artist/${product.artist.slug}`}
+                className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.1em] text-brand-600 hover:text-ink"
+              >
+                View profile
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 

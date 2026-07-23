@@ -48,6 +48,7 @@ function ZoomableSlide({
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoverOrigin, setHoverOrigin] = useState<{ x: number; y: number } | null>(null);
   const [pinch, setPinch] = useState({ scale: 1, tx: 0, ty: 0 });
+  const lastTapAt = useRef(0);
   const gesture = useRef<{
     mode: "pinch" | "pan" | "none";
     startDist: number;
@@ -124,6 +125,13 @@ function ZoomableSlide({
 
   const onTouchEnd = (e: ReactTouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 0) {
+      // Swallow the browser's native double-tap-to-zoom: it zooms the page
+      // viewport rather than our pinch state, so once triggered there's no
+      // way back via the zoom controls this slide already provides.
+      const now = Date.now();
+      if (now - lastTapAt.current < 300) e.preventDefault();
+      lastTapAt.current = now;
+
       gesture.current.mode = "none";
       if (pinch.scale <= 1) setPinch({ scale: 1, tx: 0, ty: 0 });
     } else if (e.touches.length === 1) {
@@ -351,7 +359,7 @@ export function ProductGallery({
   // like the old single-image layout, no rail, strip, or carousel.
   if (images.length === 0) {
     return (
-      <div className="relative aspect-[3/4] overflow-hidden bg-ink p-3 shadow-lift sm:p-4">
+      <div className="relative aspect-[3/4] overflow-hidden bg-ink p-[5px] shadow-lift">
         <GallerySlide src={fallbackImageUrl} alt={title} priority onOpen={() => setLightboxIndex(0)} />
         {lightboxIndex !== null && (
           <Lightbox
@@ -433,7 +441,7 @@ export function ProductGallery({
               role="group"
               aria-roledescription="slide"
               aria-label={`Image ${i + 1} of ${images.length}`}
-              className="relative aspect-[3/4] w-full flex-none snap-center overflow-hidden bg-ink p-3 shadow-lift sm:p-4"
+              className="relative aspect-[3/4] w-full flex-none snap-center overflow-hidden bg-ink p-[5px] shadow-lift"
             >
               <GallerySlide
                 src={img.image_url}

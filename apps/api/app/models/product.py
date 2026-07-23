@@ -62,6 +62,11 @@ class Product(Base):
         secondary=product_categories, back_populates="products"
     )
 
+    # None when this design has no physical original for sale.
+    original_painting: Mapped["OriginalPainting | None"] = relationship(  # noqa: F821
+        back_populates="product", uselist=False, cascade="all, delete-orphan"
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, nullable=False
     )

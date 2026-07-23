@@ -194,6 +194,34 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             </Button>
           </div>
 
+          {product.original && (
+            <div className="mt-4 border border-ink/15 p-4">
+              <p className="font-display text-base italic text-ink">
+                Also available as an original painting
+              </p>
+              <p className="mt-1 text-lg font-bold text-brand-600">
+                {formatINR(product.original.price_inr)}
+              </p>
+              {product.original.status === "sold" ? (
+                <span className="mt-3 inline-block cursor-not-allowed border border-ink/20 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
+                  Original sold
+                </span>
+              ) : (
+                <>
+                  <Link
+                    href={`/product/${product.slug}/original`}
+                    className="mt-3 inline-block border border-ink px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-ink hover:bg-ink hover:text-cream"
+                  >
+                    Buy Original →
+                  </Link>
+                  {product.original.status === "reserved" && (
+                    <p className="mt-2 text-xs text-muted">Reserved — inquiries still open</p>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
           {product.artist && (
             <div className="mt-4 flex items-center gap-3.5 bg-brand-50/60 p-4">
               <div className="relative h-11 w-11 flex-none overflow-hidden rounded-full bg-ink">

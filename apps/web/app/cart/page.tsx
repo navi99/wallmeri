@@ -60,7 +60,7 @@ export default function CartPage() {
           {items.map((item) => {
             const id = lineId(item);
             const thumb = (
-              <div className="h-[150px] w-28 shrink-0 bg-ink p-2">
+              <div className="h-[150px] w-28 shrink-0 bg-ink p-[2px]">
                 <div className="relative h-full w-full">
                   <Image src={item.image_url} alt={item.title} fill className="object-cover" sizes="112px" />
                 </div>

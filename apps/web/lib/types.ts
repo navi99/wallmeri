@@ -54,6 +54,13 @@ export interface ProductImage {
   position: number;
 }
 
+// Nested on Product — just enough for the PDP to decide what "Buy Original"
+// CTA to show. See OriginalPainting for the full detail-page shape.
+export interface OriginalPaintingBrief {
+  status: "available" | "reserved" | "sold";
+  price_inr: number;
+}
+
 export interface Product {
   id: number;
   slug: string;
@@ -75,6 +82,38 @@ export interface Product {
   categories: Category[];
   rating_avg: number | null;
   rating_count: number;
+  // Present only when this design also has a physical original for sale.
+  original: OriginalPaintingBrief | null;
+}
+
+// The one-of-a-kind physical original behind a product's metal-print
+// reproduction — see GET /products/{slug}/original.
+export interface OriginalPainting {
+  id: number;
+  product_id: number;
+  medium: string;
+  width_cm: number;
+  height_cm: number;
+  year_created: number | null;
+  price_inr: number;
+  status: "available" | "reserved" | "sold";
+  story: string;
+  image_url: string;
+  image_id: number | null;
+}
+
+export interface OriginalInquiry {
+  id: number;
+  original_painting_id: number;
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  status: "new" | "contacted" | "negotiating" | "won" | "lost";
+  admin_note: string;
+  created_at: string;
+  product_title: string;
+  product_slug: string;
 }
 
 export interface PosterSize {

@@ -12,6 +12,7 @@ import { ArtistsTab } from "@/components/admin/artists-tab";
 import { CategoriesTab } from "@/components/admin/categories-tab";
 import { CustomReviewTab } from "@/components/admin/custom-review-tab";
 import { OrdersTab } from "@/components/admin/orders-tab";
+import { OriginalInquiriesTab } from "@/components/admin/original-inquiries-tab";
 import { PosterSizesTab } from "@/components/admin/poster-sizes-tab";
 import { ProductForm, type ProductFormValues } from "@/components/admin/product-form";
 import { ReviewsTab } from "@/components/admin/reviews-tab";
@@ -32,6 +33,7 @@ const TABS = [
   "poster sizes",
   "reviews",
   "site content",
+  "original inquiries",
 ] as const;
 type Tab = (typeof TABS)[number];
 
@@ -228,6 +230,7 @@ export default function AdminPage() {
         {tab === "poster sizes" && <PosterSizesTab />}
         {tab === "reviews" && <ReviewsTab />}
         {tab === "site content" && <SiteImagesTab />}
+        {tab === "original inquiries" && <OriginalInquiriesTab />}
       </div>
 
       {formOpen && categoriesQuery.data && artistsQuery.data && (

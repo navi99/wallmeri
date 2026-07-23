@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 from app.schemas.artist import ArtistBrief
+from app.schemas.original import OriginalPaintingBrief
 
 
 class CategoryOut(BaseModel):
@@ -66,6 +67,7 @@ class ProductOut(BaseModel):
     categories: list[CategoryOut] = []
     rating_avg: Optional[float] = None
     rating_count: int = 0
+    original: Optional[OriginalPaintingBrief] = None
 
     model_config = {"from_attributes": True}
 

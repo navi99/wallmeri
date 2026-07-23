@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 
 import { ProductCard } from "@/components/product-card";
-import { Select, Spinner } from "@/components/ui";
+import { Button, Card, Select, Spinner } from "@/components/ui";
 import { api } from "@/lib/api";
 
 function CategoryContent({ slug }: { slug: string }) {
@@ -76,10 +76,10 @@ function CategoryContent({ slug }: { slug: string }) {
             <Link
               key={c.id}
               href={`/category/${c.slug}`}
-              className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
+              className={`border px-4 py-2 text-xs font-semibold uppercase tracking-[0.06em] transition-colors ${
                 c.slug === slug
-                  ? "border-brand-600 bg-brand-600 text-cream"
-                  : "border-brand-200 bg-paper text-ink hover:border-brand-400 hover:bg-brand-50"
+                  ? "border-ink bg-ink text-cream"
+                  : "border-ink/20 bg-paper text-ink hover:border-ink"
               }`}
             >
               {c.name}
@@ -100,29 +100,31 @@ function CategoryContent({ slug }: { slug: string }) {
             ))}
           </div>
           {data.pages > 1 && (
-            <div className="mt-10 flex items-center justify-center gap-2">
-              <button
+            <div className="mt-10 flex items-center justify-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={page <= 1}
                 onClick={() => update({ page: String(page - 1) })}
-                className="rounded-lg border border-brand-200 bg-paper px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50 disabled:opacity-50"
               >
                 Previous
-              </button>
-              <span className="px-2 text-sm text-muted">
+              </Button>
+              <span className="px-2 text-xs uppercase tracking-[0.08em] text-muted">
                 Page {data.page} of {data.pages}
               </span>
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={page >= data.pages}
                 onClick={() => update({ page: String(page + 1) })}
-                className="rounded-lg border border-brand-200 bg-paper px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50 disabled:opacity-50"
               >
                 Next
-              </button>
+              </Button>
             </div>
           )}
         </>
       ) : (
-        <div className="mt-10 rounded-2xl border border-brand-100 bg-paper p-12 text-center">
+        <Card className="mt-10 p-12 text-center">
           <p className="text-lg font-semibold text-ink">Nothing here yet</p>
           <Link
             href="/catalog"
@@ -130,7 +132,7 @@ function CategoryContent({ slug }: { slug: string }) {
           >
             View all posters
           </Link>
-        </div>
+        </Card>
       )}
     </div>
   );

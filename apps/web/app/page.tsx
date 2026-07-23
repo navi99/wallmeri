@@ -48,8 +48,10 @@ export default function HomePage() {
 
           {/* The one framed piece in the gallery: slow crossfade */}
           <div className="mx-auto w-full min-w-[264px] max-w-[460px] flex-1">
-            <div className="relative aspect-[3/4] overflow-hidden shadow-[0_30px_60px_rgba(27,23,23,0.35)]">
-              <HomeHeroSlideshow />
+            <div className="bg-ink p-[5px] shadow-[0_30px_60px_rgba(27,23,23,0.35)]">
+              <div className="relative aspect-[3/4] overflow-hidden">
+                <HomeHeroSlideshow />
+              </div>
             </div>
           </div>
         </div>

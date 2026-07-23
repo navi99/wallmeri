@@ -24,6 +24,9 @@ ADMIN_ENDPOINTS = [
     ("GET", "/api/admin/reviews"),
     ("GET", "/api/admin/categories"),
     ("POST", "/api/admin/uploads"),
+    ("GET", "/api/admin/original-inquiries"),
+    ("PUT", "/api/admin/products/1/original"),
+    ("DELETE", "/api/admin/products/1/original"),
 ]
 
 
@@ -139,3 +142,27 @@ def test_intake_honeypot_returns_ok_without_storing():
     # Honeypot short-circuits before any DB access.
     assert res.status_code == 201
     assert res.json() == {"ok": True}
+
+
+def test_original_inquiry_honeypot_returns_ok_for_any_slug():
+    # Tripped honeypot short-circuits before the painting lookup, so this
+    # succeeds even for a product/slug that doesn't exist.
+    res = client.post(
+        "/api/products/does-not-exist/original/inquiries",
+        json={"name": "Bot Bot", "email": "bot@spam.com", "website": "http://spam"},
+    )
+    assert res.status_code == 201
+    assert res.json() == {"ok": True}
+
+
+def test_original_inquiry_missing_painting_404s():
+    res = client.post(
+        "/api/products/does-not-exist/original/inquiries",
+        json={"name": "Real Buyer", "email": "buyer@example.com"},
+    )
+    assert res.status_code == 404
+
+
+def test_get_original_missing_painting_404s():
+    res = client.get("/api/products/does-not-exist/original")
+    assert res.status_code == 404

@@ -1,14 +1,17 @@
 import math
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
+from app.core.ratelimit import check_rate_limit
 from app.models import (
     Artist,
     Category,
+    OriginalInquiry,
+    OriginalPainting,
     Product,
     ProductImage,
     Review,
@@ -17,6 +20,7 @@ from app.models import (
     product_categories,
 )
 from app.schemas.catalog import CategoryOut, ProductListOut, ProductOut, SiteImageOut
+from app.schemas.original import InquiryCreate, OriginalPaintingBrief, OriginalPaintingOut
 
 router = APIRouter(tags=["catalog"])
 
@@ -41,6 +45,8 @@ def serialize_products(db: Session, products: list[Product]) -> list[ProductOut]
         dto = ProductOut.model_validate(p)
         if p.id in ratings:
             dto.rating_avg, dto.rating_count = ratings[p.id]
+        if p.original_painting is not None:
+            dto.original = OriginalPaintingBrief.model_validate(p.original_painting)
         out.append(dto)
     return out
 
@@ -80,6 +86,7 @@ def list_products(
             joinedload(Product.artist),
             joinedload(Product.image),
             joinedload(Product.images).joinedload(ProductImage.image),
+            joinedload(Product.original_painting),
         )
         .filter(Product.is_active.is_(True))
     )
@@ -129,6 +136,7 @@ def get_product(slug: str, db: Session = Depends(get_db)):
             joinedload(Product.artist),
             joinedload(Product.image),
             joinedload(Product.images).joinedload(ProductImage.image),
+            joinedload(Product.original_painting),
         )
         .filter(Product.slug == slug, Product.is_active.is_(True))
         .first()
@@ -136,3 +144,45 @@ def get_product(slug: str, db: Session = Depends(get_db)):
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
     return serialize_products(db, [product])[0]
+
+
+def _get_original_or_404(db: Session, slug: str) -> OriginalPainting:
+    product = (
+        db.query(Product)
+        .filter(Product.slug == slug, Product.is_active.is_(True))
+        .first()
+    )
+    painting = product.original_painting if product else None
+    if not painting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No original for this product")
+    return painting
+
+
+@router.get("/products/{slug}/original", response_model=OriginalPaintingOut)
+def get_original(slug: str, db: Session = Depends(get_db)):
+    painting = _get_original_or_404(db, slug)
+    dto = OriginalPaintingOut.model_validate(painting)
+    dto.image_url = painting.image_url or painting.product.image_url
+    return dto
+
+
+@router.post("/products/{slug}/original/inquiries", status_code=status.HTTP_201_CREATED)
+def submit_original_inquiry(
+    slug: str, payload: InquiryCreate, request: Request, db: Session = Depends(get_db)
+):
+    check_rate_limit(request, scope="original-inquiry", limit=5, window_seconds=3600)
+    if payload.website:
+        # Honeypot tripped — pretend success so bots learn nothing, without
+        # even touching the DB to look up the painting.
+        return {"ok": True}
+    painting = _get_original_or_404(db, slug)
+    inquiry = OriginalInquiry(
+        original_painting_id=painting.id,
+        name=payload.name.strip(),
+        email=payload.email.lower(),
+        phone=payload.phone.strip(),
+        message=payload.message.strip(),
+    )
+    db.add(inquiry)
+    db.commit()
+    return {"ok": True}

@@ -17,11 +17,15 @@ from app.models import (
     Category,
     CustomUpload,
     CustomUploadStatus,
+    InquiryStatus,
     MediaAsset,
     MediaKind,
     Order,
     OrderItem,
     OrderStatus,
+    OriginalInquiry,
+    OriginalPainting,
+    OriginalPaintingStatus,
     PosterSize,
     Product,
     ProductImage,
@@ -58,6 +62,12 @@ from app.schemas.custom import (
     PosterSizeUpdate,
 )
 from app.schemas.order import OrderItemOut, OrderOut, OrderStatusUpdate
+from app.schemas.original import (
+    InquiryOut,
+    InquiryUpdate,
+    OriginalPaintingOut,
+    OriginalPaintingUpsert,
+)
 from app.schemas.review import ReviewAdminOut, ReviewModerate
 from app.services import (
     custom_upload_service,
@@ -743,3 +753,123 @@ def admin_update_order_status(
     if target == OrderStatus.shipped:
         email_service.send_shipping_update(order)
     return OrderOut.model_validate(order)
+
+
+# ── Original paintings ("Buy Original") ─────────────────────────────────────
+
+def _original_out(painting: OriginalPainting) -> OriginalPaintingOut:
+    dto = OriginalPaintingOut.model_validate(painting)
+    dto.image_url = painting.image_url or painting.product.image_url
+    return dto
+
+
+def _apply_original_image(db: Session, painting: OriginalPainting, image_id: int | None) -> None:
+    """Mirror of _apply_artist_avatar for OriginalPainting.image_id — a single
+    optional image, uploaded via the same POST /admin/uploads (kind=product)."""
+    old_asset_id = painting.image_id
+    if image_id is not None:
+        if image_id != old_asset_id:
+            asset = db.get(MediaAsset, image_id)
+            if asset is None or asset.kind != MediaKind.product:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown image_id")
+            media_service.attach(asset)
+            painting.image_id = asset.id
+    else:
+        painting.image_id = None
+
+    if old_asset_id is not None and old_asset_id != painting.image_id:
+        old_asset = db.get(MediaAsset, old_asset_id)
+        if old_asset is not None:
+            media_service.delete_asset(db, old_asset)
+
+
+@router.get("/products/{product_id}/original", response_model=OriginalPaintingOut)
+def admin_get_original(product_id: int, db: Session = Depends(get_db)):
+    product = db.get(Product, product_id)
+    if not product or not product.original_painting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No original for this product")
+    return _original_out(product.original_painting)
+
+
+@router.put("/products/{product_id}/original", response_model=OriginalPaintingOut)
+def admin_upsert_original(
+    product_id: int, payload: OriginalPaintingUpsert, db: Session = Depends(get_db)
+):
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+
+    data = payload.model_dump(exclude_unset=True)
+    image_id = data.pop("image_id", None)
+    has_image_key = "image_id" in payload.model_fields_set
+
+    painting = product.original_painting
+    if painting is None:
+        painting = OriginalPainting(product_id=product.id)
+        db.add(painting)
+
+    for key, value in data.items():
+        if key == "status":
+            value = OriginalPaintingStatus(value)
+        setattr(painting, key, value)
+
+    if has_image_key:
+        _apply_original_image(db, painting, image_id)
+
+    db.commit()
+    db.refresh(painting)
+    return _original_out(painting)
+
+
+@router.delete("/products/{product_id}/original", status_code=status.HTTP_204_NO_CONTENT)
+def admin_delete_original(product_id: int, db: Session = Depends(get_db)):
+    product = db.get(Product, product_id)
+    if not product or not product.original_painting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No original for this product")
+    painting = product.original_painting
+    if painting.image is not None:
+        media_service.delete_asset(db, painting.image)
+    db.delete(painting)
+    db.commit()
+    return None
+
+
+# ── Original-painting inquiries ─────────────────────────────────────────────
+
+@router.get("/original-inquiries", response_model=list[InquiryOut])
+def admin_list_original_inquiries(db: Session = Depends(get_db)):
+    inquiries = (
+        db.query(OriginalInquiry)
+        .options(joinedload(OriginalInquiry.painting).joinedload(OriginalPainting.product))
+        .order_by(OriginalInquiry.created_at.desc())
+        .all()
+    )
+    out = []
+    for inq in inquiries:
+        dto = InquiryOut.model_validate(inq)
+        product = inq.painting.product if inq.painting else None
+        dto.product_title = product.title if product else ""
+        dto.product_slug = product.slug if product else ""
+        out.append(dto)
+    return out
+
+
+@router.patch("/original-inquiries/{inquiry_id}", response_model=InquiryOut)
+def admin_update_original_inquiry(
+    inquiry_id: int, payload: InquiryUpdate, db: Session = Depends(get_db)
+):
+    inquiry = db.get(OriginalInquiry, inquiry_id)
+    if not inquiry:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Inquiry not found")
+    data = payload.model_dump(exclude_unset=True)
+    if "status" in data and data["status"]:
+        inquiry.status = InquiryStatus(data["status"])
+    if "admin_note" in data and data["admin_note"] is not None:
+        inquiry.admin_note = data["admin_note"]
+    db.commit()
+    db.refresh(inquiry)
+    product = inquiry.painting.product if inquiry.painting else None
+    dto = InquiryOut.model_validate(inquiry)
+    dto.product_title = product.title if product else ""
+    dto.product_slug = product.slug if product else ""
+    return dto

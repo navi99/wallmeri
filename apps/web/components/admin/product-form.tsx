@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, ImagePlus, X } from "lucide-react";
 
 import { ImageCropModal } from "@/components/admin/image-crop-modal";
+import { OriginalPaintingEditor } from "@/components/admin/original-painting-editor";
 import { Button, FieldError, Input, Label, Select, Spinner, Textarea } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import type { ArtistAdmin, Category, Product } from "@/lib/types";
@@ -315,6 +316,9 @@ export function ProductForm({
               Featured
             </label>
           </div>
+
+          {/* Only once the poster itself has an id to attach the original to. */}
+          {product && <OriginalPaintingEditor product={product} />}
 
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={onClose}>

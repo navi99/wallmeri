@@ -10,6 +10,8 @@ import type {
   CustomReviewOrder,
   MyReview,
   Order,
+  OriginalInquiry,
+  OriginalPainting,
   Orientation,
   PosterSize,
   Product,
@@ -124,6 +126,17 @@ export const api = {
   getProduct: (slug: string) => request<Product>(`/products/${slug}`),
   listCategories: () => request<Category[]>(`/categories`),
   listSiteImages: () => request<SiteImage[]>(`/site-images`),
+
+  // Original paintings ("Buy Original")
+  getOriginal: (slug: string) => request<OriginalPainting>(`/products/${slug}/original`),
+  submitOriginalInquiry: (
+    slug: string,
+    body: { name: string; email: string; phone: string; message: string; website: string },
+  ) =>
+    request<{ ok: boolean }>(`/products/${slug}/original/inquiries`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 
   // Artists
   listArtists: () => request<Artist[]>(`/artists`),
@@ -252,6 +265,26 @@ export const api = {
     }),
   adminDeleteProduct: (id: number) =>
     request<void>(`/admin/products/${id}`, { method: "DELETE", auth: true }),
+
+  adminGetOriginal: (productId: number) =>
+    request<OriginalPainting>(`/admin/products/${productId}/original`, { auth: true }),
+  adminUpsertOriginal: (productId: number, body: Record<string, unknown>) =>
+    request<OriginalPainting>(`/admin/products/${productId}/original`, {
+      method: "PUT",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+  adminDeleteOriginal: (productId: number) =>
+    request<void>(`/admin/products/${productId}/original`, { method: "DELETE", auth: true }),
+
+  adminListOriginalInquiries: () =>
+    request<OriginalInquiry[]>(`/admin/original-inquiries`, { auth: true }),
+  adminUpdateOriginalInquiry: (id: number, body: { status?: string; admin_note?: string }) =>
+    request<OriginalInquiry>(`/admin/original-inquiries/${id}`, {
+      method: "PATCH",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
   adminListOrders: () => request<Order[]>(`/admin/orders`, { auth: true }),
   adminUpdateOrderStatus: (
     id: number,

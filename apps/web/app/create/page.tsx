@@ -7,10 +7,6 @@ import Cropper, { type Area, type MediaSize, type Point } from "react-easy-crop"
 import {
   AlertTriangle,
   Crop,
-  Layers,
-  Magnet,
-  Palette,
-  ShieldCheck,
   ShoppingCart,
   Truck,
   UploadCloud,
@@ -29,13 +25,6 @@ import type { Orientation, UploadResult } from "@/lib/types";
 import { formatINR } from "@/lib/utils";
 
 type Step = "upload" | "design";
-
-const features = [
-  { icon: Layers, label: "Premium Metal Print" },
-  { icon: Magnet, label: "Easy Magnetic Installation" },
-  { icon: Palette, label: "Vibrant Colours" },
-  { icon: ShieldCheck, label: "Water & Fade Resistant" },
-];
 
 const processSteps = [
   { icon: UploadCloud, title: "Upload", body: "Upload your favourite photo." },
@@ -193,13 +182,14 @@ export default function CreatePage() {
     <div className="bg-cream">
       <div className="container-page py-8 md:py-12">
         <div className="flex flex-wrap items-center gap-x-16 gap-y-12">
-          <div className="flex min-w-[280px] max-w-[480px] flex-1 flex-col gap-6">
+          <div className="flex min-w-[280px] flex-1 flex-col gap-6">
             <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-600">
               Custom Poster
             </div>
-            <h1 className="font-sans text-[34px] font-bold uppercase leading-[1.08] tracking-tight text-ink sm:text-[44px] lg:text-[54px]">
-              Your perfect poster starts{" "}
-              <em className="font-display font-medium normal-case italic tracking-normal text-premium-600">
+            <h1 className="font-sans text-[34px] font-bold uppercase leading-[1.08] tracking-tight text-ink [word-spacing:0.25em] sm:text-[44px] lg:text-[54px]">
+              Your perfect poster starts
+              <br />
+              <em className="font-display font-medium normal-case italic tracking-normal [word-spacing:0em] text-premium-600">
                 with you.
               </em>
             </h1>
@@ -267,19 +257,6 @@ export default function CreatePage() {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="flex flex-none flex-col gap-5" style={{ minWidth: 220 }}>
-            {features.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-3.5">
-                <div className="grid h-[42px] w-[42px] flex-none place-items-center rounded-full bg-premium-600/10 text-premium-600">
-                  <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-                </div>
-                <div className="text-[13px] font-semibold uppercase tracking-[0.02em] text-ink">
-                  {label}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 

@@ -131,19 +131,7 @@ export function SiteHeader() {
                 ? `Cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`
                 : "Cart"
             }
-            className={`hidden sm:block ${navLink}`}
-          >
-            Cart ({mounted ? cartCount : 0})
-          </Link>
-          <Link
-            href="/cart"
-            onClick={closePanels}
-            aria-label={
-              mounted && cartCount > 0
-                ? `Cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`
-                : "Cart"
-            }
-            className="relative grid h-11 w-11 place-items-center text-ink hover:text-brand-600 sm:hidden"
+            className="relative grid h-11 w-11 place-items-center text-ink transition-colors hover:text-brand-600"
           >
             <ShoppingCart className="h-5 w-5" />
             {mounted && cartCount > 0 && (

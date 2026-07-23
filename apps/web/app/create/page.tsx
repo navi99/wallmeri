@@ -211,19 +211,17 @@ export default function CreatePage() {
 
           <div className="flex flex-1 items-start justify-center gap-3 py-5 sm:gap-6" style={{ minWidth: 260 }}>
             <div className="flex flex-col items-center gap-1.5 sm:gap-2.5">
-              <span className="text-center font-display text-xs italic leading-tight text-ink sm:text-sm lg:text-base">
+              <span className="text-center font-display text-sm font-medium italic leading-snug text-ink sm:text-base lg:text-lg">
                 From your
                 <br />
                 <span className="text-premium-600">camera roll</span>
               </span>
-              <div className="w-[64px] flex-none rounded-[18px] bg-ink p-2 shadow-[0_16px_32px_rgba(27,23,23,0.3)] sm:w-[90px] lg:w-[105px]">
-                <div className="relative aspect-[9/16] overflow-hidden rounded-[11px]">
-                  <SingleSiteImage
-                    slot="cyo_phone"
-                    sizes="105px"
-                    emptyClassName="bg-ink flex items-center justify-center"
-                  />
-                </div>
+              <div className="relative aspect-[9/16] w-[80px] flex-none overflow-hidden rounded-[11px] shadow-[0_16px_32px_rgba(27,23,23,0.3)] sm:w-[110px] lg:w-[130px]">
+                <SingleSiteImage
+                  slot="cyo_phone"
+                  sizes="130px"
+                  emptyClassName="bg-ink flex items-center justify-center"
+                />
               </div>
             </div>
 
@@ -246,14 +244,14 @@ export default function CreatePage() {
             </svg>
 
             <div className="flex flex-col items-center gap-1.5 sm:gap-2.5">
-              <span className="text-center font-display text-xs italic leading-tight text-ink sm:text-sm lg:text-base">
+              <span className="text-center font-display text-sm font-medium italic leading-snug text-ink sm:text-base lg:text-lg">
                 To your
                 <br />
                 <span className="text-premium-600">wall</span>
               </span>
-              <div className="w-[150px] flex-none bg-ink p-[14px] shadow-[0_30px_60px_rgba(27,23,23,0.35)] sm:w-[220px] lg:w-[280px]">
+              <div className="w-[180px] flex-none bg-ink p-[14px] shadow-[0_30px_60px_rgba(27,23,23,0.35)] sm:w-[255px] lg:w-[320px]">
                 <div className="relative aspect-[3/4]">
-                  <SingleSiteImage slot="cyo_poster" sizes="280px" />
+                  <SingleSiteImage slot="cyo_poster" sizes="320px" />
                 </div>
               </div>
             </div>

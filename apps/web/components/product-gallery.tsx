@@ -172,7 +172,7 @@ function ZoomableSlide({
         alt={alt}
         fill
         sizes="(max-width: 1024px) 100vw, 50vw"
-        className="object-cover"
+        className="object-contain"
         style={style}
         priority={priority}
       />
@@ -402,28 +402,31 @@ export function ProductGallery({
     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-4">
       {/* Desktop: vertical thumbnail rail at a fixed 80px tile — capped to the
           main image's measured height so extra thumbnails scroll internally
-          instead of overhanging past the bottom of the image. */}
-      <div
-        className="hidden lg:flex lg:w-20 lg:flex-none lg:flex-col lg:gap-2 lg:overflow-y-auto"
-        style={{ maxHeight: railMaxHeight }}
-      >
-        {images.map((img, i) => (
-          <button
-            key={img.id}
-            type="button"
-            onClick={() => scrollToIndex(i)}
-            aria-label={`Show image ${i + 1} of ${images.length}`}
-            aria-current={i === activeIndex}
-            className={`${THUMB_BASE} w-full ${
-              i === activeIndex ? "ring-2 ring-brand-600" : "ring-1 ring-cream/10 hover:ring-cream/30"
-            }`}
-          >
-            <div className="relative h-full w-full overflow-hidden">
-              <Image src={img.thumb_url} alt={altFor(title, i)} fill sizes="80px" className="object-cover" />
-            </div>
-          </button>
-        ))}
-      </div>
+          instead of overhanging past the bottom of the image. Hidden entirely
+          for single-image products since there's nothing to switch between. */}
+      {images.length > 1 && (
+        <div
+          className="hidden lg:flex lg:w-20 lg:flex-none lg:flex-col lg:gap-2 lg:overflow-y-auto"
+          style={{ maxHeight: railMaxHeight }}
+        >
+          {images.map((img, i) => (
+            <button
+              key={img.id}
+              type="button"
+              onClick={() => scrollToIndex(i)}
+              aria-label={`Show image ${i + 1} of ${images.length}`}
+              aria-current={i === activeIndex}
+              className={`${THUMB_BASE} w-full ${
+                i === activeIndex ? "ring-2 ring-brand-600" : "ring-1 ring-cream/10 hover:ring-cream/30"
+              }`}
+            >
+              <div className="relative h-full w-full overflow-hidden">
+                <Image src={img.thumb_url} alt={altFor(title, i)} fill sizes="80px" className="object-cover" />
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Main image: swipe/drag-scroll carousel, snap-aligned per image */}
       <div ref={mainWrapRef} className="group relative flex-1">

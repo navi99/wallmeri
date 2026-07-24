@@ -11,8 +11,7 @@ export const SITE_IMAGE_SLOTS: Record<string, { label: string; maxImages: number
   home_hero: { label: "Homepage hero", maxImages: 6 },
   home_why_wallmeri: { label: 'Homepage "Why Wallmeri" image', maxImages: 1 },
   about_hero: { label: "About Us hero", maxImages: 1 },
-  cyo_phone: { label: "Create Your Own — phone mockup", maxImages: 1 },
-  cyo_poster: { label: "Create Your Own — poster mockup", maxImages: 1 },
+  cyo_showcase: { label: "Create Your Own — showcase image", maxImages: 1 },
 };
 
 export function useSiteImages() {

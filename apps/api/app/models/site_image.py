@@ -21,8 +21,7 @@ SITE_IMAGE_SLOTS: dict[str, dict[str, int | str]] = {
     "home_hero": {"label": "Homepage hero", "max_images": 6},
     "home_why_wallmeri": {"label": 'Homepage "Why Wallmeri" image', "max_images": 1},
     "about_hero": {"label": "About Us hero", "max_images": 1},
-    "cyo_phone": {"label": "Create Your Own — phone mockup", "max_images": 1},
-    "cyo_poster": {"label": "Create Your Own — poster mockup", "max_images": 1},
+    "cyo_showcase": {"label": "Create Your Own — showcase image", "max_images": 1},
 }
 
 

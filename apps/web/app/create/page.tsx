@@ -209,48 +209,14 @@ export default function CreatePage() {
             </div>
           </div>
 
-          <div className="flex flex-1 items-start justify-center gap-3 py-5 sm:gap-6" style={{ minWidth: 260 }}>
-            <div className="flex flex-col items-center gap-1.5 sm:gap-2.5">
-              <span className="text-center font-display text-sm font-medium italic leading-snug text-ink sm:text-base lg:text-lg">
-                Camera 
-                <span className="text-premium-600"> Roll</span>
-              </span>
-              <div className="relative aspect-[9/16] w-[48px] flex-none overflow-hidden rounded-[11px] shadow-[0_16px_32px_rgba(27,23,23,0.3)] sm:w-[70px] lg:w-[80px]">
+          <div className="flex flex-1 items-center justify-center py-5" style={{ minWidth: 260 }}>
+            <div className="w-full max-w-[560px] shadow-[0_30px_60px_rgba(27,23,23,0.35)] sm:max-w-[640px]">
+              <div className="relative aspect-[3/4]">
                 <SingleSiteImage
-                  slot="cyo_phone"
-                  sizes="130px"
-                  emptyClassName="bg-ink flex items-center justify-center"
+                  slot="cyo_showcase"
+                  sizes="(max-width: 640px) 90vw, 640px"
+                  priority
                 />
-              </div>
-            </div>
-
-            <svg
-              className="mt-2.5 flex-none self-start text-premium-600 sm:mt-3"
-              width="36"
-              height="12"
-              viewBox="0 0 56 16"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path d="M0 8H48" stroke="currentColor" strokeWidth="1.75" />
-              <path
-                d="M40 1.5L48 8L40 14.5"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-
-            <div className="flex flex-col items-center gap-1.5 sm:gap-2.5">
-              <span className="text-center font-display text-sm font-medium italic leading-snug text-ink sm:text-base lg:text-lg">
-                To your 
-                <span className="text-premium-600"> Wall</span>
-              </span>
-              <div className="w-[180px] flex-none bg-ink p-[5px] shadow-[0_30px_60px_rgba(27,23,23,0.35)] sm:w-[255px] lg:w-[320px]">
-                <div className="relative aspect-[3/4]">
-                  <SingleSiteImage slot="cyo_poster" sizes="320px" />
-                </div>
               </div>
             </div>
           </div>

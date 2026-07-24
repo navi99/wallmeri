@@ -42,7 +42,7 @@ export function FeaturedArtists() {
           href={`/artist/${a.slug}`}
           className="group flex flex-col items-center gap-4 text-center transition-opacity hover:opacity-90"
         >
-          <div className="relative aspect-square w-full overflow-hidden rounded-full bg-cream/10">
+          <div className="relative aspect-square w-full max-w-[200px] overflow-hidden rounded-full bg-cream/10">
             {a.avatar_url && (
               <Image
                 src={a.avatar_url}

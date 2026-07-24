@@ -28,6 +28,12 @@ _EXT_BY_CONTENT_TYPE = {
     "image/webp": "webp",
 }
 
+ALLOWED_VIDEO_CONTENT_TYPES = {"video/mp4", "video/webm"}
+_VIDEO_EXT_BY_CONTENT_TYPE = {
+    "video/mp4": "mp4",
+    "video/webm": "webm",
+}
+
 # Mirrors settings at import time (env-configurable); kept as module
 # constants since callers/tests reference them directly, e.g.
 # storage_service.MAX_UPLOAD_BYTES.
@@ -35,6 +41,7 @@ MAX_UPLOAD_BYTES = settings.MAX_UPLOAD_BYTES
 WEB_MAX_PX = settings.IMAGE_WEB_MAX_PX
 THUMB_MAX_PX = settings.IMAGE_THUMB_MAX_PX
 JPEG_QUALITY = settings.IMAGE_JPEG_QUALITY
+MAX_VIDEO_UPLOAD_BYTES = settings.MAX_VIDEO_UPLOAD_BYTES
 
 
 class UploadError(ValueError):
@@ -187,6 +194,36 @@ def store_image(data: bytes, content_type: str, kind: str = "product") -> Stored
         content_type=content_type,
         width=width,
         height=height,
+        size_bytes=len(data),
+        content_hash=hashlib.sha256(data).hexdigest(),
+    )
+
+
+def store_video(data: bytes, content_type: str, kind: str = "site") -> StoredImage:
+    """Store a video upload (e.g. the homepage hero video).
+
+    No Pillow-generated derivatives — the original bytes are the only object
+    written, reused for all three `StoredImage` key fields so this fits the
+    same `MediaAsset` row shape as an image. Width/height are meaningless for
+    video and left 0; callers must not treat them as real dimensions.
+    """
+    if content_type not in ALLOWED_VIDEO_CONTENT_TYPES:
+        raise UploadError("Only MP4 or WebM videos are allowed")
+    if len(data) > MAX_VIDEO_UPLOAD_BYTES:
+        raise UploadError("Video is too large (max 30 MB)")
+
+    token = secrets.token_hex(8)
+    ext = _VIDEO_EXT_BY_CONTENT_TYPE[content_type]
+    key = f"{kind}/{token}_orig.{ext}"
+    _put(key, data, content_type)
+
+    return StoredImage(
+        original_key=key,
+        web_key=key,
+        thumb_key=key,
+        content_type=content_type,
+        width=0,
+        height=0,
         size_bytes=len(data),
         content_hash=hashlib.sha256(data).hexdigest(),
     )

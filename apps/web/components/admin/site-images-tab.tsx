@@ -28,12 +28,14 @@ function SlotEditor({
   slot,
   label,
   maxImages,
+  media = "image",
   images,
   onSaved,
 }: {
   slot: string;
   label: string;
   maxImages: number;
+  media?: "image" | "video";
   images: SiteImage[];
   onSaved: () => void;
 }) {
@@ -99,17 +101,23 @@ function SlotEditor({
     <Card className="p-5">
       <h3 className="font-bold uppercase tracking-[0.03em] text-ink">{label}</h3>
       <p className="mt-1 text-xs text-muted">
-        {maxImages > 1
-          ? `Up to ${maxImages} images, shown as a crossfading slideshow. First image is main.`
-          : "One image. Leave empty to fall back to a plain block."}
+        {media === "video"
+          ? "One video (MP4 or WebM, max 30MB). Leave empty to fall back to the homepage hero image."
+          : maxImages > 1
+            ? `Up to ${maxImages} images, shown as a crossfading slideshow. First image is main.`
+            : "One image. Leave empty to fall back to a plain block."}
       </p>
 
       <div className="mt-3 flex flex-wrap gap-3">
         {items.map((item, index) => (
           <div key={item._key} className="w-28 shrink-0">
             <div className="relative aspect-[3/4] w-28 overflow-hidden border border-ink/15 bg-cream">
-              {item.image_url && (
-                <Image src={item.image_url} alt="" fill className="object-cover" sizes="112px" />
+              {item.image_url && media === "video" ? (
+                <video src={item.image_url} muted className="h-full w-full object-cover" />
+              ) : (
+                item.image_url && (
+                  <Image src={item.image_url} alt="" fill className="object-cover" sizes="112px" />
+                )
               )}
               {maxImages > 1 && index === 0 && (
                 <span className="absolute left-1 top-1 bg-ink px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-cream">
@@ -173,7 +181,7 @@ function SlotEditor({
       <input
         ref={fileRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept={media === "video" ? "video/mp4,video/webm" : "image/jpeg,image/png,image/webp"}
         className="hidden"
         onChange={(e) => onFile(e.target.files?.[0])}
       />
@@ -211,6 +219,7 @@ export function SiteImagesTab() {
           slot={slot}
           label={def.label}
           maxImages={def.maxImages}
+          media={def.media}
           images={all.filter((img) => img.slot === slot)}
           onSaved={invalidate}
         />

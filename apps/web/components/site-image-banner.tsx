@@ -5,47 +5,58 @@ import { useEffect, useState } from "react";
 
 import { pickSlot, useSiteImages } from "@/lib/site-images";
 
-// Self-fetching crossfade for the "home_hero" slot — however many images an
-// admin has attached, cycling every 4s. Empty (still loading, or admin
-// cleared every slide) falls back to a plain Noir panel rather than a broken
-// hero; the surrounding frame markup (border, shadow) stays in the page.
-export function HomeHeroSlideshow() {
+// Full-bleed homepage hero background: an admin-uploaded "home_hero_video"
+// autoplays (muted/loop/playsInline) with the first "home_hero" image as its
+// poster frame; reduced-motion users and sites with no video yet get that
+// same image full-bleed instead. Empty falls back to a plain Noir panel.
+export function HomeHeroMedia() {
   const { data } = useSiteImages();
-  const slides = pickSlot(data, "home_hero");
-  const [index, setIndex] = useState(0);
+  const images = pickSlot(data, "home_hero");
+  const video = pickSlot(data, "home_hero_video")[0];
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
-    if (slides.length <= 1) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 4000);
-    return () => clearInterval(id);
-  }, [slides.length]);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduceMotion(mq.matches);
+    const onChange = () => setReduceMotion(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
-  if (slides.length === 0) {
-    return <div className="h-full w-full bg-ink" />;
+  if (video && !reduceMotion) {
+    return (
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster={images[0]?.image_url}
+        className="absolute inset-0 h-full w-full object-cover"
+      >
+        <source src={video.image_url} />
+      </video>
+    );
+  }
+
+  if (images.length === 0) {
+    return <div className="absolute inset-0 bg-ink" />;
   }
 
   return (
-    <>
-      {slides.map((slide, i) => (
-        <Image
-          key={slide.id}
-          src={slide.image_url}
-          alt={slide.alt_text}
-          fill
-          priority={i === 0}
-          sizes="(max-width: 640px) 90vw, 400px"
-          className="object-cover transition-opacity duration-1000 ease-in-out"
-          style={{ opacity: i === index ? 1 : 0 }}
-        />
-      ))}
-    </>
+    <Image
+      src={images[0].image_url}
+      alt={images[0].alt_text}
+      fill
+      priority
+      sizes="100vw"
+      className="object-cover"
+    />
   );
 }
 
 // Self-fetching single image for a slot capped at one image ("home_why_wallmeri",
 // "about_hero"). Renders nothing but the fill content — caller owns the
-// aspect-ratio/frame wrapper, same contract as HomeHeroSlideshow.
+// aspect-ratio/frame wrapper, same contract as HomeHeroMedia.
 export function SingleSiteImage({
   slot,
   sizes,

@@ -18,7 +18,10 @@ from app.services import storage_service
 
 
 def create_asset(db: Session, data: bytes, content_type: str, kind: MediaKind) -> MediaAsset:
-    stored = storage_service.store_image(data, content_type, kind.value)
+    if content_type in storage_service.ALLOWED_VIDEO_CONTENT_TYPES:
+        stored = storage_service.store_video(data, content_type, kind.value)
+    else:
+        stored = storage_service.store_image(data, content_type, kind.value)
     asset = MediaAsset(
         kind=kind,
         original_key=stored.original_key,

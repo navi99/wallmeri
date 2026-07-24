@@ -345,6 +345,7 @@ def _apply_site_images(db: Session, slot: str, items: list[SiteImageIn]) -> list
     if slot_def is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Unknown slot")
     max_images = slot_def["max_images"]
+    slot_media = slot_def.get("media", "image")
     if len(items) > max_images:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -378,6 +379,12 @@ def _apply_site_images(db: Session, slot: str, items: list[SiteImageIn]) -> list
                 if asset is None or asset.kind != MediaKind.site:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown image_id"
+                    )
+                asset_is_video = asset.content_type in storage_service.ALLOWED_VIDEO_CONTENT_TYPES
+                if (slot_media == "video") != asset_is_video:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"\"{slot_def['label']}\" requires a {slot_media} upload",
                     )
                 media_service.attach(asset)
                 si = SiteImage(slot=slot, image_id=asset.id, image=asset)

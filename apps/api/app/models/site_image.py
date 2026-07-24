@@ -18,10 +18,11 @@ def _utcnow() -> datetime:
 # one code path. Adding a new page's image spot is just a new registry entry
 # + a seed row, no migration.
 SITE_IMAGE_SLOTS: dict[str, dict[str, int | str]] = {
-    "home_hero": {"label": "Homepage hero", "max_images": 6},
-    "home_why_wallmeri": {"label": 'Homepage "Why Wallmeri" image', "max_images": 1},
-    "about_hero": {"label": "About Us hero", "max_images": 1},
-    "cyo_showcase": {"label": "Create Your Own — showcase image", "max_images": 1},
+    "home_hero": {"label": "Homepage hero", "max_images": 6, "media": "image"},
+    "home_hero_video": {"label": "Homepage hero video", "max_images": 1, "media": "video"},
+    "home_why_wallmeri": {"label": 'Homepage "Why Wallmeri" image', "max_images": 1, "media": "image"},
+    "about_hero": {"label": "About Us hero", "max_images": 1, "media": "image"},
+    "cyo_showcase": {"label": "Create Your Own — showcase image", "max_images": 1, "media": "image"},
 }
 
 

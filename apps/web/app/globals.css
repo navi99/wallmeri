@@ -82,4 +82,19 @@ body {
   .animate-hero-rise-delayed {
     animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
   }
+
+  /* Trust marquee: the track holds two back-to-back copies of the phrase
+     list (see HomeMarquee), so a linear loop to -50% is seamless. */
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 28s linear infinite;
+  }
 }

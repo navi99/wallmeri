@@ -7,8 +7,12 @@ import type { SiteImage } from "@/lib/types";
 // the source of truth for validation (unknown slot / too many images both
 // 400 there); this copy only drives admin UI labels and the "add" button's
 // disabled-at-max state.
-export const SITE_IMAGE_SLOTS: Record<string, { label: string; maxImages: number }> = {
+export const SITE_IMAGE_SLOTS: Record<
+  string,
+  { label: string; maxImages: number; media?: "image" | "video" }
+> = {
   home_hero: { label: "Homepage hero", maxImages: 6 },
+  home_hero_video: { label: "Homepage hero video", maxImages: 1, media: "video" },
   home_why_wallmeri: { label: 'Homepage "Why Wallmeri" image', maxImages: 1 },
   about_hero: { label: "About Us hero", maxImages: 1 },
   cyo_showcase: { label: "Create Your Own — showcase image", maxImages: 1 },

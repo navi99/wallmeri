@@ -56,6 +56,7 @@ class Settings(BaseSettings):
     IMAGE_WEB_MAX_PX: int = 1600
     IMAGE_THUMB_MAX_PX: int = 480
     IMAGE_JPEG_QUALITY: int = 85
+    MAX_VIDEO_UPLOAD_BYTES: int = 30 * 1024 * 1024  # 30 MB (e.g. homepage hero video)
 
     # Custom poster upload (apps/api/app/services/custom_upload_service.py).
     # Effective DPI of the customer's crop at the chosen print size:

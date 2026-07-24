@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import { FeaturedArtists } from "@/components/home-featured-artists";
 import { FeaturedProducts } from "@/components/home-featured-products";
-import { HomeHeroSlideshow } from "@/components/site-image-banner";
+import { HomeHeroMedia } from "@/components/site-image-banner";
+import { HomeMarquee } from "@/components/home-marquee";
 import { ShopByCategory } from "@/components/home-shop-by-category";
 
 const kicker =
@@ -15,70 +16,59 @@ const accent =
   "font-display font-medium normal-case italic tracking-normal";
 const accentRed = `${accent} text-premium-600`;
 
-const trustBar = ["Curated Indian artists", "Secure Razorpay checkout", "Made in India"];
+const trustMarquee = [
+  "Curated Indian artists",
+  "Free shipping over ₹2,999",
+  "Secure Razorpay checkout",
+  "Made in India",
+  "Museum-grade metal",
+  "No drilling · magnetic mount",
+];
 
 export default function HomePage() {
   return (
     <div>
-      {/* 1 · Hero — the framed piece is the focal point; story sits beside it as
-          support, not competition. Cotton canvas, mirrors the About hero; red
-          is saved for the bands below. */}
-      <section className="px-[clamp(20px,5vw,64px)] py-[clamp(48px,7vw,104px)]">
-        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(32px,6vw,96px)] gap-y-10">
-          <div className="flex min-w-[280px] flex-1 flex-col items-start gap-6">
-            <div className={`${kicker} motion-safe:animate-hero-rise-1`}>Wallmeri</div>
-            <h1 className="font-sans text-[32px] leading-[40px] sm:text-[48px] sm:leading-[54px] lg:text-[64px] lg:leading-[68px] font-bold uppercase tracking-[0.01em] text-ink [word-spacing:0em] [text-wrap:balance] motion-safe:animate-hero-rise-2">
+      {/* 1 · Hero — full-bleed video (falls back to the admin's poster image,
+          then a plain Noir panel) with a bottom Noir scrim so the overlaid
+          copy stays legible against whatever's playing. Text is Cotton on
+          the dark hero per DESIGN.md's No-Pure-White rule; red stays confined
+          to the kicker and the primary CTA's hover state. */}
+      <section className="relative flex min-h-[clamp(560px,82vh,860px)] items-end overflow-hidden bg-ink">
+        <HomeHeroMedia />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-ink/5"
+        />
+        <div className="relative w-full px-[clamp(20px,5vw,64px)] py-[clamp(40px,6vw,80px)]">
+          <div className="mx-auto flex max-w-[1180px] flex-col items-start gap-6">
+            <div className={`${kickerOnDark} motion-safe:animate-hero-rise-1`}>Wallmeri</div>
+            <h1 className="font-sans max-w-[720px] text-[32px] leading-[40px] sm:text-[48px] sm:leading-[54px] lg:text-[64px] lg:leading-[68px] font-bold uppercase tracking-[0.01em] text-cream [word-spacing:0em] [text-wrap:balance] motion-safe:animate-hero-rise-2">
               Every wall deserves{" "}
-              <em className={accentRed}>an art.</em>
+              <em className={`${accent} text-cream`}>an art.</em>
             </h1>
-            <p className="max-w-[480px] text-[16px] leading-[1.7] text-muted motion-safe:animate-hero-rise-3">
+            <p className="max-w-[480px] text-[16px] leading-[1.7] text-cream/80 motion-safe:animate-hero-rise-3">
               Premium metal art from independent Indian artists
             </p>
             <div className="mt-2 flex flex-wrap gap-3.5 motion-safe:animate-hero-rise-4">
               <Link
                 href="/catalog"
-                className="inline-flex h-[52px] items-center justify-center bg-ink px-10 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-premium-600 active:bg-premium-700"
+                className="inline-flex h-[52px] items-center justify-center bg-premium-600 px-10 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:bg-premium-700"
               >
                 Shop the gallery
               </Link>
               <Link
                 href="/artists"
-                className="inline-flex h-[52px] items-center justify-center border border-ink px-10 text-xs font-semibold uppercase tracking-[0.06em] text-ink transition-colors hover:bg-ink hover:text-cream"
+                className="inline-flex h-[52px] items-center justify-center border border-cream/50 px-10 text-xs font-semibold uppercase tracking-[0.06em] text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
               >
                 Meet the artists
               </Link>
             </div>
           </div>
-
-          {/* The one framed piece in the gallery — enlarged to lead the hero,
-              14px Noir frame + a deep, red-tinted drop shadow per DESIGN.md's
-              "Hero frame" spec, so the art itself reads as the focal point.
-              Settles in last (after the text has staggered through), then
-              gives a quiet tilt-and-lift on hover/focus — the same "earned
-              lift" language product cards use on interaction. */}
-          <div className="group mx-auto w-full min-w-[280px] max-w-[560px] flex-[1.2] motion-safe:animate-hero-rise-delayed [perspective:1200px]">
-            <div className="bg-ink p-[14px] shadow-[0_1px_2px_rgba(27,23,23,0.05),0_40px_70px_-15px_rgba(143,27,26,0.28)] transition-transform duration-500 ease-out motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:[transform:rotateX(1.5deg)_rotateY(-2deg)]">
-              <div className="relative aspect-[3/4] overflow-hidden">
-                <HomeHeroSlideshow />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* 2 · Trust bar — the badges buyers need before they'll browse, promoted up from the footer */}
-      <section className="border-b border-ink/10 bg-paper">
-        <div className="container-page flex flex-wrap items-center justify-center gap-x-8 gap-y-2 py-5 text-center sm:gap-x-14">
-          {trustBar.map((item) => (
-            <span key={item} className="flex items-center gap-2.5">
-              <span className="text-premium-600">●</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/70">
-                {item}
-              </span>
-            </span>
-          ))}
-        </div>
-      </section>
+      {/* 2 · Trust marquee — the badges buyers need before they'll browse, scrolling instead of static so it reads as a signal strip, not another line of copy */}
+      <HomeMarquee items={trustMarquee} />
 
       {/* 3 · Shop by category — live catalog taxonomy */}
       <section className="border-y border-ink/10 bg-paper">

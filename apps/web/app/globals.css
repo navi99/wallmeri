@@ -26,18 +26,60 @@ body {
 }
 
 @layer base {
-  /* Steel Gallery type system: headings are Archivo (sans), bold and
+  /* Steel Gallery type system: headings are Montserrat (sans), bold and
      tracked per component. Cormorant Garamond (--font-display) is the
      accent serif — italic emphasis inside headings, review quotes,
-     oversized step numerals — applied explicitly via .font-display. */
+     oversized step numerals — applied explicitly via .font-display.
+     Montserrat's uppercase forms want breathing room rather than the
+     tightening Archivo needed, so headings track slightly open. */
   h1,
   h2 {
-    letter-spacing: -0.01em;
+    letter-spacing: 0.01em;
   }
 }
 
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  /* Hero entrance: a quiet fade + rise, staggered piece by piece (kicker →
+     heading → copy → CTAs → framed art), gated by motion-safe: at the call
+     site so prefers-reduced-motion gets the plain, static layout. */
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-hero-rise {
+    animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-hero-rise-1 {
+    animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-hero-rise-2 {
+    animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  }
+
+  .animate-hero-rise-3 {
+    animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  }
+
+  .animate-hero-rise-4 {
+    animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  }
+
+  .animate-hero-rise-delayed {
+    animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
   }
 }

@@ -4,6 +4,7 @@ import Image from "@/components/app-image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
+import { SpotlightCard } from "@/components/custom/spotlight-card";
 import { api } from "@/lib/api";
 
 // A category without an admin-set display poster gets a deterministic
@@ -39,8 +40,8 @@ export function ShopByCategory() {
               href={`/category/${c.slug}`}
               className="group flex flex-col gap-3 transition-transform duration-300 hover:-translate-y-1.5"
             >
-              {c.poster_image_url ? (
-                <div className="relative h-[280px] overflow-hidden shadow-card transition-shadow duration-300 group-hover:shadow-lift">
+              <SpotlightCard className="h-[280px] shadow-card transition-shadow duration-300 group-hover:shadow-lift">
+                {c.poster_image_url ? (
                   <Image
                     src={c.poster_image_url}
                     alt=""
@@ -48,13 +49,13 @@ export function ShopByCategory() {
                     className="object-cover"
                     sizes="(min-width: 1024px) 20vw, 45vw"
                   />
-                </div>
-              ) : (
-                <div
-                  className="h-[280px] shadow-card transition-shadow duration-300 group-hover:shadow-lift"
-                  style={{ background: tileGradients[i % tileGradients.length] }}
-                />
-              )}
+                ) : (
+                  <div
+                    className="h-full w-full"
+                    style={{ background: tileGradients[i % tileGradients.length] }}
+                  />
+                )}
+              </SpotlightCard>
               <span className="text-[15px] font-semibold uppercase tracking-[0.06em] text-ink">
                 {c.name}
               </span>

@@ -4,6 +4,7 @@ import Image from "@/components/app-image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
+import { SpotlightCard } from "@/components/custom/spotlight-card";
 import { api } from "@/lib/api";
 
 export function FeaturedArtists() {
@@ -42,17 +43,17 @@ export function FeaturedArtists() {
           href={`/artist/${a.slug}`}
           className="group flex flex-col items-center gap-4 text-center transition-opacity hover:opacity-90"
         >
-          <div className="relative aspect-square w-full max-w-[200px] overflow-hidden rounded-full bg-cream/10">
+          <SpotlightCard className="aspect-square w-full max-w-[200px] rounded-full bg-cream/10">
             {a.avatar_url && (
               <Image
                 src={a.avatar_url}
                 alt={a.name}
                 fill
                 sizes="(max-width: 640px) 45vw, 220px"
-                className="object-cover"
+                className="rounded-full object-cover"
               />
             )}
-          </div>
+          </SpotlightCard>
           <div>
             <div className="font-display text-lg italic text-cream">{a.name}</div>
             <div className="mt-1 text-[11px] font-medium uppercase tracking-[0.12em] text-cream/50">

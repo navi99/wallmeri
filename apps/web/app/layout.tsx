@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Cormorant_Garamond } from "next/font/google";
+import { Montserrat, Cormorant_Garamond } from "next/font/google";
 import { Suspense } from "react";
 
 import "./globals.css";
@@ -7,8 +7,9 @@ import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
-const sans = Archivo({
+const sans = Montserrat({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });

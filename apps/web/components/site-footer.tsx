@@ -11,7 +11,7 @@ export function SiteFooter() {
     <footer className="mt-16 bg-ink text-cream">
       <div className="container-page flex flex-wrap items-start justify-between gap-12 py-14">
         <div className="flex flex-col gap-3.5">
-          <div className="text-lg font-semibold tracking-[0.08em]">WALLMERI</div>
+          <div className="text-lg font-bold tracking-[0.24em]">WALLMERI</div>
         </div>
 
         <div className="flex flex-wrap gap-x-16 gap-y-10">

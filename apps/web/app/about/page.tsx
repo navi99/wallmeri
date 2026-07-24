@@ -19,7 +19,7 @@ const accent =
   "font-display font-medium normal-case italic tracking-normal";
 const accentRed = `${accent} text-premium-600`;
 const narrativeHeading =
-  "font-display text-[34px] sm:text-[44px] lg:text-[56px] font-medium italic leading-[1.08] text-cream";
+  "font-display text-[34px] sm:text-[44px] lg:text-[56px] font-medium italic leading-[1.08]";
 const buttonBase =
   "inline-flex h-[52px] items-center justify-center px-9 text-xs font-semibold uppercase tracking-[0.16em]";
 
@@ -131,7 +131,7 @@ export default function AboutPage() {
       <section className="bg-ink px-[clamp(24px,5vw,64px)] py-[clamp(64px,8vw,112px)]">
         <div className="mx-auto flex max-w-[820px] flex-col items-center gap-7 text-center">
           <div className={kickerOnDark}>Our Story</div>
-          <h2 className={narrativeHeading}>
+          <h2 className={`${narrativeHeading} text-cream`}>
             Great art deserves
             <br />a longer life.
           </h2>
@@ -207,7 +207,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-[1040px]">
           <div className="mx-auto mb-14 max-w-[640px] text-center">
             <div className={`${kickerOnDark} mb-4`}>The Material</div>
-            <h2 className={narrativeHeading}>Built to last.</h2>
+            <h2 className={`${narrativeHeading} text-cream`}>Built to last.</h2>
             <p className="mt-5 text-[17px] leading-[1.75] text-cream/70">
               Instead of paper or canvas, every Wallmeri artwork is produced
               on premium aluminium.
@@ -251,18 +251,16 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 7 · Closing — Made in India + Join the Journey, Premium Red drench mirroring the hero band elsewhere on the site */}
-      <section className="bg-premium-600 px-[clamp(24px,5vw,64px)] py-[clamp(64px,8vw,112px)] text-center">
+      {/* 7 · Closing — Made in India + Join the Journey. Quiet Paper band; red stays confined to the kicker/accent/hover, no drench */}
+      <section className="border-t border-ink/10 bg-paper px-[clamp(24px,5vw,64px)] py-[clamp(64px,8vw,112px)] text-center">
         <div className="mx-auto flex max-w-[760px] flex-col items-center gap-6">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-cream/75">
-            Made in India
-          </div>
-          <h2 className={narrativeHeading}>
+          <div className={kicker}>Made in India</div>
+          <h2 className={`${narrativeHeading} text-ink`}>
             Proudly made in India.
             <br />
             Built in Bengaluru.
           </h2>
-          <p className="max-w-[560px] text-base leading-[1.75] text-cream/80">
+          <p className="max-w-[560px] text-base leading-[1.75] text-muted">
             Every Wallmeri piece is made to order in India, supporting local
             artists while maintaining complete control over quality from
             production to delivery. Whether you&apos;re discovering your next
@@ -273,13 +271,13 @@ export default function AboutPage() {
           <div className="flex flex-wrap justify-center gap-3.5 pt-2">
             <Link
               href="/catalog"
-              className={`${buttonBase} bg-cream text-premium-600 transition-colors hover:bg-ink hover:text-cream`}
+              className={`${buttonBase} bg-ink text-cream transition-colors hover:bg-premium-600 active:bg-premium-700`}
             >
               Browse the Gallery
             </Link>
             <Link
               href="/artists/join"
-              className={`${buttonBase} border border-cream/55 text-cream transition-colors hover:border-cream hover:bg-cream hover:text-premium-600`}
+              className={`${buttonBase} border border-ink text-ink transition-colors hover:bg-ink hover:text-cream`}
             >
               Become a Wallmeri Artist
             </Link>

@@ -59,20 +59,20 @@ export function SiteHeader() {
           aria-label={menuOpen ? "Close menu" : "Menu"}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
-          className="grid h-11 w-11 place-items-center text-ink hover:text-brand-600 sm:hidden"
+          className="grid h-11 w-11 place-items-center text-ink hover:text-brand-600 lg:hidden"
         >
           {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
         <Link
           href="/"
           onClick={closePanels}
-          className="shrink-0 text-lg font-semibold tracking-[0.08em] text-ink sm:text-xl"
+          className="shrink-0 text-lg font-bold tracking-[0.24em] text-ink sm:text-xl"
         >
           WALLMERI
         </Link>
 
         {/* Left of search: nav (desktop) */}
-        <nav className="hidden items-center gap-6 sm:flex" aria-label="Main">
+        <nav className="hidden items-center gap-6 lg:flex" aria-label="Main">
           <Link href="/catalog" className={navLink}>
             Shop
           </Link>
@@ -93,7 +93,7 @@ export function SiteHeader() {
         <form
           onSubmit={submitSearch}
           role="search"
-          className="relative mx-auto hidden w-full max-w-md flex-1 sm:block"
+          className="relative mx-auto hidden w-full max-w-md flex-1 lg:block"
         >
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <input
@@ -104,7 +104,7 @@ export function SiteHeader() {
             className="h-11 w-full border border-ink/20 bg-paper pl-9 pr-3 text-sm text-ink placeholder:text-muted/70 focus:border-ink focus-visible:outline-none"
           />
         </form>
-        <div className="flex-1 sm:hidden" />
+        <div className="flex-1 lg:hidden" />
 
         {/* Right of search: login/logout + cart */}
         <div className="flex items-center justify-end gap-1 sm:gap-6">
@@ -112,13 +112,13 @@ export function SiteHeader() {
             <button
               onClick={logout}
               aria-label="Log out"
-              className={`hidden items-center gap-1.5 sm:flex ${navLink}`}
+              className={`hidden items-center gap-1.5 lg:flex ${navLink}`}
             >
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden lg:inline">Logout</span>
             </button>
           ) : (
-            <Link href="/login" className={`hidden sm:block ${navLink}`}>
+            <Link href="/login" className={`hidden lg:block ${navLink}`}>
               Login
             </Link>
           )}
@@ -147,7 +147,7 @@ export function SiteHeader() {
       </div>
 
       {/* Mobile: always-visible search row */}
-      <div className="border-b border-ink/10 sm:hidden">
+      <div className="border-b border-ink/10 lg:hidden">
         <form onSubmit={submitSearch} role="search" className="container-page relative py-3">
           <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <input
@@ -164,7 +164,7 @@ export function SiteHeader() {
         <nav
           id="mobile-menu"
           aria-label="Main menu"
-          className="border-b border-ink/10 sm:hidden"
+          className="border-b border-ink/10 lg:hidden"
         >
           <div className="container-page flex flex-col gap-0.5 py-3">
             <Link href="/catalog" onClick={closePanels} className={mobileLink}>

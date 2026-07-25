@@ -31,7 +31,7 @@ function RejectDialog({
   const [note, setNote] = useState("");
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-4">
-      <div className="w-full max-w-sm border border-ink/10 bg-paper p-6 shadow-lift">
+      <div className="w-full max-w-sm border border-line bg-paper p-6 shadow-lift">
         <h2 className="text-lg font-bold uppercase tracking-[0.04em] text-ink">
           Reject order #{order.id}
         </h2>
@@ -148,7 +148,7 @@ export function CustomReviewTab() {
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {order.custom_lines.map((line) => (
-                <div key={line.order_item_id} className="flex gap-3 border border-ink/10 bg-cream p-3">
+                <div key={line.order_item_id} className="flex gap-3 border border-line bg-cream p-3">
                   <div className="relative h-24 w-20 shrink-0 overflow-hidden bg-ink/5">
                     <Image src={line.preview_url} alt={line.title} fill className="object-cover" sizes="80px" />
                   </div>

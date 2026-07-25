@@ -75,7 +75,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
     const notFound = error instanceof ApiError && error.status === 404;
     return (
       <div className="container-page py-24 text-center">
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">
+        <h1 className="title-lg">
           {notFound ? "No original for this poster" : "Something went wrong"}
         </h1>
         <Link
@@ -116,10 +116,12 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
         </div>
 
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-600">
+          <div className="kicker">
             One of a kind
           </div>
-          <h1 className="mt-2.5 text-3xl font-bold uppercase leading-[1.1] tracking-tight text-ink sm:text-4xl">
+          {/* The artwork's own title — a name, so it opts out of the ladder's
+              caps (see The Caps-Heading Rule). */}
+          <h1 className="mt-2.5 title-xl title-name">
             {title}
           </h1>
           <p className="mt-2 font-display text-base italic text-muted">
@@ -135,33 +137,33 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
             )}
           </p>
 
-          <p className="mt-4 text-3xl font-bold text-brand-600">{formatINR(original.price_inr)}</p>
+          <p className="mt-4 text-3xl font-normal tracking-[0.03em] text-brand-600">{formatINR(original.price_inr)}</p>
 
           <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-muted">
             {original.medium && (
               <div>
-                <dt className="text-xs uppercase tracking-[0.08em]">Medium</dt>
+                <dt className="label text-xs">Medium</dt>
                 <dd className="text-ink">{original.medium}</dd>
               </div>
             )}
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em]">Dimensions</dt>
+              <dt className="label text-xs">Dimensions</dt>
               <dd className="text-ink">{dimensions}</dd>
             </div>
             {original.year_created && (
               <div>
-                <dt className="text-xs uppercase tracking-[0.08em]">Year</dt>
+                <dt className="label text-xs">Year</dt>
                 <dd className="text-ink">{original.year_created}</dd>
               </div>
             )}
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em]">Status</dt>
+              <dt className="label text-xs">Status</dt>
               <dd className="text-ink capitalize">{original.status}</dd>
             </div>
           </dl>
 
           {original.story && (
-            <p className="mt-5 whitespace-pre-wrap font-display text-lg italic leading-relaxed text-ink">
+            <p className="mt-5 whitespace-pre-wrap leading-relaxed text-muted">
               {original.story}
             </p>
           )}
@@ -170,7 +172,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
             {submitted ? (
               <div className="text-center">
                 <CheckCircle2 className="mx-auto h-10 w-10 text-green-600" />
-                <h2 className="mt-3 text-lg font-bold uppercase tracking-tight text-ink">
+                <h2 className="mt-3 title-xs">
                   Interest received
                 </h2>
                 <p className="mt-2 text-sm text-muted">
@@ -191,7 +193,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
               </p>
             ) : (
               <>
-                <h2 className="text-lg font-bold uppercase tracking-tight text-ink">
+                <h2 className="title-xs">
                   Send your interest
                 </h2>
                 {original.status === "reserved" && (

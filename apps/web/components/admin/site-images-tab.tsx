@@ -161,7 +161,7 @@ function SlotEditor({
               onBlur={() => saveMutation.mutate(items)}
               placeholder="Alt text"
               aria-label="Alt text"
-              className="mt-1 w-full border border-ink/15 bg-paper px-1.5 py-1 text-[11px] text-ink placeholder:text-muted/70 focus:border-ink focus:outline-none"
+              className="mt-1 w-full border border-ink/15 bg-paper px-1.5 py-1 text-[11px] text-ink placeholder:text-muted focus:border-ink focus:outline-none"
             />
           </div>
         ))}

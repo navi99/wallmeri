@@ -5,8 +5,11 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
+import { SORT_OPTIONS } from "@/components/catalog-filter-rail";
+import { FilterMenu } from "@/components/filter-menu";
+import { Pagination } from "@/components/pagination";
 import { ProductCard } from "@/components/product-card";
-import { Select, Spinner } from "@/components/ui";
+import { Spinner } from "@/components/ui";
 import { api } from "@/lib/api";
 
 function CatalogContent() {
@@ -15,6 +18,9 @@ function CatalogContent() {
 
   const q = params.get("q") ?? "";
   const category = params.get("category") ?? "";
+  // No facet sets this any more — the roster at /artists and each artist's own
+  // page cover browsing by artist — but existing ?artist= links still filter.
+  const artist = params.get("artist") ?? "";
   const sort = params.get("sort") ?? "newest";
   const page = Math.max(1, parseInt(params.get("page") ?? "1", 10) || 1);
 
@@ -24,8 +30,8 @@ function CatalogContent() {
   });
 
   const productsQuery = useQuery({
-    queryKey: ["products", { q, category, sort, page }],
-    queryFn: () => api.listProducts({ q, category, sort, page, page_size: 12 }),
+    queryKey: ["products", { q, category, artist, sort, page }],
+    queryFn: () => api.listProducts({ q, category, artist, sort, page, page_size: 12 }),
   });
 
   const update = (patch: Record<string, string>) => {
@@ -39,117 +45,119 @@ function CatalogContent() {
   };
 
   const data = productsQuery.data;
+  const heading = q
+    ? `Results for “${q}”`
+    : category
+      ? categoryName(category, categoriesQuery.data)
+      : "Gallery";
+
+  const categoryOptions = [
+    { value: "", label: "All categories" },
+    ...(categoriesQuery.data ?? []).map((c) => ({ value: c.slug, label: c.name })),
+  ];
 
   return (
-    <div className="container-page py-8">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">
-          {q ? `Results for “${q}”` : category ? categoryName(category, categoriesQuery.data) : "Gallery"}
+    <div className="container-page py-12 lg:py-16">
+      <nav
+        aria-label="Breadcrumb"
+        className="label text-xs text-muted"
+      >
+        <Link href="/" className="transition-colors hover:text-brand-600">
+          Home
+        </Link>
+        <span aria-hidden className="px-2 text-muted">
+          /
+        </span>
+        <span className="text-ink">Gallery</span>
+      </nav>
+
+      <div className="mt-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-2 border-b border-line pb-6">
+        <h1 className="title-xl">
+          {heading}
         </h1>
-        <p className="text-sm text-muted">
+        <p className="label text-xs text-muted">
           {data ? `${data.total} ${data.total === 1 ? "design" : "designs"}` : "Loading…"}
         </p>
       </div>
 
-      {/* Filters */}
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <Select
-          value={category}
-          onChange={(e) => update({ category: e.target.value })}
-          className="w-auto"
-          aria-label="Filter by category"
-        >
-          <option value="">All categories</option>
-          {categoriesQuery.data?.map((c) => (
-            <option key={c.id} value={c.slug}>
-              {c.name}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          value={sort}
-          onChange={(e) => update({ sort: e.target.value })}
-          className="w-auto"
-          aria-label="Sort products"
-        >
-          <option value="newest">Newest</option>
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-          <option value="title">Name: A–Z</option>
-        </Select>
-
-        {(q || category) && (
-          <Link
-            href="/catalog"
-            className="text-sm font-semibold text-brand-600 hover:underline"
-          >
-            Clear filters
-          </Link>
-        )}
-      </div>
-
-      {/* Create-your-own callout — modest, off to the side of the browsing flow */}
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border border-ink/10 bg-paper px-5 py-4">
-        <p className="text-sm text-ink">
-          <span className="font-semibold">Don&apos;t see what you&apos;re after?</span>{" "}
-          <span className="text-muted">Upload your own photo and we&apos;ll print it on aluminium.</span>
-        </p>
+      {/* Create-your-own callout — a quiet band under the title: it answers
+          "nothing here fits" before the browsing starts, without competing
+          with the artwork. */}
+      <div className="mt-6 flex flex-col gap-3 border border-line bg-paper px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+        <div>
+          <p className="text-sm font-medium leading-5 text-ink">
+            Don&apos;t see what you&apos;re after?
+          </p>
+          <p className="mt-1.5 text-sm leading-5 text-muted">
+            Upload your own photo and we&apos;ll print it on aluminium.
+          </p>
+        </div>
         <Link
           href="/create"
-          className="shrink-0 text-xs font-semibold uppercase tracking-[0.06em] text-brand-600 hover:underline"
+          className="shrink-0 label text-xs text-brand-600 hover:underline"
         >
           Create your own →
         </Link>
       </div>
 
-      {/* Grid */}
-      {productsQuery.isLoading ? (
-        <div className="grid place-items-center py-24">
-          <Spinner />
-        </div>
-      ) : data && data.items.length > 0 ? (
-        <>
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {data.items.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+      {/* Category left, Sort right — the whole filter set now, at every width,
+          sitting directly above the grid it acts on. */}
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <FilterMenu
+          label="Category"
+          options={categoryOptions}
+          selected={category}
+          onSelect={(value) => update({ category: value })}
+        />
+        <FilterMenu
+          label="Sort"
+          options={SORT_OPTIONS}
+          selected={sort}
+          align="end"
+          onSelect={(value) => update({ sort: value })}
+        />
+      </div>
 
-          {data.pages > 1 && (
-            <div className="mt-10 flex items-center justify-center gap-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => update({ page: String(page - 1) })}
-                className="rounded-lg border border-brand-200 bg-paper px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50 disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="px-2 text-sm text-muted">
-                Page {data.page} of {data.pages}
-              </span>
-              <button
-                disabled={page >= data.pages}
-                onClick={() => update({ page: String(page + 1) })}
-                className="rounded-lg border border-brand-200 bg-paper px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50 disabled:opacity-50"
-              >
-                Next
-              </button>
+      <div className="mt-8">
+        {productsQuery.isLoading ? (
+          <div className="grid place-items-center py-24">
+            <Spinner />
+          </div>
+        ) : data && data.items.length > 0 ? (
+          <>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-8 sm:gap-y-14 lg:grid-cols-4">
+              {data.items.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  imageSizes="(max-width: 1024px) 50vw, 25vw"
+                />
+              ))}
             </div>
-          )}
-        </>
-      ) : (
-        <div className="mt-10 rounded-2xl border border-brand-100 bg-paper p-12 text-center">
-          <p className="text-lg font-semibold text-ink">No posters found</p>
-          <p className="mt-1 text-muted">Try a different search or clear your filters.</p>
-          <Link
-            href="/catalog"
-            className="mt-4 inline-block font-semibold text-brand-600 hover:underline"
-          >
-            View all posters
-          </Link>
-        </div>
-      )}
+
+            <Pagination
+              page={page}
+              pages={data.pages}
+              onPage={(next) => update({ page: String(next) })}
+            />
+          </>
+        ) : (
+          <div className="border border-line bg-paper p-12 text-center">
+            <p className="title-xs">
+              No designs found
+            </p>
+            <p className="mt-2 text-sm text-muted">
+              Try a different search or clear your filters.
+            </p>
+            <Link
+              href="/catalog"
+              className="mt-5 inline-block label text-xs text-brand-600 hover:underline"
+            >
+              View all designs →
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

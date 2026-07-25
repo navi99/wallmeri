@@ -34,7 +34,7 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
     const notFound = artistQuery.error instanceof ApiError && artistQuery.error.status === 404;
     return (
       <div className="container-page py-24 text-center">
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">
+        <h1 className="title-lg">
           {notFound ? "Artist not found" : "Something went wrong"}
         </h1>
         <Link href="/artists" className="mt-4 inline-block font-semibold text-brand-600 hover:underline">
@@ -54,13 +54,15 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
       </Link>
 
       <div className="mt-6 flex flex-col items-start gap-6 sm:flex-row sm:items-center">
-        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border-4 border-white bg-brand-50 shadow-card">
+        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border-4 border-cream bg-paper">
           {artist.avatar_url && (
             <Image src={artist.avatar_url} alt={artist.name} fill sizes="112px" className="object-cover" />
           )}
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-ink">{artist.name}</h1>
+          {/* A name, not a place — opts out of the ladder's caps (see The
+              Caps-Heading Rule). */}
+          <h1 className="title-xl title-name">{artist.name}</h1>
           <p className="mt-2 max-w-2xl leading-relaxed text-muted">{artist.bio}</p>
           <div className="mt-3 flex gap-4 text-sm">
             {artist.website_url && (
@@ -87,8 +89,8 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
         </div>
       </div>
 
-      <h2 className="mt-12 text-2xl font-bold text-ink">
-        Posters by {artist.name}{" "}
+      <h2 className="mt-12 title-lg">
+        Posters by <span className="title-name">{artist.name}</span>{" "}
         <span className="text-base font-medium text-muted">({artist.product_count})</span>
       </h2>
       {productsQuery.isLoading ? (

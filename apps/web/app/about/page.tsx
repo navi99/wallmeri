@@ -9,19 +9,16 @@ export const metadata: Metadata = {
     "Wallmeri brings original Indian artwork from talented independent artists to your walls as premium metal posters — professionally printed in India, with every purchase directly supporting the artist behind it.",
 };
 
-const kicker =
-  "text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-600";
-const kickerOnDark =
-  "text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-100";
-const sectionHeading =
-  "font-sans text-[28px] sm:text-[36px] lg:text-[42px] font-bold uppercase leading-tight tracking-tight text-ink";
-const accent =
-  "font-display font-medium normal-case italic tracking-normal";
-const accentRed = `${accent} text-premium-600`;
+const kicker = "kicker";
+const kickerOnDark = "kicker-on-dark";
+// The hero takes `.title-display` inline; section headings sit a step below it
+// so the page has one clear entry point rather than six equal shouts.
+const sectionHeading = "title-xl [text-wrap:balance]";
+const accentRed = "accent text-premium-600";
 const narrativeHeading =
   "font-display text-[34px] sm:text-[44px] lg:text-[56px] font-medium italic leading-[1.08]";
 const buttonBase =
-  "inline-flex h-[52px] items-center justify-center px-9 text-xs font-semibold uppercase tracking-[0.16em]";
+  "label inline-flex h-14 items-center justify-center px-9";
 
 const beliefs = [
   {
@@ -86,11 +83,11 @@ export default function AboutPage() {
   return (
     <div>
       {/* 1 · Hero — story left, one framed piece right. Cotton canvas; red is saved for the bands below */}
-      <section className="px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,104px)]">
+      <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
           <div className="flex min-w-[300px] max-w-[560px] flex-1 flex-col items-start gap-6">
             <div className={kicker}>About Wallmeri</div>
-            <h1 className="font-sans text-[40px] sm:text-[56px] lg:text-[64px] font-bold uppercase leading-[68px] tracking-tight text-ink">
+            <h1 className="title-display">
               Art deserves more than <em className={accentRed}>a scroll.</em>
             </h1>
             <p className="max-w-[480px] text-[17px] leading-[1.65] text-muted">
@@ -148,12 +145,12 @@ export default function AboutPage() {
       </section>
 
       {/* 3 · What we believe — the three pillars, columned so it reads distinct from the numbered list below */}
-      <section className="px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,96px)]">
+      <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mx-auto max-w-[1040px]">
           <div className="mb-14 text-center">
             <div className={`${kicker} mb-4`}>What We Believe</div>
             <h2 className={sectionHeading}>
-              Built around artists. <em className={accentRed}>Designed for art lovers.</em>
+              Built around artists. Designed for art lovers.
             </h2>
           </div>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-12 gap-y-12">
@@ -162,7 +159,7 @@ export default function AboutPage() {
                 <div className="font-display text-[44px] italic leading-none text-premium-600">
                   {b.n}
                 </div>
-                <div className="text-[15px] font-semibold uppercase tracking-[0.06em] text-ink">
+                <div className="title-xs">
                   {b.title}
                 </div>
                 <p className="text-[15px] leading-[1.7] text-muted">{b.body}</p>
@@ -173,32 +170,31 @@ export default function AboutPage() {
       </section>
 
       {/* 4 · How it works — discover, earn, print, hang: a single centered list */}
-      <section className="px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,96px)]">
+      <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mb-14 text-center">
           <div className={`${kicker} mb-4`}>How Wallmeri Works</div>
           <h2 className={sectionHeading}>
-            From an artist&apos;s portfolio{" "}
-            <em className={accentRed}>to your wall.</em>
+            From an artist&apos;s portfolio to your wall.
           </h2>
         </div>
         <div className="mx-auto flex max-w-[820px] flex-col">
           {steps.map((step) => (
             <div
               key={step.n}
-              className="grid grid-cols-[64px_1fr] items-baseline gap-x-[clamp(20px,3vw,40px)] border-t border-ink/15 py-[clamp(24px,3vw,32px)]"
+              className="grid grid-cols-[64px_1fr] items-baseline gap-x-[clamp(20px,3vw,40px)] border-t border-line py-[clamp(24px,3vw,32px)]"
             >
               <span className="font-display text-[40px] italic leading-none text-premium-600">
                 {step.n}
               </span>
               <div className="flex flex-col gap-2">
-                <div className="text-[15px] font-semibold uppercase tracking-[0.08em] text-ink">
+                <div className="title-xs">
                   {step.title}
                 </div>
                 <p className="text-[15px] leading-[1.7] text-muted">{step.body}</p>
               </div>
             </div>
           ))}
-          <div className="border-t border-ink/15" />
+          <div className="border-t border-line" />
         </div>
       </section>
 
@@ -219,7 +215,7 @@ export default function AboutPage() {
                 <div className="font-display text-[40px] italic leading-none text-premium-100">
                   {m.n}
                 </div>
-                <div className="text-[15px] font-semibold uppercase tracking-[0.06em] text-cream">
+                <div className="title-xs text-cream">
                   {m.title}
                 </div>
                 <p className="text-[15px] leading-[1.7] text-cream/70">{m.body}</p>
@@ -230,12 +226,11 @@ export default function AboutPage() {
       </section>
 
       {/* 6 · Our vision — plain centered text, no drench, so the two dark bands either side of it stay the exception */}
-      <section className="px-[clamp(24px,5vw,64px)] py-[clamp(56px,7vw,96px)]">
+      <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mx-auto flex max-w-[720px] flex-col items-center gap-6 text-center">
           <div className={kicker}>Our Vision</div>
           <h2 className={sectionHeading}>
-            Building India&apos;s home{" "}
-            <em className={accentRed}>for independent artists.</em>
+            Building India&apos;s home for independent artists.
           </h2>
           <p className="max-w-[620px] text-[17px] leading-[1.75] text-muted">
             We&apos;re creating a platform where talented artists receive the
@@ -252,7 +247,7 @@ export default function AboutPage() {
       </section>
 
       {/* 7 · Closing — Made in India + Join the Journey. Quiet Paper band; red stays confined to the kicker/accent/hover, no drench */}
-      <section className="border-t border-ink/10 bg-paper px-[clamp(24px,5vw,64px)] py-[clamp(64px,8vw,112px)] text-center">
+      <section className="border-t border-line bg-paper px-[clamp(24px,5vw,64px)] py-[clamp(64px,8vw,112px)] text-center">
         <div className="mx-auto flex max-w-[760px] flex-col items-center gap-6">
           <div className={kicker}>Made in India</div>
           <h2 className={`${narrativeHeading} text-ink`}>

@@ -183,10 +183,10 @@ export default function CreatePage() {
       <div className="container-page py-8 md:py-12">
         <div className="flex flex-wrap items-center gap-x-16 gap-y-12">
           <div className="flex min-w-[280px] flex-1 flex-col gap-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-600">
+            <div className="kicker">
               Custom Poster
             </div>
-            <h1 className="font-sans text-[34px] font-bold uppercase leading-[1.08] tracking-tight text-ink [word-spacing:0.25em] sm:text-[44px] lg:text-[54px]">
+            <h1 className="title-display">
               Your perfect poster starts
               <br />
               <em className="font-display font-medium normal-case italic tracking-normal [word-spacing:0em] text-premium-600">
@@ -201,7 +201,7 @@ export default function CreatePage() {
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="inline-flex h-[52px] items-center gap-3 bg-premium-600 px-9 text-xs font-semibold uppercase tracking-[0.14em] text-cream transition-colors hover:bg-premium-700"
+                className="label inline-flex h-14 items-center gap-3 bg-premium-600 px-9 text-cream transition-colors hover:bg-premium-700"
               >
                 <UploadCloud className="h-4 w-4" aria-hidden="true" />
                 Upload Your Image
@@ -222,22 +222,22 @@ export default function CreatePage() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-wrap items-center border border-ink/10 bg-paper shadow-card">
+        <div className="mt-14 flex flex-wrap items-center border border-line bg-paper">
           <div className="flex-1 px-8 py-8" style={{ minWidth: 220 }}>
             <div className="text-[13px] text-muted">Easy 4 Step</div>
-            <div className="text-[22px] font-semibold tracking-tight text-premium-600">Process</div>
+            <div className="text-[22px] font-normal tracking-[0.03em] text-premium-600">Process</div>
           </div>
           {processSteps.map((s) => (
             <div
               key={s.title}
-              className="flex flex-1 items-start gap-4 border-l border-ink/10 px-6 py-7"
+              className="flex flex-1 items-start gap-4 border-l border-line px-6 py-7"
               style={{ minWidth: 200 }}
             >
               <div className="grid h-16 w-16 flex-none place-items-center rounded-full bg-premium-600/10">
                 <s.icon className="h-8 w-8 text-premium-600" strokeWidth={1.75} aria-hidden="true" />
               </div>
               <div className="flex flex-col gap-1 pt-1">
-                <div className="text-sm font-semibold uppercase tracking-[0.04em] text-ink">{s.title}</div>
+                <div className="label text-ink">{s.title}</div>
                 <p className="text-[13px] leading-relaxed text-muted">{s.body}</p>
               </div>
             </div>
@@ -261,15 +261,15 @@ export default function CreatePage() {
           onClick={closeModal}
         >
           <div
-            className="max-h-[90vh] w-full max-w-4xl overflow-y-auto border border-ink/10 bg-paper shadow-lift"
+            className="max-h-[90vh] w-full max-w-4xl overflow-y-auto border border-line bg-paper shadow-lift"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-ink/10 px-6 py-5">
+            <div className="flex items-center justify-between border-b border-line px-6 py-5">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-premium-600">
+                <div className="kicker">
                   Custom Poster
                 </div>
-                <h2 className="mt-1 text-lg font-bold uppercase tracking-tight text-ink">
+                <h2 className="mt-1 title-xs">
                   {step === "upload" ? "Upload your photo" : "Customize your poster"}
                 </h2>
               </div>
@@ -277,7 +277,7 @@ export default function CreatePage() {
                 type="button"
                 onClick={closeModal}
                 aria-label="Close"
-                className="grid h-9 w-9 flex-none place-items-center text-ink/60 hover:text-ink"
+                className="grid h-9 w-9 flex-none place-items-center text-muted hover:text-ink"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
               </button>
@@ -303,7 +303,7 @@ export default function CreatePage() {
                         onMediaLoaded={(mediaSize: MediaSize) => setNaturalWidth(mediaSize.naturalWidth)}
                       />
                     </div>
-                    <label className="mt-4 block text-xs font-medium uppercase tracking-[0.08em] text-muted">
+                    <label className="label mt-4 block text-xs text-muted">
                       Zoom
                       <input
                         type="range"
@@ -319,13 +319,13 @@ export default function CreatePage() {
                     <button
                       type="button"
                       onClick={resetFlow}
-                      className="mt-4 text-xs font-semibold uppercase tracking-[0.05em] text-muted hover:text-ink"
+                      className="mt-4 label text-xs text-muted hover:text-ink"
                     >
                       ← Choose a different photo
                     </button>
                   </div>
 
-                  <aside className="h-fit border border-ink/10 bg-cream p-6">
+                  <aside className="h-fit border border-line bg-cream p-6">
                     {sizesQuery.isLoading ? (
                       <div className="grid place-items-center py-10">
                         <Spinner />
@@ -336,14 +336,14 @@ export default function CreatePage() {
                       </p>
                     ) : (
                       <>
-                        <div className="text-xs font-semibold uppercase tracking-[0.08em] text-muted">
+                        <div className="label text-xs text-muted">
                           Size
                         </div>
                         <div className="mt-2">
                           <SizePicker sizes={sizesQuery.data} selected={sizeCode} onSelect={setSizeCode} />
                         </div>
 
-                        <div className="mt-5 text-xs font-semibold uppercase tracking-[0.08em] text-muted">
+                        <div className="mt-5 label text-xs text-muted">
                           Orientation
                         </div>
                         <div className="mt-2 flex gap-2">
@@ -353,10 +353,10 @@ export default function CreatePage() {
                               type="button"
                               onClick={() => setOrientation(o)}
                               aria-pressed={orientation === o}
-                              className={`flex-1 border px-3 py-2 text-xs font-semibold uppercase tracking-[0.05em] transition-colors ${
+                              className={`label flex-1 border px-3 py-2 text-xs transition-colors ${
                                 orientation === o
                                   ? "border-ink bg-ink text-cream"
-                                  : "border-ink/20 text-ink hover:border-ink"
+                                  : "border-line text-ink hover:border-ink"
                               }`}
                             >
                               {o === "portrait" ? "Portrait" : "Landscape"}
@@ -365,7 +365,7 @@ export default function CreatePage() {
                         </div>
 
                         {band && (
-                          <div className="mt-5 border border-ink/10 bg-paper px-3 py-2.5 text-xs leading-relaxed">
+                          <div className="mt-5 border border-line bg-paper px-3 py-2.5 text-xs leading-relaxed">
                             {band === "ok" && (
                               <p className="text-ink">
                                 Print quality: <span className="font-semibold">Excellent</span> (~{dpi} DPI)
@@ -385,9 +385,9 @@ export default function CreatePage() {
                           </div>
                         )}
 
-                        <div className="mt-5 flex items-baseline justify-between border-t border-ink/10 pt-4">
+                        <div className="mt-5 flex items-baseline justify-between border-t border-line pt-4">
                           <span className="text-sm font-semibold text-ink">Total</span>
-                          <span className="text-xl font-bold text-ink">
+                          <span className="title-sm">
                             {selectedSize ? formatINR(selectedSize.price_inr) : "—"}
                           </span>
                         </div>

@@ -53,7 +53,7 @@ function OrderContent({ id }: { id: number }) {
   if (error || !order) {
     return (
       <div className="container-page py-24 text-center">
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">Order not found</h1>
+        <h1 className="title-lg">Order not found</h1>
         <p className="mt-2 text-muted">
           We couldn&apos;t find this order. If you checked out as a guest, open the
           confirmation link from your email.
@@ -70,10 +70,10 @@ function OrderContent({ id }: { id: number }) {
   return (
     <div className="container-page max-w-3xl py-12">
       <div className="text-center">
-        <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-brand-50 text-brand-600">
+        <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-paper text-brand-600">
           <CheckCircle2 className="h-9 w-9" />
         </span>
-        <h1 className="mt-4 text-3xl font-bold uppercase tracking-tight text-ink">Thank you for your order!</h1>
+        <h1 className="mt-4 title-xl">Thank you for your order!</h1>
         <p className="mt-2 text-muted">
           Order <span className="font-semibold text-ink">#{order.id}</span> ·{" "}
           {statusLabel(order.status)}
@@ -81,7 +81,7 @@ function OrderContent({ id }: { id: number }) {
       </div>
 
       {order.status === "in_review" && (
-        <Card className="mt-8 border-brand-100 bg-brand-50 p-5 text-center">
+        <Card className="mt-8 border-line bg-paper p-5 text-center">
           <p className="text-sm text-ink">
             We&apos;re reviewing your custom design before it goes to print — you&apos;ll get an
             email once it&apos;s approved, usually within 1-2 business days.
@@ -90,7 +90,7 @@ function OrderContent({ id }: { id: number }) {
       )}
 
       {order.status === "refunded" && order.has_custom_items && (
-        <Card className="mt-8 border-brand-100 bg-brand-50 p-5 text-center">
+        <Card className="mt-8 border-line bg-paper p-5 text-center">
           <p className="text-sm text-ink">
             Your custom design couldn&apos;t be approved for printing
             {order.review_note ? <> — {order.review_note}</> : "."} We&apos;ve refunded your
@@ -100,11 +100,11 @@ function OrderContent({ id }: { id: number }) {
       )}
 
       <Card className="mt-8 p-6">
-        <h2 className="text-lg font-bold text-ink">Items</h2>
+        <h2 className="title-xs">Items</h2>
         <div className="mt-4 space-y-3">
           {order.items.map((item, idx) => (
             <div key={idx} className="flex items-center gap-3">
-              <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-brand-50">
+              <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-paper">
                 {item.image_snapshot && (
                   <Image src={item.image_snapshot} alt={item.title_snapshot} fill className="object-cover" sizes="56px" />
                 )}
@@ -147,8 +147,8 @@ function OrderContent({ id }: { id: number }) {
             </dd>
           </div>
           <div className="flex justify-between border-t border-brand-100 pt-2 text-base">
-            <dt className="font-bold text-ink">Total</dt>
-            <dd className="font-bold text-ink">{formatINR(order.total_inr)}</dd>
+            <dt className="font-medium text-ink">Total</dt>
+            <dd className="font-medium text-ink">{formatINR(order.total_inr)}</dd>
           </div>
         </dl>
       </Card>
@@ -156,7 +156,7 @@ function OrderContent({ id }: { id: number }) {
       {(order.status === "shipped" || order.status === "delivered") &&
         (order.courier_name || order.tracking_number) && (
           <Card className="mt-4 p-6">
-            <h2 className="text-lg font-bold text-ink">Tracking</h2>
+            <h2 className="title-xs">Tracking</h2>
             <p className="mt-2 text-sm text-muted">
               {order.courier_name && (
                 <>
@@ -175,7 +175,7 @@ function OrderContent({ id }: { id: number }) {
         )}
 
       <Card className="mt-4 p-6">
-        <h2 className="text-lg font-bold text-ink">Shipping to</h2>
+        <h2 className="title-xs">Shipping to</h2>
         <address className="mt-2 not-italic text-sm text-muted">
           <span className="font-medium text-ink">{addr.full_name}</span>
           <br />

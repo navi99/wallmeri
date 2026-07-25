@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-const colHeading =
-  "text-xs font-semibold uppercase tracking-[0.06em] text-cream";
+const colHeading = "label text-cream";
 const colLink = "text-sm text-cream/65 transition-colors hover:text-cream";
 
 const trustBadges = ["Secure Razorpay checkout", "Made in India"];
@@ -11,7 +10,7 @@ export function SiteFooter() {
     <footer className="mt-16 bg-ink text-cream">
       <div className="container-page flex flex-wrap items-start justify-between gap-12 py-14">
         <div className="flex flex-col gap-3.5">
-          <div className="text-lg font-bold tracking-[0.24em]">WALLMERI</div>
+          <div className="text-lg font-medium tracking-[0.2em]">WALLMERI</div>
         </div>
 
         <div className="flex flex-wrap gap-x-16 gap-y-10">
@@ -88,7 +87,7 @@ export function SiteFooter() {
             {trustBadges.map((item, i) => (
               <span key={item} className="flex items-center gap-2.5">
                 {i > 0 && <span className="text-premium-600">●</span>}
-                <span className="text-[10.5px] font-medium uppercase tracking-[0.12em] text-cream/50">
+                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-cream/50">
                   {item}
                 </span>
               </span>

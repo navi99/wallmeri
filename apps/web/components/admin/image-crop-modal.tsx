@@ -52,7 +52,7 @@ export function ImageCropModal({
 
   return (
     <div className="fixed inset-0 z-[60] grid place-items-center bg-ink/60 p-4">
-      <div className="w-full max-w-md border border-ink/10 bg-paper p-6 shadow-lift">
+      <div className="w-full max-w-md border border-line bg-paper p-6 shadow-lift">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold uppercase tracking-[0.08em] text-ink">Crop image</h3>
           <button

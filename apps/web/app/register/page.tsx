@@ -44,7 +44,7 @@ export default function RegisterPage() {
   return (
     <div className="container-page flex justify-center py-16">
       <Card className="w-full max-w-md p-8">
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">Create your account</h1>
+        <h1 className="title-lg">Create your account</h1>
         <p className="mt-1 text-sm text-muted">Save your details and track orders.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">

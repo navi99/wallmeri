@@ -128,7 +128,7 @@ export function PosterSizesTab() {
           e.preventDefault();
           if (canCreate) createMutation.mutate();
         }}
-        className="mt-5 grid grid-cols-2 gap-2 border border-ink/10 bg-paper p-4 sm:grid-cols-6"
+        className="mt-5 grid grid-cols-2 gap-2 border border-line bg-paper p-4 sm:grid-cols-6"
       >
         <Input
           placeholder="Code (A1)"

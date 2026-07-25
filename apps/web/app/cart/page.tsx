@@ -32,7 +32,7 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="container-page flex flex-col items-center gap-5 py-24 text-center">
-        <span className="grid h-16 w-16 place-items-center rounded-full border border-ink/15 text-brand-600">
+        <span className="grid h-16 w-16 place-items-center rounded-full border border-line text-brand-600">
           <ShoppingBag className="h-6 w-6" />
         </span>
         <h1 className="font-display text-[22px] italic text-ink">Your cart is empty.</h1>
@@ -49,7 +49,7 @@ export default function CartPage() {
   return (
     <div className="container-page py-10">
       <div className="flex items-baseline justify-between gap-3 pb-8">
-        <h1 className="text-3xl font-bold uppercase tracking-tight text-ink lg:text-[38px]">
+        <h1 className="title-xl">
           Your Cart
         </h1>
         <span className="text-sm text-muted">{itemCount} item(s)</span>
@@ -67,7 +67,7 @@ export default function CartPage() {
               </div>
             );
             return (
-              <div key={id} className="flex gap-6 border-t border-ink/10 py-7">
+              <div key={id} className="flex gap-6 border-t border-line py-7">
                 {item.kind === "product" ? (
                   <Link href={`/product/${item.slug}`} className="shrink-0">
                     {thumb}
@@ -78,17 +78,17 @@ export default function CartPage() {
                 <div className="flex min-w-0 flex-1 flex-col gap-2">
                   <div className="flex items-start justify-between gap-4">
                     {item.kind === "product" ? (
-                      <Link href={`/product/${item.slug}`} className="font-display text-[19px] text-ink hover:text-brand-600">
+                      <Link href={`/product/${item.slug}`} className="text-base text-ink hover:text-brand-600">
                         {item.title}
                       </Link>
                     ) : (
-                      <span className="font-display text-[19px] text-ink">{item.title}</span>
+                      <span className="text-base text-ink">{item.title}</span>
                     )}
                     <span className="shrink-0 whitespace-nowrap text-[17px] font-semibold text-ink">
                       {formatINR(item.price_inr * item.qty)}
                     </span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 text-xs uppercase tracking-[0.06em] text-muted">
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 label text-xs text-muted">
                     {item.size_label && <span>Size: {item.size_label}</span>}
                     {item.kind === "custom" && <Badge tone="neutral">Custom design</Badge>}
                     {item.dpi_band === "warning" && (
@@ -96,10 +96,10 @@ export default function CartPage() {
                     )}
                   </div>
                   <div className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-3">
-                    <div className="flex items-center border border-ink/20">
+                    <div className="flex items-center border border-line">
                       <button
                         onClick={() => setQty(id, item.qty - 1)}
-                        className="grid h-8 w-8 place-items-center text-ink hover:bg-ink/5"
+                        className="grid h-8 w-8 place-items-center text-ink hover:bg-paper"
                         aria-label="Decrease quantity"
                       >
                         <Minus className="h-3.5 w-3.5" />
@@ -107,7 +107,7 @@ export default function CartPage() {
                       <span className="w-9 text-center text-[13px] font-medium text-ink">{item.qty}</span>
                       <button
                         onClick={() => setQty(id, item.qty + 1)}
-                        className="grid h-8 w-8 place-items-center text-ink hover:bg-ink/5"
+                        className="grid h-8 w-8 place-items-center text-ink hover:bg-paper"
                         aria-label="Increase quantity"
                       >
                         <Plus className="h-3.5 w-3.5" />
@@ -115,7 +115,7 @@ export default function CartPage() {
                     </div>
                     <button
                       onClick={() => remove(id)}
-                      className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted hover:text-brand-600"
+                      className="label text-xs text-muted hover:text-brand-600"
                     >
                       Remove
                     </button>
@@ -124,18 +124,18 @@ export default function CartPage() {
               </div>
             );
           })}
-          <div className="border-t border-ink/10 pt-6">
+          <div className="border-t border-line pt-6">
             <Link
               href="/catalog"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-600 hover:text-brand-700"
+              className="label inline-flex items-center gap-2 text-xs text-brand-600 hover:text-brand-700"
             >
               ← Continue Shopping
             </Link>
           </div>
         </div>
 
-        <aside className="sticky top-24 w-full border border-ink/10 bg-paper p-8 shadow-card lg:max-w-[400px] lg:flex-1">
-          <div className="border-b border-ink/10 pb-4 text-xs font-semibold uppercase tracking-[0.18em] text-ink">
+        <aside className="sticky top-24 w-full border border-line bg-paper p-8 lg:max-w-[400px] lg:flex-1">
+          <div className="border-b border-line pb-4 label text-ink">
             Order Summary
           </div>
           <dl className="flex flex-col gap-3 py-5 text-sm text-muted">
@@ -153,16 +153,16 @@ export default function CartPage() {
               Custom designs are reviewed before printing — usually within 1–2 business days.
             </p>
           )}
-          <div className="flex items-baseline justify-between border-t border-ink/10 pt-4">
-            <span className="text-[13px] font-semibold uppercase tracking-[0.1em] text-ink">Total</span>
-            <span className="text-[26px] font-bold text-ink">{formatINR(total)}</span>
+          <div className="flex items-baseline justify-between border-t border-line pt-4">
+            <span className="label text-ink">Total</span>
+            <span className="text-[28px] font-normal tracking-[0.03em] text-ink">{formatINR(total)}</span>
           </div>
           <Link href="/checkout" className="mt-4 block">
-            <span className="flex h-[52px] w-full items-center justify-center bg-brand-600 text-xs font-semibold uppercase tracking-[0.16em] text-cream hover:bg-brand-700">
+            <span className="label flex h-14 w-full items-center justify-center bg-brand-600 text-cream hover:bg-brand-700">
               Proceed to Checkout
             </span>
           </Link>
-          <div className="mt-4 flex flex-col gap-2.5 border-t border-ink/10 pt-4 text-xs leading-relaxed text-muted">
+          <div className="mt-4 flex flex-col gap-2.5 border-t border-line pt-4 text-xs leading-relaxed text-muted">
             <div className="flex items-center gap-2.5">
               <span className="text-brand-600">●</span>Secured by Razorpay - UPI, cards, netbanking &amp; wallets
             </div>

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "How Wallmeri handles damaged, defective, wrong-item, and cancelled orders — and how to request a replacement or refund.",
 };
 
-const heading = "text-base font-bold uppercase tracking-tight text-ink";
+const heading = "title-xs";
 const body = "text-sm leading-[1.75] text-muted";
 const link = "font-semibold text-premium-600 hover:underline";
 
@@ -67,7 +67,7 @@ export default function RefundPolicyPage() {
   return (
     <div className="container-page py-12 sm:py-16">
       <div className="mx-auto max-w-[760px]">
-        <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">
+        <h1 className="title-xl">
           Refund & Replacement Policy
         </h1>
         <p className="mt-2 text-sm text-muted">Last updated: 20 July 2026</p>
@@ -80,7 +80,7 @@ export default function RefundPolicyPage() {
 
         <div className="mt-10 flex flex-col">
           {sections.map((s) => (
-            <div key={s.title} className="border-t border-ink/10 py-7 first:border-t-0 first:pt-0">
+            <div key={s.title} className="border-t border-line py-7 first:border-t-0 first:pt-0">
               <h2 className={heading}>{s.title}</h2>
               {s.paragraphs?.map((p) => (
                 <p key={p} className={`mt-3 ${body}`}>
@@ -99,7 +99,7 @@ export default function RefundPolicyPage() {
             </div>
           ))}
 
-          <div className="border-t border-ink/10 py-7">
+          <div className="border-t border-line py-7">
             <h2 className={heading}>8. Contact</h2>
             <p className={`mt-3 ${body}`}>
               For anything not covered here, reach out on{" "}

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "What personal data Wallmeri collects, how it's used, who it's shared with, and your rights over it.",
 };
 
-const heading = "text-base font-bold uppercase tracking-tight text-ink";
+const heading = "title-xs";
 const body = "text-sm leading-[1.75] text-muted";
 const link = "font-semibold text-premium-600 hover:underline";
 
@@ -96,7 +96,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="container-page py-12 sm:py-16">
       <div className="mx-auto max-w-[760px]">
-        <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">
+        <h1 className="title-xl">
           Privacy Policy
         </h1>
         <p className="mt-2 text-sm text-muted">Last updated: 20 July 2026</p>
@@ -108,7 +108,7 @@ export default function PrivacyPolicyPage() {
 
         <div className="mt-10 flex flex-col">
           {sections.map((s) => (
-            <div key={s.title} className="border-t border-ink/10 py-7 first:border-t-0 first:pt-0">
+            <div key={s.title} className="border-t border-line py-7 first:border-t-0 first:pt-0">
               <h2 className={heading}>{s.title}</h2>
               {s.paragraphs?.map((p) => (
                 <p key={p} className={`mt-3 ${body}`}>
@@ -132,7 +132,7 @@ export default function PrivacyPolicyPage() {
             </div>
           ))}
 
-          <div className="border-t border-ink/10 py-7">
+          <div className="border-t border-line py-7">
             <h2 className={heading}>10. Contact</h2>
             <p className={`mt-3 ${body}`}>
               Questions about your data? Reach us on{" "}

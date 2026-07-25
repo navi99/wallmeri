@@ -1,11 +1,24 @@
 "use client";
 
 import Image from "@/components/app-image";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
-import { SpotlightCard } from "@/components/custom/spotlight-card";
+import {
+  MediaRail,
+  MediaRailItem,
+  MediaRailSkeleton,
+  railLabel,
+} from "@/components/custom/media-rail";
 import { api } from "@/lib/api";
+
+const cols = "md:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]";
+const maxTrack = 380;
+
+// Same frame as the featured-pieces rail above: 3:4 with a max-height guard, so
+// a portrait and an artwork tile sit at identical size on the two light bands.
+// Faces are the subject here, so the crop anchors to the top of the frame — a
+// centred 3:4 cover clips foreheads on tight headshots.
+const frame = "aspect-[3/4] max-h-[clamp(360px,42vw,560px)] bg-ink";
 
 export function FeaturedArtists() {
   const { data, isLoading } = useQuery({
@@ -13,55 +26,63 @@ export function FeaturedArtists() {
     queryFn: () => api.listArtists(),
   });
 
+  // Five across to fill the rail, matching the category and featured-piece
+  // rows above it.
   const artists = [...(data ?? [])]
     .sort((a, b) => b.product_count - a.product_count)
-    .slice(0, 3);
+    .slice(0, 5);
 
-  if (isLoading) {
+  if (isLoading)
     return (
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="aspect-square animate-pulse rounded-full bg-cream/10" />
-        ))}
-      </div>
+      <MediaRailSkeleton
+        count={5}
+        cols={cols}
+        maxTrack={maxTrack}
+        frameClassName={frame}
+      />
     );
-  }
 
   if (artists.length === 0) {
     return (
-      <p className="text-base leading-[1.7] text-cream/60">
+      <p className="container-page text-base leading-[1.7] text-muted">
         Our first artists are being onboarded — check back soon.
       </p>
     );
   }
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
+    <MediaRail cols={cols} count={artists.length} maxTrack={maxTrack}>
       {artists.map((a) => (
-        <Link
+        <MediaRailItem
           key={a.id}
           href={`/artist/${a.slug}`}
-          className="group flex flex-col items-center gap-4 text-center transition-opacity hover:opacity-90"
-        >
-          <SpotlightCard className="aspect-square w-full max-w-[200px] rounded-full bg-cream/10">
-            {a.avatar_url && (
+          frameClassName={frame}
+          media={
+            a.avatar_url ? (
               <Image
                 src={a.avatar_url}
                 alt={a.name}
                 fill
-                sizes="(max-width: 640px) 45vw, 220px"
-                className="rounded-full object-cover"
+                sizes="(max-width: 768px) 68vw, 20vw"
+                className="object-cover object-top"
               />
-            )}
-          </SpotlightCard>
-          <div>
-            <div className="font-display text-lg italic text-cream">{a.name}</div>
-            <div className="mt-1 text-[11px] font-medium uppercase tracking-[0.12em] text-cream/50">
-              {a.product_count} {a.product_count === 1 ? "piece" : "pieces"}
-            </div>
-          </div>
-        </Link>
+            ) : (
+              // An artist still awaiting a portrait gets their initial as an
+              // engraved monogram on the same Noir plate the frame already
+              // carries — a bare plate reads as a hole in the row.
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="font-display text-6xl italic text-cream/20">
+                  {a.name.trim().charAt(0)}
+                </span>
+              </div>
+            )
+          }
+        >
+          {/* Same plaque voice as the featured-pieces tiles beside it, now on
+              the light wall — the two bands read as one gallery run. */}
+          <div className={railLabel}>{a.name}</div>
+        </MediaRailItem>
       ))}
-    </div>
+    </MediaRail>
   );
 }

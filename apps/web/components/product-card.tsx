@@ -12,9 +12,12 @@ import { formatINR } from "@/lib/utils";
 export function ProductCard({
   product,
   showFeaturedBadge = true,
+  imageSizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
 }: {
   product: Product;
   showFeaturedBadge?: boolean;
+  /** Override when the grid isn't the default 2/3/4-up — e.g. the 3-up listing pages. */
+  imageSizes?: string;
 }) {
   // Shares the ["poster-sizes"] cache with the product page — one network
   // request no matter how many cards are on screen. product.price_inr is
@@ -34,11 +37,11 @@ export function ProductCard({
           src={product.image_url}
           alt={product.title}
           fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          sizes={imageSizes}
           className="object-cover"
         />
         {showFeaturedBadge && product.is_featured && (
-          <span className="absolute left-3 top-3 bg-brand-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.05em] text-cream">
+          <span className="absolute left-3 top-3 bg-brand-600 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-cream">
             Featured
           </span>
         )}
@@ -46,16 +49,16 @@ export function ProductCard({
       <div className="flex flex-col gap-1">
         <div className="flex items-baseline justify-between gap-2.5">
           <Link href={`/product/${product.slug}`} className="min-w-0">
-            <h3 className="line-clamp-1 text-[15px] font-medium tracking-[0.04em] text-ink hover:text-brand-600">
+            <h3 className="line-clamp-1 text-base font-normal tracking-[0.03em] text-ink hover:text-brand-600">
               {product.title}
             </h3>
           </Link>
-          <span className="shrink-0 text-sm font-medium text-brand-600">
-            {minDelta !== null && <span className="text-ink/50">From </span>}
+          <span className="shrink-0 text-sm font-normal text-brand-600">
+            {minDelta !== null && <span className="text-muted">From </span>}
             {formatINR(displayPrice)}
           </span>
         </div>
-        <p className="line-clamp-1 text-xs text-ink/50">
+        <p className="line-clamp-1 text-sm text-muted">
           {product.artist
             ? `by ${product.artist.name}`
             : (product.categories[0]?.name ?? "Metal Art")}

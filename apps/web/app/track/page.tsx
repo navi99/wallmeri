@@ -29,10 +29,10 @@ export default function TrackPage() {
   return (
     <div className="container-page flex justify-center py-16">
       <Card className="w-full max-w-md p-8">
-        <span className="grid h-12 w-12 place-items-center rounded-xl bg-brand-50 text-brand-600">
+        <span className="grid h-12 w-12 place-items-center rounded-xl bg-paper text-brand-600">
           <PackageSearch className="h-6 w-6" />
         </span>
-        <h1 className="mt-4 text-2xl font-bold uppercase tracking-tight text-ink">Track your order</h1>
+        <h1 className="mt-4 title-lg">Track your order</h1>
         <p className="mt-1 text-sm text-muted">
           No account needed — use your order number and the email from checkout.
         </p>

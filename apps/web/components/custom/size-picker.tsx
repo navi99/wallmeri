@@ -23,10 +23,10 @@ export function SizePicker({
             onClick={() => onSelect(size.code)}
             aria-pressed={active}
             className={`border px-2.5 py-2.5 text-left transition-colors ${
-              active ? "border-ink bg-ink text-cream" : "border-ink/20 bg-paper text-ink hover:border-ink"
+              active ? "border-ink bg-ink text-cream" : "border-line bg-paper text-ink hover:border-ink"
             }`}
           >
-            <div className="text-sm font-bold uppercase tracking-[0.04em]">{size.code}</div>
+            <div className="text-sm font-medium uppercase tracking-[0.03em]">{size.code}</div>
             <div className={`mt-0.5 text-[11px] ${active ? "text-cream/70" : "text-muted"}`}>
               {size.width_cm} × {size.height_cm} cm
             </div>

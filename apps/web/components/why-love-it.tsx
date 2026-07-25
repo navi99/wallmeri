@@ -3,7 +3,7 @@ import { ShieldCheck } from "lucide-react";
 export function WhyLoveIt() {
   return (
     <section className="mt-14">
-      <h2 className="text-2xl font-bold text-ink">
+      <h2 className="title-lg">
         Why You&rsquo;ll <span className="font-display italic text-brand-600">Love It</span>
       </h2>
 
@@ -18,7 +18,7 @@ export function WhyLoveIt() {
 
       <p className="mt-4 font-display text-2xl italic text-brand-600">&ldquo;A timeless work, crafted to be lived with.&rdquo;</p>
 
-      <div className="mt-6 flex items-start gap-3 border border-ink/10 bg-paper p-5">
+      <div className="mt-6 flex items-start gap-3 border border-line bg-paper p-5">
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" />
         <p className="text-sm leading-relaxed text-muted">
           <span className="font-semibold text-ink">Note: </span>

@@ -46,7 +46,7 @@ export default function OrdersPage() {
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Your orders</h1>
+      <h1 className="title-xl">Your orders</h1>
 
       {isLoading ? (
         <div className="grid place-items-center py-24"><Spinner /></div>
@@ -65,7 +65,7 @@ export default function OrdersPage() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-ink">Order #{order.id}</span>
+                    <span className="font-medium text-ink">Order #{order.id}</span>
                     {statusBadge(order.status)}
                   </div>
                   <p className="mt-0.5 text-sm text-muted">
@@ -78,7 +78,7 @@ export default function OrdersPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-lg font-bold text-ink">{formatINR(order.total_inr)}</span>
+                  <span className="title-xs">{formatINR(order.total_inr)}</span>
                   <Link href={`/order/${order.id}`}>
                     <Button variant="outline" size="sm">
                       View

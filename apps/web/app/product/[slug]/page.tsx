@@ -74,7 +74,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     const notFound = error instanceof ApiError && error.status === 404;
     return (
       <div className="container-page py-24 text-center">
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">
+        <h1 className="title-lg">
           {notFound ? "Poster not found" : "Something went wrong"}
         </h1>
         <Link href="/catalog" className="mt-4 inline-block font-semibold text-brand-600 hover:underline">
@@ -130,11 +130,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
         <div>
           {primaryCategory && (
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-600">
+            <div className="kicker">
               {primaryCategory.name}
             </div>
           )}
-          <h1 className="mt-2.5 text-3xl font-bold uppercase leading-[1.1] tracking-tight text-ink sm:text-4xl">
+          {/* The artwork's own title — a name, so it opts out of the ladder's
+              caps (see The Caps-Heading Rule). */}
+          <h1 className="mt-2.5 title-xl title-name">
             {product.title}
           </h1>
           <p className="mt-2 font-display text-base italic text-muted">
@@ -157,14 +159,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             />
           )}
 
-          <p className="mt-4 text-3xl font-bold text-brand-600">{formatINR(displayPrice)}</p>
+          <p className="mt-4 text-3xl font-normal tracking-[0.03em] text-brand-600">{formatINR(displayPrice)}</p>
 
           <p className="mt-4 whitespace-pre-wrap leading-relaxed text-muted">{product.description}</p>
-          <p className="mt-2 text-xs uppercase tracking-[0.08em] text-muted">Material: {product.material}</p>
+          <p className="mt-2 label text-xs text-muted">Material: {product.material}</p>
 
           {sizeRequired && (
             <div className="mt-6">
-              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-ink">Size</div>
+              <div className="label text-ink">Size</div>
               <div className="mt-3">
                 <SizePicker sizes={displaySizes} selected={sizeCode} onSelect={setSizeCode} />
               </div>
@@ -172,10 +174,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           )}
 
           <div className="mt-6 flex items-stretch gap-3.5">
-            <div className="flex items-center border border-ink/20">
+            <div className="flex items-center border border-line">
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
-                className="grid h-[52px] w-11 place-items-center text-ink hover:bg-ink/5"
+                className="grid h-[52px] w-11 place-items-center text-ink hover:bg-paper"
                 aria-label="Decrease quantity"
               >
                 <Minus className="h-4 w-4" />
@@ -183,7 +185,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <span className="w-10 text-center font-semibold">{qty}</span>
               <button
                 onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
-                className="grid h-[52px] w-11 place-items-center text-ink hover:bg-ink/5"
+                className="grid h-[52px] w-11 place-items-center text-ink hover:bg-paper"
                 aria-label="Increase quantity"
               >
                 <Plus className="h-4 w-4" />
@@ -195,22 +197,22 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </div>
 
           {product.original && (
-            <div className="mt-4 border border-ink/15 p-4">
-              <p className="font-display text-base italic text-ink">
+            <div className="mt-4 border border-line p-4">
+              <p className="text-base text-ink">
                 Also available as an original painting
               </p>
-              <p className="mt-1 text-lg font-bold text-brand-600">
+              <p className="mt-1 text-lg font-normal tracking-[0.03em] text-brand-600">
                 {formatINR(product.original.price_inr)}
               </p>
               {product.original.status === "sold" ? (
-                <span className="mt-3 inline-block cursor-not-allowed border border-ink/20 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
+                <span className="label mt-3 inline-block cursor-not-allowed border border-line px-4 py-2 text-xs text-muted">
                   Original sold
                 </span>
               ) : (
                 <>
                   <Link
                     href={`/product/${product.slug}/original`}
-                    className="mt-3 inline-block border border-ink px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-ink hover:bg-ink hover:text-cream"
+                    className="label mt-3 inline-block border border-ink px-4 py-2 text-xs text-ink hover:bg-ink hover:text-cream"
                   >
                     Buy Original →
                   </Link>
@@ -223,7 +225,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           )}
 
           {product.artist && (
-            <div className="mt-4 flex items-center gap-3.5 bg-brand-50/60 p-4">
+            <div className="mt-4 flex items-center gap-3.5 bg-paper p-4">
               <div className="relative h-11 w-11 flex-none overflow-hidden rounded-full bg-ink">
                 <Image
                   src={product.artist.avatar_url}
@@ -234,7 +236,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="truncate font-display text-base italic text-ink">{product.artist.name}</div>
+                <div className="truncate text-base text-ink">{product.artist.name}</div>
                 <div className="text-xs text-muted">
                   {artistQuery.data
                     ? `${artistQuery.data.product_count} work${artistQuery.data.product_count === 1 ? "" : "s"}`
@@ -243,7 +245,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               </div>
               <Link
                 href={`/artist/${product.artist.slug}`}
-                className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.1em] text-brand-600 hover:text-ink"
+                className="shrink-0 label text-xs text-brand-600 hover:text-ink"
               >
                 View profile
               </Link>

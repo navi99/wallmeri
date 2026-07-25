@@ -78,7 +78,7 @@ export default function CheckoutPage() {
   if (mounted && items.length === 0) {
     return (
       <div className="container-page py-20 text-center">
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-ink">Your cart is empty</h1>
+        <h1 className="title-lg">Your cart is empty</h1>
         <Link href="/catalog" className="mt-4 inline-block">
           <Button size="lg">Browse posters</Button>
         </Link>
@@ -183,14 +183,14 @@ export default function CheckoutPage() {
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-3xl font-bold uppercase tracking-tight text-ink">Checkout</h1>
+      <h1 className="title-xl">Checkout</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mt-6 grid gap-8 lg:grid-cols-[1fr_360px]"
       >
         <Card className="p-6">
-          <h2 className="text-lg font-bold text-ink">Contact & shipping</h2>
+          <h2 className="title-xs">Contact & shipping</h2>
           {!user && (
             <p className="mt-1 text-sm text-muted">
               Checking out as a guest.{" "}
@@ -245,11 +245,11 @@ export default function CheckoutPage() {
         </Card>
 
         <aside className="h-fit rounded-2xl border border-brand-100 bg-paper p-6">
-          <h2 className="text-lg font-bold text-ink">Your order</h2>
+          <h2 className="title-xs">Your order</h2>
           <div className="mt-4 space-y-3">
             {items.map((item) => (
               <div key={lineId(item)} className="flex items-center gap-3">
-                <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-brand-50">
+                <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-paper">
                   <Image src={item.image_url} alt={item.title} fill className="object-cover" sizes="48px" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -275,8 +275,8 @@ export default function CheckoutPage() {
               </dd>
             </div>
             <div className="flex justify-between border-t border-brand-100 pt-2 text-base">
-              <dt className="font-bold text-ink">Total</dt>
-              <dd className="font-bold text-ink">{formatINR(total)}</dd>
+              <dt className="font-medium text-ink">Total</dt>
+              <dd className="font-medium text-ink">{formatINR(total)}</dd>
             </div>
           </dl>
 

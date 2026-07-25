@@ -119,7 +119,7 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="mt-5 flex gap-1 overflow-x-auto border-b border-ink/10">
+      <div className="mt-5 flex gap-1 overflow-x-auto border-b border-line">
         {TABS.map((t) => (
           <button
             key={t}
@@ -145,7 +145,7 @@ export default function AdminPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="border-b border-ink/10 bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">
+                  <thead className="border-b border-line bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">
                     <tr>
                       <th className="px-4 py-3">Poster</th>
                       <th className="px-4 py-3">Artist</th>

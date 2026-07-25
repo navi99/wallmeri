@@ -137,7 +137,7 @@ export function ProductForm({
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-4">
-      <div className="w-full max-w-lg border border-ink/10 bg-paper p-6 shadow-lift">
+      <div className="w-full max-w-lg border border-line bg-paper p-6 shadow-lift">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold uppercase tracking-[0.04em] text-ink">
             {product ? "Edit poster" : "Add poster"}
@@ -272,7 +272,7 @@ export function ProductForm({
                     className={`border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors ${
                       active
                         ? "border-ink bg-ink text-cream"
-                        : "border-ink/20 bg-paper text-ink hover:border-ink"
+                        : "border-line bg-paper text-ink hover:border-ink"
                     }`}
                   >
                     {c.name}

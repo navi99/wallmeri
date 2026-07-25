@@ -6,7 +6,7 @@
 // prefers-reduced-motion (the second copy is hidden so it doesn't repeat).
 export function HomeMarquee({ items }: { items: string[] }) {
   return (
-    <section className="overflow-hidden border-b border-ink/10 bg-paper">
+    <section className="overflow-hidden border-b border-line bg-paper">
       <div className="flex w-max animate-marquee whitespace-nowrap py-4 hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-2">
         {[0, 1].map((rep) => (
           <div
@@ -17,7 +17,7 @@ export function HomeMarquee({ items }: { items: string[] }) {
             {items.map((item, i) => (
               <span
                 key={`${rep}-${i}`}
-                className="flex items-center gap-3 px-8 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted"
+                className="flex items-center gap-3 px-8 text-[11px] font-medium uppercase tracking-[0.08em] text-muted"
               >
                 <span>{item}</span>
                 <span className="h-1 w-1 rounded-full bg-ink/25" />

@@ -50,7 +50,7 @@ function ShipDialog({
   const [tracking, setTracking] = useState(order.tracking_number);
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-4">
-      <div className="w-full max-w-sm border border-ink/10 bg-paper p-6 shadow-lift">
+      <div className="w-full max-w-sm border border-line bg-paper p-6 shadow-lift">
         <h2 className="text-lg font-bold uppercase tracking-[0.04em] text-ink">
           Ship order #{order.id}
         </h2>
@@ -164,7 +164,7 @@ export function OrdersTab() {
     <Card className="mt-4 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="border-b border-ink/10 bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">
+          <thead className="border-b border-line bg-cream text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">
             <tr>
               <th className="px-4 py-3">Order</th>
               <th className="px-4 py-3">Customer</th>

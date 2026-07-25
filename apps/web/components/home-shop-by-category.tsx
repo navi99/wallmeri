@@ -1,10 +1,14 @@
 "use client";
 
 import Image from "@/components/app-image";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
-import { SpotlightCard } from "@/components/custom/spotlight-card";
+import {
+  MediaRail,
+  MediaRailItem,
+  MediaRailSkeleton,
+  railLabel,
+} from "@/components/custom/media-rail";
 import { api } from "@/lib/api";
 
 // A category without an admin-set display poster gets a deterministic
@@ -18,6 +22,12 @@ const tileGradients = [
   "linear-gradient(200deg,#3a3230 0%,#1b1717 100%)",
 ];
 
+// auto-fit + 1fr: however many categories the admin has active, they stretch
+// to fill one edge-to-edge row (empty tracks collapse), so the row always
+// reads as a continuous gallery wall rather than a ragged grid.
+const cols = "md:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]";
+const maxTrack = 440;
+
 export function ShopByCategory() {
   const { data, isLoading } = useQuery({
     queryKey: ["categories"],
@@ -26,41 +36,36 @@ export function ShopByCategory() {
 
   const categories = (data ?? []).filter((c) => c.is_active !== false);
 
-  if (!isLoading && categories.length === 0) return null;
+  if (isLoading)
+    return <MediaRailSkeleton count={5} cols={cols} maxTrack={maxTrack} />;
+  if (categories.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
-      {isLoading
-        ? Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-[280px] animate-pulse bg-ink/5" />
-          ))
-        : categories.map((c, i) => (
-            <Link
-              key={c.id}
-              href={`/category/${c.slug}`}
-              className="group flex flex-col gap-3 transition-transform duration-300 hover:-translate-y-1.5"
-            >
-              <SpotlightCard className="h-[280px] shadow-card transition-shadow duration-300 group-hover:shadow-lift">
-                {c.poster_image_url ? (
-                  <Image
-                    src={c.poster_image_url}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 20vw, 45vw"
-                  />
-                ) : (
-                  <div
-                    className="h-full w-full"
-                    style={{ background: tileGradients[i % tileGradients.length] }}
-                  />
-                )}
-              </SpotlightCard>
-              <span className="text-[15px] font-semibold uppercase tracking-[0.06em] text-ink">
-                {c.name}
-              </span>
-            </Link>
-          ))}
-    </div>
+    <MediaRail cols={cols} count={categories.length} maxTrack={maxTrack}>
+      {categories.map((c, i) => (
+        <MediaRailItem
+          key={c.id}
+          href={`/category/${c.slug}`}
+          media={
+            c.poster_image_url ? (
+              <Image
+                src={c.poster_image_url}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 68vw, 20vw"
+              />
+            ) : (
+              <div
+                className="h-full w-full"
+                style={{ background: tileGradients[i % tileGradients.length] }}
+              />
+            )
+          }
+        >
+          <span className={railLabel}>{c.name}</span>
+        </MediaRailItem>
+      ))}
+    </MediaRail>
   );
 }

@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/store/auth";
 import { useCart } from "@/lib/store/cart";
 
 const navLink =
-  "text-xs font-medium uppercase tracking-[0.05em] text-ink transition-colors hover:text-brand-600";
+  "label text-ink transition-colors hover:text-brand-600";
 
 export function SiteHeader() {
   const router = useRouter();
@@ -44,7 +44,7 @@ export function SiteHeader() {
   };
 
   const mobileLink =
-    "flex min-h-11 items-center px-3 py-2.5 text-xs font-medium uppercase tracking-[0.05em] text-ink hover:bg-ink/5 hover:text-brand-600";
+    "label flex min-h-12 items-center px-3 py-2.5 text-ink hover:bg-paper hover:text-brand-600";
 
   return (
     <header className="sticky top-0 z-40">
@@ -52,7 +52,7 @@ export function SiteHeader() {
           co-rasterized with the GPU-composited backdrop-filter surface. */}
       <div className="absolute inset-0 -z-10 bg-cream/95 backdrop-blur" aria-hidden="true" />
 
-      <div className="container-page flex h-[72px] items-center gap-2 border-b border-ink/10 sm:gap-4">
+      <div className="container-page flex h-[72px] items-center gap-2 border-b border-line sm:gap-4">
         {/* Left: wordmark (desktop) / menu button + wordmark (mobile) */}
         <button
           onClick={() => setMenuOpen((v) => !v)}
@@ -66,7 +66,7 @@ export function SiteHeader() {
         <Link
           href="/"
           onClick={closePanels}
-          className="shrink-0 text-lg font-bold tracking-[0.24em] text-ink sm:text-xl"
+          className="shrink-0 text-lg font-medium tracking-[0.2em] text-ink sm:text-xl"
         >
           WALLMERI
         </Link>
@@ -95,13 +95,13 @@ export function SiteHeader() {
           role="search"
           className="relative mx-auto hidden w-full max-w-md flex-1 lg:block"
         >
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search metal posters..."
             aria-label="Search products"
-            className="h-11 w-full border border-ink/20 bg-paper pl-9 pr-3 text-sm text-ink placeholder:text-muted/70 focus:border-ink focus-visible:outline-none"
+            className="h-12 w-full border border-line bg-cream pl-9 pr-3 text-sm text-ink placeholder:text-muted focus:border-ink focus-visible:outline-none"
           />
         </form>
         <div className="flex-1 lg:hidden" />
@@ -137,7 +137,7 @@ export function SiteHeader() {
             {mounted && cartCount > 0 && (
               <span
                 aria-hidden="true"
-                className="absolute right-0.5 top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-brand-600 px-1 text-xs font-bold text-cream"
+                className="absolute right-0.5 top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-brand-600 px-1 text-xs font-semibold text-cream"
               >
                 {cartCount}
               </span>
@@ -147,15 +147,15 @@ export function SiteHeader() {
       </div>
 
       {/* Mobile: always-visible search row */}
-      <div className="border-b border-ink/10 lg:hidden">
+      <div className="border-b border-line lg:hidden">
         <form onSubmit={submitSearch} role="search" className="container-page relative py-3">
-          <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
+          <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search metal posters..."
             aria-label="Search products"
-            className="h-11 w-full border border-ink/20 bg-paper pl-9 pr-3 text-sm text-ink placeholder:text-muted/70 focus:border-ink focus-visible:outline-none"
+            className="h-12 w-full border border-line bg-cream pl-9 pr-3 text-sm text-ink placeholder:text-muted focus:border-ink focus-visible:outline-none"
           />
         </form>
       </div>
@@ -164,7 +164,7 @@ export function SiteHeader() {
         <nav
           id="mobile-menu"
           aria-label="Main menu"
-          className="border-b border-ink/10 lg:hidden"
+          className="border-b border-line lg:hidden"
         >
           <div className="container-page flex flex-col gap-0.5 py-3">
             <Link href="/catalog" onClick={closePanels} className={mobileLink}>

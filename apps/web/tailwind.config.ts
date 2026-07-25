@@ -37,10 +37,22 @@ const config: Config = {
           600: red600,
           700: red700,
         },
-        cream: "#faf9f6", // Cotton — page canvas
-        paper: "#fbfaf4", // warm near-white — card surfaces
+        // Neutral light system (2026-07-25). The old neutrals were warm — a
+        // cream canvas with an even warmer card fill — which read as parchment
+        // rather than gallery. They're now neutral, and `paper` has flipped
+        // sides: it used to sit *brighter* than the canvas (raised cards), it
+        // now sits *darker* (recessed bands), so alternating sections step
+        // down instead of popping up.
+        cream: "#fcfcfb", // Cotton — page canvas, neutral off-white
+        paper: "#f5f5f4", // recessed band / field fill, one step below canvas
         ink: "#1b1717", // Noir Black — primary text & dark surfaces
-        muted: "#5f5852", // warm grey — secondary text, AA on cream/paper
+        // Body/secondary copy. The reference sets this at #767676, but that is
+        // 4.42:1 on the canvas above — under the 4.5:1 AA floor — so it can't
+        // be copied verbatim. #6b6b6b is the same grey voice at 5.19:1.
+        muted: "#6b6b6b",
+        // Hairline. One token for every rule and border on a light surface,
+        // replacing the ad-hoc ink/10 and ink/20 alphas.
+        line: "#e4e4e2",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
@@ -55,9 +67,12 @@ const config: Config = {
         xl: "0",
         "2xl": "0",
       },
+      // Shadows are neutral (2026-07-25). The soft layer used to be tinted
+      // deep red so shadows read as "the brand's own light"; against neutral
+      // neutrals that tint showed as a pink halo, so both layers are now ink.
       boxShadow: {
-        card: "0 1px 2px rgba(27, 23, 23, 0.05), 0 10px 30px rgba(143, 27, 26, 0.08)",
-        lift: "0 2px 4px rgba(27, 23, 23, 0.06), 0 16px 40px rgba(143, 27, 26, 0.14)",
+        card: "0 1px 2px rgba(27, 23, 23, 0.04), 0 10px 30px rgba(27, 23, 23, 0.06)",
+        lift: "0 2px 4px rgba(27, 23, 23, 0.05), 0 16px 40px rgba(27, 23, 23, 0.10)",
       },
     },
   },

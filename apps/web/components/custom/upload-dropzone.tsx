@@ -40,7 +40,7 @@ export function UploadDropzone({
       aria-label="Upload a photo"
       aria-disabled={uploading}
       className={`grid min-h-[360px] cursor-pointer place-items-center border-2 border-dashed p-10 text-center transition-colors ${
-        dragOver ? "border-ink bg-ink/5" : "border-ink/25 bg-paper hover:border-ink/50"
+        dragOver ? "border-ink bg-ink/5" : "border-line bg-paper hover:border-ink/50"
       }`}
     >
       {uploading ? (
@@ -50,7 +50,7 @@ export function UploadDropzone({
         </div>
       ) : (
         <div className="flex flex-col items-center gap-3">
-          <UploadCloud className="h-10 w-10 text-ink/40" />
+          <UploadCloud className="h-10 w-10 text-muted" />
           <p className="text-sm font-semibold text-ink">Drag &amp; drop a photo, or click to browse</p>
           <p className="text-xs text-muted">JPEG, PNG or WebP — up to 15 MB</p>
         </div>

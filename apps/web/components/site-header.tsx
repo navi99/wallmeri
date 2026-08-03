@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -63,12 +64,15 @@ export function SiteHeader() {
         >
           {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
-        <Link
-          href="/"
-          onClick={closePanels}
-          className="shrink-0 text-lg font-medium tracking-[0.2em] text-ink sm:text-xl"
-        >
-          WALLMERI
+        <Link href="/" onClick={closePanels} className="shrink-0">
+          <Image
+            src="/logo-wallmeri.png"
+            alt="Wallmeri"
+            width={401}
+            height={128}
+            priority
+            className="h-8 w-auto sm:h-9"
+          />
         </Link>
 
         {/* Left of search: nav (desktop) */}

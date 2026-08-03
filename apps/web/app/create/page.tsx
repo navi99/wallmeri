@@ -7,7 +7,13 @@ import Cropper, { type Area, type MediaSize, type Point } from "react-easy-crop"
 import {
   AlertTriangle,
   Crop,
-  ShoppingCart,
+  Droplets,
+  ImagePlus,
+  type LucideIcon,
+  PackageCheck,
+  ShieldCheck,
+  ShoppingBag,
+  Timer,
   Truck,
   UploadCloud,
   X,
@@ -26,11 +32,79 @@ import { formatINR } from "@/lib/utils";
 
 type Step = "upload" | "design";
 
-const processSteps = [
-  { icon: UploadCloud, title: "Upload", body: "Upload your favourite photo." },
-  { icon: Crop, title: "Customize", body: "Crop, zoom and orientation." },
-  { icon: ShoppingCart, title: "Order", body: "Add to cart and place your order." },
-  { icon: Truck, title: "Delivered", body: "We print, pack and deliver with care." },
+// Both bands below run on one tile: a recessed Paper panel holding a Noir icon
+// disc, over a text block of title, an optional spec line, then the detail. The
+// process steps have no spec line — the sequence is carried by reading order,
+// not by an index.
+//
+// The round disc is an icon *holder*, one of the three exemptions to radius 0
+// (DESIGN.md §5 The Cut-Edge Rule) — a mark drawn behind a glyph, not a surface
+// with an edge in the layout. It stays round only for as long as that holds:
+// give this shape a neighbour, or let it bound content, and it goes back to a
+// cut edge. See §5 Feature tile for why the disc is sized above the square chip
+// it replaced.
+type Tile = {
+  icon: LucideIcon;
+  title: string;
+  spec?: string;
+  body: string;
+};
+
+function FeatureTile({ icon: Icon, title, spec, body }: Tile) {
+  return (
+    <article className="flex flex-col border border-line bg-cream">
+      <div className="grid place-items-center border-b border-line bg-paper py-9">
+        <div className="grid h-24 w-24 place-items-center rounded-full bg-ink">
+          <Icon className="h-11 w-11 text-cream" strokeWidth={1.25} aria-hidden="true" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-3 px-6 py-7">
+        <div className="flex flex-col gap-1">
+          <h3 className="title-xs">{title}</h3>
+          {spec && <p className="label text-xs text-muted">{spec}</p>}
+        </div>
+        <p className="text-sm leading-relaxed text-muted">{body}</p>
+      </div>
+    </article>
+  );
+}
+
+const processSteps: Tile[] = [
+  { icon: ImagePlus, title: "1. Upload", body: "Choose artwork you love." },
+  { icon: Crop, title: "2. Customize", body: "Adjust the perfect framing." },
+  { icon: ShoppingBag, title: "3. Order", body: "Secure checkout in minutes." },
+  { icon: PackageCheck, title: "4. Delivered", body: "Arrives ready to display." },
+];
+
+// Assurance tiles. Every claim here is load-bearing — keep it in step with the
+// policy pages it paraphrases (shipping-policy §1/§2, refund-policy §1) and
+// with the print process described on the About page. No 30-day/change-of-mind
+// promise: custom prints are made to order and explicitly non-returnable.
+const assurances: Tile[] = [
+  {
+    icon: Droplets,
+    title: "Sublimation on Aluminium",
+    spec: "Premium metal print",
+    body: "Your image is sublimation-printed onto premium aluminium — sharp colour, exceptional durability, and a surface that won't yellow, peel or warp.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Quality Guarantee",
+    spec: "Inspected before dispatch",
+    body: "Every poster is checked by hand before it leaves us. If it arrives damaged or defective, send photos within 48 hours for a free replacement or a full refund — your choice.",
+  },
+  {
+    icon: Timer,
+    title: "Lead Time",
+    spec: "3–5 business days",
+    body: "Each poster is printed to order. Allow 3–5 business days for printing and quality checks before your order ships.",
+  },
+  {
+    icon: Truck,
+    title: "Shipping Across India",
+    spec: "2–7 business days",
+    body: "We deliver anywhere in India — 2–4 business days to metro cities, 4–7 days elsewhere, with tracking from the moment it ships.",
+  },
 ];
 
 export default function CreatePage() {
@@ -222,31 +296,27 @@ export default function CreatePage() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-wrap items-center border border-line bg-paper">
-          <div className="flex-1 px-8 py-8" style={{ minWidth: 220 }}>
-            <div className="text-[13px] text-muted">Easy 4 Step</div>
-            <div className="text-[22px] font-normal tracking-[0.03em] text-premium-600">Process</div>
+        <section className="mt-16 md:mt-24">
+          <h2 className="title-lg border-b border-line pb-4">Easy 4 Step Process</h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {processSteps.map((s) => (
+              <FeatureTile key={s.title} {...s} />
+            ))}
           </div>
-          {processSteps.map((s) => (
-            <div
-              key={s.title}
-              className="flex flex-1 items-start gap-4 border-l border-line px-6 py-7"
-              style={{ minWidth: 200 }}
-            >
-              <div className="grid h-16 w-16 flex-none place-items-center rounded-full bg-premium-600/10">
-                <s.icon className="h-8 w-8 text-premium-600" strokeWidth={1.75} aria-hidden="true" />
-              </div>
-              <div className="flex flex-col gap-1 pt-1">
-                <div className="label text-ink">{s.title}</div>
-                <p className="text-[13px] leading-relaxed text-muted">{s.body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        </section>
 
-        <div className="mt-10 flex items-center gap-4 bg-ink px-8 py-5 text-cream/85">
+        <section className="mt-16 md:mt-24">
+          <h2 className="title-lg border-b border-line pb-4">Crafted to Last</h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {assurances.map((a) => (
+              <FeatureTile key={a.title} {...a} />
+            ))}
+          </div>
+        </section>
+
+        <div className="mt-16 flex items-center gap-4 bg-ink px-8 py-5 text-cream/85 md:mt-24">
           <AlertTriangle className="h-5 w-5 flex-none text-premium-600" aria-hidden="true" />
-          <p className="text-[13px] leading-relaxed">
+          <p className="text-sm leading-relaxed">
             <span className="font-semibold text-cream">Important Note: </span>
             By uploading an image, you confirm that you own it or have permission to use and
             print it. Wallmeri is not responsible for copyright claims arising from

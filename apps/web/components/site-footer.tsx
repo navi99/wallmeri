@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const colHeading = "label text-cream";
@@ -10,7 +11,13 @@ export function SiteFooter() {
     <footer className="mt-16 bg-ink text-cream">
       <div className="container-page flex flex-wrap items-start justify-between gap-12 py-14">
         <div className="flex flex-col gap-3.5">
-          <div className="text-lg font-medium tracking-[0.2em]">WALLMERI</div>
+          <Image
+            src="/logo-wallmeri-white.png"
+            alt="Wallmeri"
+            width={322}
+            height={512}
+            className="h-36 w-auto sm:h-44"
+          />
         </div>
 
         <div className="flex flex-wrap gap-x-16 gap-y-10">

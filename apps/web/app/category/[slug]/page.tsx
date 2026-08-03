@@ -5,11 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import {
-  FilterRail,
-  SORT_OPTIONS,
-  type FilterSection,
-} from "@/components/catalog-filter-rail";
+import { SORT_OPTIONS } from "@/components/catalog-filter-rail";
+import { FilterMenu } from "@/components/filter-menu";
 import { Pagination } from "@/components/pagination";
 import { ProductCard } from "@/components/product-card";
 import { Spinner } from "@/components/ui";
@@ -49,46 +46,24 @@ function CategoryContent({ slug }: { slug: string }) {
     router.push(`/category/${slug}?${next.toString()}`);
   };
 
-  const sections: FilterSection[] = [
-    {
-      id: "sort",
-      label: "Sort",
-      selected: sort,
-      clearable: false,
-      onSelect: (value) => update({ sort: value }),
-      options: SORT_OPTIONS,
-    },
-    {
-      // Category is fixed by the route here, so the facet navigates rather
-      // than patching the query string.
-      id: "category",
-      label: "Category",
-      selected: slug,
-      options: [
-        { value: "", label: "All categories", href: "/catalog" },
-        ...(categoriesQuery.data ?? []).map((c) => ({
-          value: c.slug,
-          label: c.name,
-          href: `/category/${c.slug}`,
-        })),
-      ],
-    },
-    {
-      id: "artist",
-      label: "Artist",
-      selected: artist,
-      defaultOpen: Boolean(artist),
-      scroll: true,
-      onSelect: (value) => update({ artist: value }),
-      options: [
-        { value: "", label: "All artists" },
-        ...(artistsQuery.data ?? []).map((a) => ({
-          value: a.slug,
-          label: a.name,
-          count: a.product_count,
-        })),
-      ],
-    },
+  // Category is fixed by the route here, so the facet navigates rather than
+  // patching the query string.
+  const categoryOptions = [
+    { value: "", label: "All categories", href: "/catalog" },
+    ...(categoriesQuery.data ?? []).map((c) => ({
+      value: c.slug,
+      label: c.name,
+      href: `/category/${c.slug}`,
+    })),
+  ];
+
+  const artistOptions = [
+    { value: "", label: "All artists" },
+    ...(artistsQuery.data ?? []).map((a) => ({
+      value: a.slug,
+      label: a.name,
+      count: a.product_count,
+    })),
   ];
 
   return (
@@ -121,52 +96,63 @@ function CategoryContent({ slug }: { slug: string }) {
         </p>
       </div>
 
-      <div className="mt-8 lg:mt-10 lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-x-14">
-        <aside className="lg:pb-10">
-          <FilterRail
-            sections={sections}
-            activeCount={artist ? 1 : 0}
-            clearHref={`/category/${slug}`}
+      {/* Category and Artist left, Sort right — same toolbar placement as
+          the gallery page, sitting directly above the grid it acts on. */}
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <FilterMenu label="Category" options={categoryOptions} selected={slug} />
+          <FilterMenu
+            label="Artist"
+            options={artistOptions}
+            selected={artist}
+            onSelect={(value) => update({ artist: value })}
           />
-        </aside>
-
-        <div className="mt-10 lg:mt-0">
-          {productsQuery.isLoading ? (
-            <div className="grid place-items-center py-24">
-              <Spinner />
-            </div>
-          ) : data && data.items.length > 0 ? (
-            <>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-8 sm:gap-y-14 lg:grid-cols-3">
-                {data.items.map((p) => (
-                  <ProductCard
-                    key={p.id}
-                    product={p}
-                    imageSizes="(max-width: 1024px) 50vw, 33vw"
-                  />
-                ))}
-              </div>
-
-              <Pagination
-                page={page}
-                pages={data.pages}
-                onPage={(next) => update({ page: String(next) })}
-              />
-            </>
-          ) : (
-            <div className="border border-line bg-paper p-12 text-center">
-              <p className="title-xs">
-                Nothing here yet
-              </p>
-              <Link
-                href="/catalog"
-                className="mt-5 inline-block label text-xs text-brand-600 hover:underline"
-              >
-                View all designs →
-              </Link>
-            </div>
-          )}
         </div>
+        <FilterMenu
+          label="Sort"
+          options={SORT_OPTIONS}
+          selected={sort}
+          align="end"
+          onSelect={(value) => update({ sort: value })}
+        />
+      </div>
+
+      <div className="mt-8">
+        {productsQuery.isLoading ? (
+          <div className="grid place-items-center py-24">
+            <Spinner />
+          </div>
+        ) : data && data.items.length > 0 ? (
+          <>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-8 sm:gap-y-14 lg:grid-cols-4">
+              {data.items.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  imageSizes="(max-width: 1024px) 50vw, 25vw"
+                />
+              ))}
+            </div>
+
+            <Pagination
+              page={page}
+              pages={data.pages}
+              onPage={(next) => update({ page: String(next) })}
+            />
+          </>
+        ) : (
+          <div className="border border-line bg-paper p-12 text-center">
+            <p className="title-xs">
+              Nothing here yet
+            </p>
+            <Link
+              href="/catalog"
+              className="mt-5 inline-block label text-xs text-brand-600 hover:underline"
+            >
+              View all designs →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

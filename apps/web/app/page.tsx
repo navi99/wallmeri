@@ -13,6 +13,14 @@ import { ShopByCategory } from "@/components/home-shop-by-category";
 // in Premium Red. See DESIGN.md, The Engraving Rule.
 const sectionHeading = "title-lg [text-wrap:balance]";
 
+// Hero CTAs. The min-width holds both to one width regardless of label length —
+// side by side, ragged widths read as an accident rather than a hierarchy.
+// Colour is what ranks them, not size.
+const heroCta =
+  "label inline-flex h-14 min-w-[240px] items-center justify-center px-10 transition-colors";
+const heroCtaPrimary = `${heroCta} bg-premium-600 text-cream hover:bg-premium-700`;
+const heroCtaOutline = `${heroCta} border border-cream/50 text-cream hover:border-cream hover:bg-cream hover:text-ink`;
+
 const trustMarquee = [
   "Curated Indian artists",
   "Free shipping over ₹2,999",
@@ -54,18 +62,16 @@ export default function HomePage() {
                 Premium metal art from independent Indian artists
               </p>
             </div>
+            {/* Custom posters are the MVP's headline feature, so /create takes
+                the one red button the Curator's Signature Rule allows in this
+                viewport; browsing steps back to the outline style. Artists are
+                reached from the nav and the featured-artists band, not here. */}
             <div className="mt-2 flex flex-wrap gap-3.5 motion-safe:animate-hero-rise-4">
-              <Link
-                href="/catalog"
-                className="label inline-flex h-14 items-center justify-center bg-premium-600 px-10 text-cream transition-colors hover:bg-premium-700"
-              >
-                Shop the gallery
+              <Link href="/create" className={heroCtaPrimary}>
+                Custom print
               </Link>
-              <Link
-                href="/artists"
-                className="label inline-flex h-14 items-center justify-center border border-cream/50 px-10 text-cream transition-colors hover:border-cream hover:bg-cream hover:text-ink"
-              >
-                Meet the artists
+              <Link href="/catalog" className={heroCtaOutline}>
+                Shop the gallery
               </Link>
             </div>
           </div>

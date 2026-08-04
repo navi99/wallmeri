@@ -2,12 +2,12 @@ import { ShieldCheck } from "lucide-react";
 
 export function WhyLoveIt() {
   return (
-    <section className="mt-14">
-      <h2 className="title-lg">
-        Why You&rsquo;ll <span className="font-display italic text-brand-600">Love It</span>
+    <section className="mt-16 md:mt-24">
+      <h2 className="title-lg border-b border-line pb-4">
+        Why You&rsquo;ll <em className="accent">love it</em>
       </h2>
 
-      <div className="mt-4 grid gap-8 lg:grid-cols-2">
+      <div className="mt-8 grid gap-8 lg:grid-cols-2">
         <p className="leading-relaxed text-muted">
           Chosen for those who value exceptional art and thoughtful interiors. Whether displayed as a statement piece or as part of a curated collection, it brings depth, balance, and quiet character to any space.
         </p>

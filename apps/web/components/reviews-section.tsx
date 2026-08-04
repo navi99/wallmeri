@@ -48,8 +48,8 @@ export function ReviewsSection({ slug }: { slug: string }) {
   const myReview = eligibility?.my_review ?? null;
 
   return (
-    <section className="mt-14">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <section className="mt-16 md:mt-24">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
         <h2 className="title-lg">Reviews</h2>
         {eligibility?.can_review && !formOpen && (
           <Button variant="outline" onClick={() => setFormOpen(true)}>

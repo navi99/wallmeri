@@ -7,7 +7,7 @@ import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import Image from "@/components/app-image";
-import { BoxContents } from "@/components/box-contents";
+import { CraftedToLast } from "@/components/crafted-to-last";
 import { InstallGuide } from "@/components/install-guide";
 import { ProductGallery } from "@/components/product-gallery";
 import { ReviewsSection } from "@/components/reviews-section";
@@ -108,7 +108,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const primaryCategory = product.categories[0] ?? null;
 
   return (
-    <div className="container-page py-8">
+    <div className="container-page py-8 md:py-12">
       <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-xs text-muted">
         <Link href="/catalog" className="hover:text-brand-600">
           Shop
@@ -256,7 +256,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
       <WhyLoveIt />
 
-      <BoxContents />
+      <CraftedToLast />
 
       <InstallGuide />
 

@@ -13,7 +13,7 @@ export type Tile = {
   icon: LucideIcon;
   title: string;
   spec?: string;
-  body: string;
+  body?: string;
 };
 
 export function FeatureTile({ icon: Icon, title, spec, body }: Tile) {
@@ -29,7 +29,7 @@ export function FeatureTile({ icon: Icon, title, spec, body }: Tile) {
           <h3 className="title-xs">{title}</h3>
           {spec && <p className="label text-xs text-muted">{spec}</p>}
         </div>
-        <p className="text-sm leading-relaxed text-muted">{body}</p>
+        {body && <p className="text-sm leading-relaxed text-muted">{body}</p>}
       </div>
     </article>
   );

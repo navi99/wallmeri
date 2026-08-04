@@ -26,10 +26,9 @@ services:
           property: connectionString
       - key: ENV
         value: production
-      # CORS must include the deployed web URL, e.g. https://wallmeri-web.onrender.com
-      # Update this after the web service is first deployed.
+      # CORS must include every origin the web app is served from.
       - key: CORS_ORIGINS
-        value: https://wallmeri-web.onrender.com
+        value: https://wallmeri.com,https://wallmeri-web.onrender.com
       - key: JWT_SECRET
         sync: false       # enter manually in Render dashboard (never commit secrets)
       - key: ADMIN_EMAIL
@@ -51,7 +50,7 @@ services:
       - key: PUBLIC_API_BASE_URL
         value: https://wallmeri-api.onrender.com
       - key: PUBLIC_WEB_BASE_URL
-        value: https://wallmeri-web.onrender.com
+        value: https://wallmeri.com
       # Google sign-in (optional — customers get a "Continue with Google" button).
       # Must match the web service's NEXT_PUBLIC_GOOGLE_CLIENT_ID.
       - key: GOOGLE_CLIENT_ID

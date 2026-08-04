@@ -22,12 +22,10 @@ const heroCtaPrimary = `${heroCta} bg-premium-600 text-cream hover:bg-premium-70
 const heroCtaOutline = `${heroCta} border border-cream/50 text-cream hover:border-cream hover:bg-cream hover:text-ink`;
 
 const trustMarquee = [
-  "Curated Indian artists",
-  "Free shipping over ₹2,999",
   "Secure Razorpay checkout",
   "Made in India",
-  "Museum-grade metal",
-  "No drilling · magnetic mount",
+  "Alluminum metal",
+  "No drilling - Magnetic mount",
 ];
 
 export default function HomePage() {
@@ -50,7 +48,7 @@ export default function HomePage() {
                 gradient above is what keeps the text legible, so the words sit
                 directly on the video with nothing framing them. */}
             <div className="flex flex-col items-start gap-4">
-              <div className="kicker-on-dark motion-safe:animate-hero-rise-1">Wallmeri</div>
+              <div className="kicker-on-dark motion-safe:animate-hero-rise-1">WallMeri</div>
               {/* Caps Montserrat closed by one lowercase Cormorant phrase. The
                   accent takes premium-300 here rather than the class default:
                   Premium Red on the Noir scrim is ~2.3:1, while premium-300
@@ -68,7 +66,7 @@ export default function HomePage() {
                 reached from the nav and the featured-artists band, not here. */}
             <div className="mt-2 flex flex-wrap gap-3.5 motion-safe:animate-hero-rise-4">
               <Link href="/create" className={heroCtaPrimary}>
-                Custom print
+                Custom Poster
               </Link>
               <Link href="/catalog" className={heroCtaOutline}>
                 Shop the gallery
@@ -139,10 +137,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5 · Sell on Wallmeri — the artist-facing CTA. Quiet Paper band; red stays confined to the kicker/accent/hover, no drench */}
+      {/* 5 · Sell on WallMeri — the artist-facing CTA. Quiet Paper band; red stays confined to the kicker/accent/hover, no drench */}
       <section className="border-t border-line bg-paper px-4 py-[clamp(64px,7vw,112px)] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-[720px] text-center">
-          <div className="kicker mb-4">Sell on Wallmeri</div>
+          <div className="kicker mb-4">Sell on WallMeri</div>
           <h2 className={sectionHeading}>
             Your art. Your wall. <em className="accent">Your earnings.</em>
           </h2>

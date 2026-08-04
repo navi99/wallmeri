@@ -4,9 +4,9 @@ import Link from "next/link";
 import { SingleSiteImage } from "@/components/site-image-banner";
 
 export const metadata: Metadata = {
-  title: "About Us | Wallmeri",
+  title: "About Us | WallMeri",
   description:
-    "Wallmeri brings original Indian artwork from talented independent artists to your walls as premium metal posters — professionally printed in India, with every purchase directly supporting the artist behind it.",
+    "WallMeri brings original Indian artwork from talented independent artists to your walls as premium metal posters — professionally printed in India, with every purchase directly supporting the artist behind it.",
 };
 
 const kicker = "kicker";
@@ -47,7 +47,7 @@ const steps = [
   {
     n: "02",
     title: "Artists earn",
-    body: "Artists license their work to Wallmeri through a simple, transparent agreement and receive a share from every sale.",
+    body: "Artists license their work to WallMeri through a simple, transparent agreement and receive a share from every sale.",
   },
   {
     n: "03",
@@ -86,12 +86,12 @@ export default function AboutPage() {
       <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
           <div className="flex min-w-[300px] max-w-[560px] flex-1 flex-col items-start gap-6">
-            <div className={kicker}>About Wallmeri</div>
+            <div className={kicker}>About WallMeri</div>
             <h1 className="title-display">
               Art deserves more than <em className={accentRed}>a scroll.</em>
             </h1>
             <p className="max-w-[480px] text-[17px] leading-[1.65] text-muted">
-              Wallmeri brings original Indian artwork from talented
+              WallMeri brings original Indian artwork from talented
               independent artists to your walls as premium metal posters.
               Every piece is carefully curated, professionally printed in
               India, and every purchase directly supports the artist behind
@@ -135,7 +135,7 @@ export default function AboutPage() {
           <p className="max-w-[640px] text-[17px] leading-[1.75] text-cream/70">
             Every day, thousands of talented Indian artists share incredible
             work online — seen for a few seconds, appreciated with a like,
-            and lost in an endless feed. Wallmeri was created to help
+            and lost in an endless feed. WallMeri was created to help
             meaningful artwork leave the screen and become part of everyday
             spaces. We work directly with artists, transform their creations
             into premium metal prints, and deliver them to homes across
@@ -172,7 +172,7 @@ export default function AboutPage() {
       {/* 4 · How it works — discover, earn, print, hang: a single centered list */}
       <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mb-14 text-center">
-          <div className={`${kicker} mb-4`}>How Wallmeri Works</div>
+          <div className={`${kicker} mb-4`}>How WallMeri Works</div>
           <h2 className={sectionHeading}>
             From an artist&apos;s portfolio to your wall.
           </h2>
@@ -205,7 +205,7 @@ export default function AboutPage() {
             <div className={`${kickerOnDark} mb-4`}>The Material</div>
             <h2 className={`${narrativeHeading} text-cream`}>Built to last.</h2>
             <p className="mt-5 text-[17px] leading-[1.75] text-cream/70">
-              Instead of paper or canvas, every Wallmeri artwork is produced
+              Instead of paper or canvas, every WallMeri artwork is produced
               on premium aluminium.
             </p>
           </div>
@@ -256,7 +256,7 @@ export default function AboutPage() {
             Built in Bengaluru.
           </h2>
           <p className="max-w-[560px] text-base leading-[1.75] text-muted">
-            Every Wallmeri piece is made to order in India, supporting local
+            Every WallMeri piece is made to order in India, supporting local
             artists while maintaining complete control over quality from
             production to delivery. Whether you&apos;re discovering your next
             favourite artwork or sharing your creativity with the world,
@@ -274,7 +274,7 @@ export default function AboutPage() {
               href="/artists/join"
               className={`${buttonBase} border border-ink text-ink transition-colors hover:bg-ink hover:text-cream`}
             >
-              Become a Wallmeri Artist
+              Become a WallMeri Artist
             </Link>
           </div>
         </div>

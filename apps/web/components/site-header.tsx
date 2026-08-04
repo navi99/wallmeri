@@ -67,7 +67,7 @@ export function SiteHeader() {
         <Link href="/" onClick={closePanels} className="shrink-0">
           <Image
             src="/logo-wallmeri.png"
-            alt="Wallmeri"
+            alt="WallMeri"
             width={401}
             height={128}
             priority

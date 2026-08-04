@@ -133,7 +133,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
                 </Link>
               </>
             ) : (
-              "A Wallmeri Original"
+              "A WallMeri Original"
             )}
           </p>
 
@@ -187,7 +187,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
                     {product.artist.name}
                   </Link>
                 ) : (
-                  "Wallmeri"
+                  "WallMeri"
                 )}
                 .
               </p>

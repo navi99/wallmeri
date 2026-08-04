@@ -23,7 +23,7 @@ const displayFont = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Wallmeri",
+  title: "WallMeri",
   description:
     "Discover and buy premium metal wall art and posters, shipped across India.",
 };

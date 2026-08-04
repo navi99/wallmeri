@@ -46,7 +46,7 @@ def _has_delivered_purchase(db: Session, user: User, product_id: int) -> bool:
 def _to_review_out(review: Review, cls=ReviewOut):
     dto = cls.model_validate(review)
     name = review.user.full_name.strip() if review.user else ""
-    dto.author_name = name or "Wallmeri customer"
+    dto.author_name = name or "WallMeri customer"
     return dto
 
 

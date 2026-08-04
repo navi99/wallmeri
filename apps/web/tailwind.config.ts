@@ -14,7 +14,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Wallmeri palette:
+        // WallMeri palette:
         // Cotton #FAF9F6 · Premium Red #B32624 · Noir Black #1B1717
         brand: {
           50: "#f8f1ec",

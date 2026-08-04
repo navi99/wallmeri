@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Wallmeri",
+  title: "Privacy Policy | WallMeri",
   description:
-    "What personal data Wallmeri collects, how it's used, who it's shared with, and your rights over it.",
+    "What personal data WallMeri collects, how it's used, who it's shared with, and your rights over it.",
 };
 
 const heading = "title-xs";
@@ -81,7 +81,7 @@ const sections: Section[] = [
   {
     title: "8. Children's Privacy",
     paragraphs: [
-      "Wallmeri is not intended for users under 18. We don't knowingly collect data from minors.",
+      "WallMeri is not intended for users under 18. We don't knowingly collect data from minors.",
     ],
   },
   {
@@ -102,7 +102,7 @@ export default function PrivacyPolicyPage() {
         <p className="mt-2 text-sm text-muted">Last updated: 20 July 2026</p>
 
         <p className={`mt-6 ${body}`}>
-          Wallmeri (&quot;we,&quot; &quot;us&quot;) respects your privacy. This policy explains
+          WallMeri (&quot;we,&quot; &quot;us&quot;) respects your privacy. This policy explains
           what personal data we collect, how we use it, and your rights.
         </p>
 

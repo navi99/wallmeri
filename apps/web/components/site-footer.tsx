@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { PaymentIcons } from "@/components/payment-icons";
+
 const colHeading = "label text-cream";
 const colLink = "text-sm text-cream/65 transition-colors hover:text-cream";
-
-const trustBadges = ["Secure Razorpay checkout", "Made in India"];
 
 export function SiteFooter() {
   return (
@@ -13,7 +13,7 @@ export function SiteFooter() {
         <div className="flex flex-col gap-3.5">
           <Image
             src="/logo-wallmeri-white.png"
-            alt="Wallmeri"
+            alt="WallMeri"
             width={322}
             height={512}
             className="h-36 w-auto sm:h-44"
@@ -67,7 +67,7 @@ export function SiteFooter() {
               Contact us
             </a>
             {/* <Link href="/artists/join" className={colLink}>
-              Become a Wallmeri artist
+              Become a WallMeri artist
             </Link> */}
           </div>
 
@@ -88,21 +88,19 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
-      <div className="border-t border-cream/10 py-5">
-        <div className="container-page flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-center sm:justify-between">
-          <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2">
-            {trustBadges.map((item, i) => (
-              <span key={item} className="flex items-center gap-2.5">
-                {i > 0 && <span className="text-premium-600">●</span>}
-                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-cream/50">
-                  {item}
-                </span>
-              </span>
-            ))}
+      <div className="border-t border-cream/10 bg-cream py-4">
+        <div className="container-page flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
+          <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-ink">
+            100% Secure Payment
+          </span>
+          <div className="flex flex-wrap items-center gap-4">
+            <PaymentIcons />
           </div>
-          <p className="text-xs text-cream/35">
-            © {new Date().getFullYear()} Wallmeri. All rights reserved.
-          </p>
+        </div>
+      </div>
+      <div className="border-t border-cream/10 py-5">
+        <div className="container-page flex items-center justify-center">
+          <p className="text-xs text-cream/35">© WallMeri {new Date().getFullYear()}</p>
         </div>
       </div>
     </footer>

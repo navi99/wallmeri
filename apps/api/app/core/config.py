@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     # App
-    APP_NAME: str = "Wallmeri API"
+    APP_NAME: str = "WallMeri API"
     ENV: str = "development"
     API_PREFIX: str = "/api"
 
@@ -63,7 +63,7 @@ class Settings(BaseSettings):
     # >= OK is a clean print, [MIN, OK) shows a "may look soft" warning but is
     # still allowed, < MIN is blocked outright.
     CUSTOM_DPI_OK: int = 150
-    CUSTOM_DPI_MIN: int = 100
+    CUSTOM_DPI_MIN: int = 50
     CUSTOM_PREVIEW_MAX_PX: int = 1600
 
     # Google sign-in (optional — button hidden on the web when unset)
@@ -74,7 +74,10 @@ class Settings(BaseSettings):
     SMTP_PORT: int = 587
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
-    EMAIL_FROM: str = "Wallmeri <no-reply@wallmeri.in>"
+    EMAIL_FROM: str = "WallMeri <no-reply@wallmeri.in>"
+
+    # Business-facing order notifications (blank disables them)
+    ADMIN_NOTIFY_EMAIL: str = "infowallmeri@gmail.com"
 
     # Public base URL of the storefront (used in emails), e.g. http://localhost:3000
     PUBLIC_WEB_BASE_URL: str = "http://localhost:3000"

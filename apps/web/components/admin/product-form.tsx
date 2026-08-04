@@ -287,7 +287,7 @@ export function ProductForm({
             <div>
               <Label htmlFor="artist_id">Artist</Label>
               <Select id="artist_id" {...register("artist_id")}>
-                <option value="">Wallmeri Original</option>
+                <option value="">WallMeri Original</option>
                 {artists.map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.name}

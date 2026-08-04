@@ -13,7 +13,7 @@ export const SITE_IMAGE_SLOTS: Record<
 > = {
   home_hero: { label: "Homepage hero", maxImages: 6 },
   home_hero_video: { label: "Homepage hero video", maxImages: 1, media: "video" },
-  home_why_wallmeri: { label: 'Homepage "Why Wallmeri" image', maxImages: 1 },
+  home_why_wallmeri: { label: 'Homepage "Why WallMeri" image', maxImages: 1 },
   about_hero: { label: "About Us hero", maxImages: 1 },
   cyo_showcase: { label: "Create Your Own — showcase image", maxImages: 1 },
 };

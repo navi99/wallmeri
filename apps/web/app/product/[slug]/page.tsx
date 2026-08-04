@@ -148,7 +148,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 </Link>
               </>
             ) : (
-              "A Wallmeri Original"
+              "A WallMeri Original"
             )}
           </p>
           {product.rating_count > 0 && (
@@ -240,7 +240,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 <div className="text-xs text-muted">
                   {artistQuery.data
                     ? `${artistQuery.data.product_count} work${artistQuery.data.product_count === 1 ? "" : "s"}`
-                    : "Wallmeri artist"}
+                    : "WallMeri artist"}
                 </div>
               </div>
               <Link

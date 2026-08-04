@@ -141,7 +141,7 @@ export default function CheckoutPage() {
         key: payment.razorpay_key_id,
         amount: payment.amount_paise,
         currency: payment.currency,
-        name: "Wallmeri",
+        name: "WallMeri",
         description: "Metal wall art order",
         order_id: payment.razorpay_order_id,
         prefill: {
@@ -283,6 +283,10 @@ export default function CheckoutPage() {
           <Button type="submit" size="lg" className="mt-5 w-full" loading={paying}>
             Pay {formatINR(total)}
           </Button>
+          <p className="mt-3 text-center text-xs leading-relaxed text-muted">
+            Estimated delivery: 7–20 days from order confirmation. Every Wallmeri metal poster
+            is made to order and carefully prepared before dispatch.
+          </p>
           <p className="mt-3 text-center text-xs text-muted">
             Secured by Razorpay. UPI, cards, netbanking & wallets.
           </p>

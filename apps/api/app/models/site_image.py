@@ -20,7 +20,7 @@ def _utcnow() -> datetime:
 SITE_IMAGE_SLOTS: dict[str, dict[str, int | str]] = {
     "home_hero": {"label": "Homepage hero", "max_images": 6, "media": "image"},
     "home_hero_video": {"label": "Homepage hero video", "max_images": 1, "media": "video"},
-    "home_why_wallmeri": {"label": 'Homepage "Why Wallmeri" image', "max_images": 1, "media": "image"},
+    "home_why_wallmeri": {"label": 'Homepage "Why WallMeri" image', "max_images": 1, "media": "image"},
     "about_hero": {"label": "About Us hero", "max_images": 1, "media": "image"},
     "cyo_showcase": {"label": "Create Your Own — showcase image", "max_images": 1, "media": "image"},
 }

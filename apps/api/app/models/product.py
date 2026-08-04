@@ -52,7 +52,7 @@ class Product(Base):
         back_populates="product",
     )
 
-    # None = Wallmeri Original (fully admin-managed poster).
+    # None = WallMeri Original (fully admin-managed poster).
     artist_id: Mapped[int | None] = mapped_column(
         ForeignKey("artists.id", ondelete="SET NULL"), nullable=True, index=True
     )

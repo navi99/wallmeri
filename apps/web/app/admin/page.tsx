@@ -175,7 +175,7 @@ export default function AdminPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3 text-muted">
-                          {p.artist?.name ?? "Wallmeri Original"}
+                          {p.artist?.name ?? "WallMeri Original"}
                         </td>
                         <td className="px-4 py-3 text-muted">
                           {p.categories.map((c) => c.name).join(", ") || "—"}

@@ -6,7 +6,7 @@ const CM_PER_INCH = 2.54;
 // instant client-side feedback only. Keep in sync with app/core/config.py's
 // CUSTOM_DPI_OK / CUSTOM_DPI_MIN.
 const DPI_OK = 150;
-const DPI_MIN = 100;
+const DPI_MIN = 50;
 
 export function computeDpi(
   size: PosterSize,

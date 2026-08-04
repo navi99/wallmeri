@@ -38,4 +38,5 @@ def mark_order_paid(db: Session, order: Order, payment_id: str | None) -> bool:
     db.commit()
     db.refresh(order)
     email_service.send_order_confirmation(order)
+    email_service.send_admin_order_notification(order)
     return True

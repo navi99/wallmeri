@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Refund & Replacement Policy | Wallmeri",
+  title: "Refund & Replacement Policy | WallMeri",
   description:
-    "How Wallmeri handles damaged, defective, wrong-item, and cancelled orders — and how to request a replacement or refund.",
+    "How WallMeri handles damaged, defective, wrong-item, and cancelled orders — and how to request a replacement or refund.",
 };
 
 const heading = "title-xs";

@@ -42,7 +42,7 @@ export function ApplicationsTab() {
   if (applications.length === 0) {
     return (
       <Card className="mt-4 p-10 text-center text-muted">
-        No artist applications yet. They arrive here from the “Become a Wallmeri artist” page.
+        No artist applications yet. They arrive here from the “Become a WallMeri artist” page.
       </Card>
     );
   }

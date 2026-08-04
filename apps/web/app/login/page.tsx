@@ -57,7 +57,7 @@ function LoginForm() {
     <div className="container-page flex justify-center py-16">
       <Card className="w-full max-w-md p-8">
         <h1 className="title-lg">Log in</h1>
-        <p className="mt-1 text-sm text-muted">Welcome back to Wallmeri.</p>
+        <p className="mt-1 text-sm text-muted">Welcome back to WallMeri.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
           <div>

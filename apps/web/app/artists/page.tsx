@@ -67,7 +67,7 @@ function ArtistsContent() {
           </p>
         </div>
         <p className="mt-4 max-w-[65ch] text-sm leading-relaxed text-muted">
-          Every Wallmeri artist is hand-picked and verified by our team. Browse their
+          Every WallMeri artist is hand-picked and verified by our team. Browse their
           collections and bring their work to your walls.
         </p>
       </div>

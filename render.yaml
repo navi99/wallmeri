@@ -37,7 +37,7 @@ services:
       - key: ADMIN_PASSWORD
         sync: false       # enter manually
       - key: ADMIN_NAME
-        value: Wallmeri Admin
+        value: WallMeri Admin
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET
@@ -82,7 +82,7 @@ services:
       - key: SMTP_PASSWORD
         sync: false
       - key: EMAIL_FROM
-        value: Wallmeri <no-reply@wallmeri.in>
+        value: WallMeri <no-reply@wallmeri.in>
 
   # ── Next.js frontend ────────────────────────────────────────────────────────
   - type: web

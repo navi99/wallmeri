@@ -4,16 +4,18 @@ import Image from "@/components/app-image";
 import { useQuery } from "@tanstack/react-query";
 
 import {
+  fullRowCount,
   MediaRail,
   MediaRailItem,
   MediaRailSkeleton,
+  railCols,
   railLabel,
 } from "@/components/custom/media-rail";
 import { api } from "@/lib/api";
 
 // A category without an admin-set display poster gets a deterministic
 // gradient from this palette (cycled by index) rather than a generic text
-// box — keeps the grid feeling like art, not a filter list.
+// box - keeps the grid feeling like art, not a filter list.
 const tileGradients = [
   "linear-gradient(180deg,#4a4340 0%,#241f1e 100%)",
   "linear-gradient(160deg,#b32624 0%,#2e0503 100%)",
@@ -22,11 +24,10 @@ const tileGradients = [
   "linear-gradient(200deg,#3a3230 0%,#1b1717 100%)",
 ];
 
-// auto-fit + 1fr: however many categories the admin has active, they stretch
-// to fill one edge-to-edge row (empty tracks collapse), so the row always
-// reads as a continuous gallery wall rather than a ragged grid.
-const cols = "md:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]";
-const maxTrack = 440;
+// Up to 4-up grid (matches Featured Pieces' tile width via maxTrack below) -
+// wraps into additional rows on its own once there are more than 4 active
+// categories, rather than stretching every category into one wide row.
+const maxTrack = 380;
 
 export function ShopByCategory() {
   const { data, isLoading } = useQuery({
@@ -34,14 +35,19 @@ export function ShopByCategory() {
     queryFn: () => api.listCategories(),
   });
 
-  const categories = (data ?? []).filter((c) => c.is_active !== false);
+  const active = (data ?? []).filter((c) => c.is_active !== false);
+  const categories = active.slice(0, fullRowCount(active.length));
 
   if (isLoading)
-    return <MediaRailSkeleton count={5} cols={cols} maxTrack={maxTrack} />;
+    return (
+      <MediaRailSkeleton count={4} cols="md:grid-cols-4" maxTrack={maxTrack} />
+    );
   if (categories.length === 0) return null;
 
+  const cols = railCols(categories.length);
+
   return (
-    <MediaRail cols={cols} count={categories.length} maxTrack={maxTrack}>
+    <MediaRail cols={cols} count={Math.min(categories.length, 4)} maxTrack={maxTrack}>
       {categories.map((c, i) => (
         <MediaRailItem
           key={c.id}

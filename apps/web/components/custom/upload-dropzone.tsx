@@ -52,7 +52,7 @@ export function UploadDropzone({
         <div className="flex flex-col items-center gap-3">
           <UploadCloud className="h-10 w-10 text-muted" />
           <p className="text-sm font-semibold text-ink">Drag &amp; drop a photo, or click to browse</p>
-          <p className="text-xs text-muted">JPEG, PNG or WebP — up to 15 MB</p>
+          <p className="text-xs text-muted">JPEG, PNG or WebP - up to 15 MB</p>
         </div>
       )}
       <input

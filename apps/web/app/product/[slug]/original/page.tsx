@@ -88,7 +88,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
     );
   }
 
-  const title = product ? `${product.title} — Original` : "Original painting";
+  const title = product ? `${product.title} - Original` : "Original painting";
   const dimensions = `${Number(original.width_cm)} × ${Number(original.height_cm)} cm`;
 
   return (
@@ -119,7 +119,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
           <div className="kicker">
             One of a kind
           </div>
-          {/* The artwork's own title — a name, so it opts out of the ladder's
+          {/* The artwork's own title - a name, so it opts out of the ladder's
               caps (see The Caps-Heading Rule). */}
           <h1 className="mt-2.5 title-xl title-name">
             {title}
@@ -176,7 +176,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
                   Interest received
                 </h2>
                 <p className="mt-2 text-sm text-muted">
-                  Thanks — our team will reach out by email or phone to follow up.
+                  Thanks - our team will reach out by email or phone to follow up.
                 </p>
               </div>
             ) : original.status === "sold" ? (
@@ -198,7 +198,7 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
                 </h2>
                 {original.status === "reserved" && (
                   <p className="mt-1 text-sm text-muted">
-                    This piece is currently reserved — we&rsquo;re still taking backup interest.
+                    This piece is currently reserved - we&rsquo;re still taking backup interest.
                   </p>
                 )}
                 <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
@@ -222,11 +222,11 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
                     <Textarea
                       id="message"
                       rows={4}
-                      placeholder="Tell us anything relevant — where it'll hang, questions about the piece…"
+                      placeholder="Tell us anything relevant - where it'll hang, questions about the piece…"
                       {...register("message")}
                     />
                   </div>
-                  {/* Honeypot — hidden from humans, bots fill it in. */}
+                  {/* Honeypot - hidden from humans, bots fill it in. */}
                   <input
                     type="text"
                     tabIndex={-1}

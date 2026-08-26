@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Produces a self-contained server bundle in .next/standalone — used by the
+  // Produces a self-contained server bundle in .next/standalone - used by the
   // production Dockerfile (copies standalone/ + static/ + public/).
   output: "standalone",
   images: {

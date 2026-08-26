@@ -3,7 +3,7 @@
 A product can optionally have a physical original painting for sale
 alongside its metal-print reproduction (original_paintings, 1:1 via a unique
 product_id). Buyers express interest via a public form; original_inquiries
-holds those leads for the admin team to follow up on manually — no
+holds those leads for the admin team to follow up on manually - no
 payment/checkout is involved. Mirrors the artist_applications pattern
 (app.models.artist.ArtistApplication) end to end.
 

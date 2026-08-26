@@ -89,7 +89,7 @@ export function CustomReviewTab() {
       qc.invalidateQueries({ queryKey: ["admin-custom-review"] });
       qc.invalidateQueries({ queryKey: ["admin-orders"] });
       // Approving/rejecting flips the order's status, which the customer-facing
-      // order list/detail pages also cache — keep every surface in sync instead
+      // order list/detail pages also cache - keep every surface in sync instead
       // of waiting for their staleTime to lapse.
       qc.invalidateQueries({ queryKey: ["my-orders"] });
       qc.invalidateQueries({ queryKey: ["order"] });

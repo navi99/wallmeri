@@ -2,7 +2,7 @@
 
 Introduces media_assets, a registry of uploaded images (original + web +
 thumbnail keys, dimensions, hash) that products/artists optionally reference
-via a nullable FK. Existing image_url/avatar_url rows are untouched — they
+via a nullable FK. Existing image_url/avatar_url rows are untouched - they
 keep serving pasted URLs and seeded picsum placeholders with a NULL FK; only
 images uploaded through the admin form going forward get a row and are
 eligible for lifecycle cleanup (see app.services.media_service).

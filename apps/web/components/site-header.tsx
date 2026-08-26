@@ -78,13 +78,13 @@ export function SiteHeader() {
         {/* Left of search: nav (desktop) */}
         <nav className="hidden items-center gap-6 lg:flex" aria-label="Main">
           <Link href="/catalog" className={navLink}>
-            Shop
-          </Link>
-          <Link href="/artists" className={navLink}>
-            Artists
+            Browse
           </Link>
           <Link href="/create" className={navLink}>
             Custom Poster
+          </Link>
+          <Link href="/artists" className={navLink}>
+            Artists
           </Link>
           {mounted && user?.is_admin && (
             <Link href="/admin" className={`hidden md:block ${navLink}`}>
@@ -112,6 +112,10 @@ export function SiteHeader() {
 
         {/* Right of search: login/logout + cart */}
         <div className="flex items-center justify-end gap-1 sm:gap-6">
+          <Link href="/about" className={`hidden lg:block ${navLink}`}>
+            About Us
+          </Link>
+
           {mounted && user ? (
             <button
               onClick={logout}
@@ -172,13 +176,16 @@ export function SiteHeader() {
         >
           <div className="container-page flex flex-col gap-0.5 py-3">
             <Link href="/catalog" onClick={closePanels} className={mobileLink}>
-              Shop
+              Browse
+            </Link>
+            <Link href="/create" onClick={closePanels} className={mobileLink}>
+              Custom Poster
             </Link>
             <Link href="/artists" onClick={closePanels} className={mobileLink}>
               Artists
             </Link>
-            <Link href="/create" onClick={closePanels} className={mobileLink}>
-              Custom Poster
+            <Link href="/about" onClick={closePanels} className={mobileLink}>
+              About Us
             </Link>
             {mounted && user ? (
               <>

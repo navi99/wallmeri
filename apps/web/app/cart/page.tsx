@@ -155,7 +155,7 @@ export default function CartPage() {
           </p>
           {hasCustom && (
             <p className="mb-5 bg-brand-600/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-brand-600">
-              Custom designs are reviewed before printing — usually within 1–2 business days.
+              Custom designs are reviewed before printing - usually within 1–2 business days.
             </p>
           )}
           <div className="flex items-baseline justify-between border-t border-line pt-4">

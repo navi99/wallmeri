@@ -13,7 +13,7 @@ class CategoryOut(BaseModel):
     is_active: bool = True
     poster_image_url: str = ""
     # Round-tripped so the admin edit form can tell "no managed poster" apart
-    # from "has one, just isn't being touched by this save" — mirrors
+    # from "has one, just isn't being touched by this save" - mirrors
     # ProductOut.image_id / ArtistAdminOut.avatar_id.
     poster_image_id: Optional[int] = None
 
@@ -53,12 +53,12 @@ class ProductOut(BaseModel):
     image_url: str
     thumb_url: str
     # Round-tripped so the admin edit form can tell "no managed image" apart
-    # from "has one, just isn't being touched by this save" — see
+    # from "has one, just isn't being touched by this save" - see
     # admin._apply_product_images, which needs the current value to avoid
     # detaching (and deleting) an unrelated field edit's untouched image.
     image_id: Optional[int] = None
     # Ordered gallery (up to 6). images[0] is always the main image and stays
-    # in sync with image_url/image_id — see admin._sync_main_image.
+    # in sync with image_url/image_id - see admin._sync_main_image.
     images: list[ProductImageOut] = []
     material: str
     is_active: bool
@@ -133,7 +133,7 @@ class SiteImageOut(BaseModel):
 class SiteImageIn(BaseModel):
     """One ordered gallery entry submitted to PUT /admin/site-images/{slot}.
 
-    Exactly one of image_id/image_url should carry the actual image — an
+    Exactly one of image_id/image_url should carry the actual image - an
     admin-uploaded asset sets image_id (image_url is ignored, recomputed
     server-side from the asset), a pasted external URL sets image_url with
     image_id left null. Mirrors ProductCreate.image_ids but per-entry since

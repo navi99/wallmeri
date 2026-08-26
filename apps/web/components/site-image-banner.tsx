@@ -55,7 +55,7 @@ export function HomeHeroMedia() {
 }
 
 // Self-fetching single image for a slot capped at one image ("home_why_wallmeri",
-// "about_hero"). Renders nothing but the fill content — caller owns the
+// "about_hero"). Renders nothing but the fill content - caller owns the
 // aspect-ratio/frame wrapper, same contract as HomeHeroMedia.
 export function SingleSiteImage({
   slot,

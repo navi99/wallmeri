@@ -4,7 +4,7 @@ Introduces the "Create your own" workflow (see docs/backlog/E10-custom-upload.md
 customers upload a photo, crop it to an admin-managed size, and check out
 through the *existing* cart/order pipeline. A paid order that contains any
 custom line is held in the new 'in_review' status for admin moderation
-(IP / prohibited content) before it can proceed to normal fulfilment —
+(IP / prohibited content) before it can proceed to normal fulfilment -
 see app.services.order_service.mark_order_paid and
 app.api.routes.admin's custom-review endpoints.
 
@@ -14,7 +14,7 @@ app.api.routes.admin's custom-review endpoints.
 - custom_uploads: one row per cropped custom design (FK to the underlying
   media_assets original), independent of any order until checkout attaches it.
 - order_items.custom_upload_id: nullable FK so a line is either a catalog
-  line (product_id set) or a custom line (custom_upload_id set) — mirrors
+  line (product_id set) or a custom line (custom_upload_id set) - mirrors
   the existing nullable product_id snapshot pattern, no parallel item table.
 
 Revision ID: 0006_custom_uploads
@@ -37,7 +37,7 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     # ── Enum extensions ──────────────────────────────────────────────────────
     # PG 12+ allows ADD VALUE in a transaction as long as the value isn't used
-    # in the same transaction (see 0002's precedent) — we only add them here.
+    # in the same transaction (see 0002's precedent) - we only add them here.
     op.execute("ALTER TYPE order_status ADD VALUE IF NOT EXISTS 'in_review'")
     op.execute("ALTER TYPE media_kind ADD VALUE IF NOT EXISTS 'custom'")
 
@@ -133,5 +133,5 @@ def downgrade() -> None:
 
     # order_status / media_kind: Postgres can't drop a single enum value, so
     # downgrade leaves 'in_review' / 'custom' in place (harmless, unused once
-    # the tables above are gone) — same tradeoff 0002 accepted for shipped/
+    # the tables above are gone) - same tradeoff 0002 accepted for shipped/
     # delivered/refunded.

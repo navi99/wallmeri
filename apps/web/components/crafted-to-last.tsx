@@ -2,7 +2,7 @@ import { Droplets, ShieldCheck, Timer, Truck } from "lucide-react";
 
 import { FeatureTile, type Tile } from "@/components/feature-tile";
 
-// Every claim here is load-bearing — keep it in step with the policy pages it
+// Every claim here is load-bearing - keep it in step with the policy pages it
 // paraphrases (shipping-policy §1/§2, refund-policy §1) and with the print
 // process described on the About page.
 const assurances: Tile[] = [
@@ -10,13 +10,13 @@ const assurances: Tile[] = [
     icon: Droplets,
     title: "Sublimation on Aluminium",
     spec: "Premium metal print",
-    body: "Your image is sublimation-printed onto premium aluminium — sharp colour, exceptional durability, and a surface that won't yellow, peel or warp.",
+    body: "Your image is sublimation-printed onto premium aluminium - sharp colour, exceptional durability, and a surface that won't yellow, peel or warp.",
   },
   {
     icon: ShieldCheck,
     title: "Quality Guarantee",
     spec: "Inspected before dispatch",
-    body: "Every poster is checked by hand before it leaves us. If it arrives damaged or defective, send photos within 48 hours for a free replacement or a full refund — your choice.",
+    body: "Every poster is checked by hand before it leaves us. If it arrives damaged or defective, send photos within 48 hours for a free replacement or a full refund - your choice.",
   },
   {
     icon: Timer,
@@ -28,7 +28,7 @@ const assurances: Tile[] = [
     icon: Truck,
     title: "Shipping Across India",
     spec: "7–20 calendar days",
-    body: "We deliver anywhere in India — approximately 7–10 days to Bengaluru, 10–20 days elsewhere, with tracking from the moment it ships.",
+    body: "We deliver anywhere in India - approximately 7–10 days to Bengaluru, 10–20 days elsewhere, with tracking from the moment it ships.",
   },
 ];
 

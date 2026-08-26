@@ -6,14 +6,14 @@ import { HomeHeroMedia } from "@/components/site-image-banner";
 import { HomeMarquee } from "@/components/home-marquee";
 import { ShopByCategory } from "@/components/home-shop-by-category";
 
-// Section chrome now comes from globals.css (.kicker / .title-lg / .accent) —
+// Section chrome now comes from globals.css (.kicker / .title-lg / .accent) -
 // the local heading string was the original source of the ad-hoc drift.
-// Caps come from the ladder itself now (The Caps-Heading Rule) — what's local
+// Caps come from the ladder itself now (The Caps-Heading Rule) - what's local
 // to home is that every section heading closes on a lowercase Cormorant phrase
 // in Premium Red. See DESIGN.md, The Engraving Rule.
 const sectionHeading = "title-lg [text-wrap:balance]";
 
-// Hero CTAs. The min-width holds both to one width regardless of label length —
+// Hero CTAs. The min-width holds both to one width regardless of label length -
 // side by side, ragged widths read as an accident rather than a hierarchy.
 // Colour is what ranks them, not size.
 const heroCta =
@@ -24,14 +24,14 @@ const heroCtaOutline = `${heroCta} border border-cream/50 text-cream hover:borde
 const trustMarquee = [
   "Secure Razorpay checkout",
   "Made in India",
-  "Alluminum metal",
+  "Aluminium metal",
   "No drilling - Magnetic mount",
 ];
 
 export default function HomePage() {
   return (
     <div>
-      {/* 1 · Hero — full-bleed video (falls back to the admin's poster image,
+      {/* 1 · Hero - full-bleed video (falls back to the admin's poster image,
           then a plain Noir panel) with a bottom Noir scrim so the overlaid
           copy stays legible against whatever's playing. Text is Cotton on
           the dark hero per DESIGN.md's No-Pure-White rule; red stays confined
@@ -44,7 +44,7 @@ export default function HomePage() {
         />
         <div className="relative w-full px-[clamp(20px,5vw,64px)] py-[clamp(40px,6vw,80px)]">
           <div className="mx-auto flex max-w-[1180px] flex-col items-start gap-6">
-            {/* No scrim panel behind the copy — the section's own bottom Noir
+            {/* No scrim panel behind the copy - the section's own bottom Noir
                 gradient above is what keeps the text legible, so the words sit
                 directly on the video with nothing framing them. */}
             <div className="flex flex-col items-start gap-4">
@@ -76,16 +76,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2 · Trust marquee — the badges buyers need before they'll browse, scrolling instead of static so it reads as a signal strip, not another line of copy */}
+      {/* 2 · Trust marquee - the badges buyers need before they'll browse, scrolling instead of static so it reads as a signal strip, not another line of copy */}
       <HomeMarquee items={trustMarquee} />
 
       {/* 3–4 · The three gallery-wall bands (2026-07-25). All three share the
           MediaRail geometry: a centered heading held inside container-page,
           then a full-bleed row of bare tiles running off both edges of the
           viewport with the label set on the surface beneath. Nothing frames
-          the art — no card, no border, no resting shadow. */}
+          the art - no card, no border, no resting shadow. */}
 
-      {/* 3 · Shop by category — live catalog taxonomy */}
+      {/* 3 · Shop by category - live catalog taxonomy */}
       <section className="border-y border-line bg-paper py-[clamp(64px,7vw,112px)]">
         <div className="container-page mb-[clamp(32px,4vw,52px)]">
           <div className="mx-auto max-w-[560px] text-center">
@@ -98,7 +98,7 @@ export default function HomePage() {
         <ShopByCategory />
       </section>
 
-      {/* 3.5 · Featured pieces — a small curated shelf, five across */}
+      {/* 3.5 · Featured pieces - a small curated shelf, five across */}
       <section className="bg-cream py-[clamp(64px,7vw,112px)]">
         <div className="container-page mb-[clamp(32px,4vw,52px)]">
           <div className="mx-auto max-w-[560px] text-center">
@@ -111,10 +111,10 @@ export default function HomePage() {
         <FeaturedProducts />
       </section>
 
-      {/* 4 · Featured artists — a rotating spotlight on the people behind the
+      {/* 4 · Featured artists - a rotating spotlight on the people behind the
           work. Same tile size/shape and plaque voice as the featured pieces
           above; Paper ground with a hairline at the top so the two light bands
-          read as separate runs rather than one long stretch. (No border-b —
+          read as separate runs rather than one long stretch. (No border-b -
           the Sell band below already carries a border-t.) */}
       <section className="border-t border-line bg-paper py-[clamp(64px,7vw,112px)]">
         <div className="container-page mb-[clamp(32px,4vw,52px)] text-center">
@@ -137,7 +137,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5 · Sell on WallMeri — the artist-facing CTA. Quiet Paper band; red stays confined to the kicker/accent/hover, no drench */}
+      {/* 5 · Sell on WallMeri - the artist-facing CTA. Quiet Paper band; red stays confined to the kicker/accent/hover, no drench */}
       <section className="border-t border-line bg-paper px-4 py-[clamp(64px,7vw,112px)] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-[720px] text-center">
           <div className="kicker mb-4">Sell on WallMeri</div>

@@ -10,7 +10,7 @@ import type { Order, OrderStatus } from "@/lib/types";
 import { formatINR } from "@/lib/utils";
 
 // Paid is the loudest chip on purpose: it's the ship queue. Closed states
-// (cancelled/refunded) go quiet — the label already says which is which.
+// (cancelled/refunded) go quiet - the label already says which is which.
 const STATUS_TONE: Record<string, BadgeTone> = {
   pending: "inert",
   paid: "attention",
@@ -118,7 +118,7 @@ export function OrdersTab() {
       toast.success(`Order #${vars.id} → ${vars.status}`);
       qc.invalidateQueries({ queryKey: ["admin-orders"] });
       // Same order data is cached by the customer-facing order list/detail
-      // pages — invalidate those too so status changes show up without a
+      // pages - invalidate those too so status changes show up without a
       // manual refresh.
       qc.invalidateQueries({ queryKey: ["my-orders"] });
       qc.invalidateQueries({ queryKey: ["order"] });
@@ -221,7 +221,7 @@ export function OrdersTab() {
                           <ul className="mt-1 space-y-1 text-muted">
                             {o.items.map((it, i) => (
                               <li key={i}>
-                                {it.title_snapshot} × {it.qty} — {formatINR(it.price_inr * it.qty)}
+                                {it.title_snapshot} × {it.qty} - {formatINR(it.price_inr * it.qty)}
                               </li>
                             ))}
                           </ul>

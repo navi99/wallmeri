@@ -1,4 +1,4 @@
-# Render Blueprint — defines all Wallmeri services in one file.
+# Render Blueprint - defines all Wallmeri services in one file.
 # Deploy: Render Dashboard → New → Blueprint → connect this repo.
 # https://render.com/docs/blueprint-spec
 
@@ -45,13 +45,13 @@ services:
         sync: false
       - key: SHIPPING_FLAT_INR
         value: "99"
-      # Public base URLs — used to build image/upload URLs and links in emails.
+      # Public base URLs - used to build image/upload URLs and links in emails.
       # Update if your service names/domains differ.
       - key: PUBLIC_API_BASE_URL
         value: https://wallmeri-api.onrender.com
       - key: PUBLIC_WEB_BASE_URL
         value: https://wallmeri.com
-      # Google sign-in (optional — customers get a "Continue with Google" button).
+      # Google sign-in (optional - customers get a "Continue with Google" button).
       # Must match the web service's NEXT_PUBLIC_GOOGLE_CLIENT_ID.
       - key: GOOGLE_CLIENT_ID
         sync: false
@@ -71,7 +71,7 @@ services:
         sync: false
       - key: S3_PUBLIC_BASE_URL
         sync: false
-      # Transactional email via SMTP (optional — logs to console when unset).
+      # Transactional email via SMTP (optional - logs to console when unset).
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT
@@ -92,7 +92,7 @@ services:
     plan: free
     branch: main
     autoDeploy: true
-    # NEXT_PUBLIC_API_URL is a Docker build arg — baked into the client bundle
+    # NEXT_PUBLIC_API_URL is a Docker build arg - baked into the client bundle
     # at build time. Replace with your actual API service URL after first deploy.
     envVars:
       - key: NEXT_PUBLIC_API_URL

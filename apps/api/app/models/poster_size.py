@@ -15,7 +15,7 @@ class PosterSize(Base):
     """Admin-managed print size -> price tier.
 
     Sizes are never deleted once used by an order (see CustomUpload.size_code,
-    which is a stable string snapshot, not a FK) — admins add/enable/disable/
+    which is a stable string snapshot, not a FK) - admins add/enable/disable/
     reprice rows instead. Disabling a size only hides it from new uploads;
     in-flight custom_uploads keep the price they were created with.
 
@@ -25,7 +25,7 @@ class PosterSize(Base):
       at this size (custom designs have no other price to start from).
     - delta_inr: the adjustment applied to a regular catalog Product's
       price_inr (which is always quoted for A4) to get its price at this
-      size — 0 at A4, negative for smaller sizes, positive for larger ones.
+      size - 0 at A4, negative for smaller sizes, positive for larger ones.
     """
 
     __tablename__ = "poster_sizes"

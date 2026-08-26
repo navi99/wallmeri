@@ -64,7 +64,7 @@ export default function ArtistJoinPage() {
       <div>
         <h1 className="title-xl">Become a WallMeri artist</h1>
         <p className="mt-3 max-w-lg leading-relaxed text-muted">
-          WallMeri is a curated gallery — we work with a small set of artists we love.
+          WallMeri is a curated gallery - we work with a small set of artists we love.
           You send us your art; we take care of everything else and you earn on every sale.
         </p>
         <ul className="mt-8 space-y-5">
@@ -139,7 +139,7 @@ export default function ArtistJoinPage() {
               {...register("pitch")}
             />
           </div>
-          {/* Honeypot — hidden from humans, bots fill it in. */}
+          {/* Honeypot - hidden from humans, bots fill it in. */}
           <input
             type="text"
             tabIndex={-1}

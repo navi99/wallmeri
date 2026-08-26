@@ -55,7 +55,7 @@ const sections: Section[] = [
   {
     title: "6. Intellectual Property",
     paragraphs: [
-      "All artwork remains the intellectual property of the respective artist. Purchasing a printed piece from WallMeri grants you ownership of that physical product only — it does not grant you rights to reproduce, resell as a print, or commercially exploit the underlying artwork.",
+      "All artwork remains the intellectual property of the respective artist. Purchasing a printed piece from WallMeri grants you ownership of that physical product only - it does not grant you rights to reproduce, resell as a print, or commercially exploit the underlying artwork.",
     ],
   },
   {

@@ -16,7 +16,7 @@ const buttonVariants: Record<ButtonVariant, string> = {
   danger: "bg-transparent text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-cream",
 };
 
-// Labels are 14px across all three sizes — the reference sets buttons at 14px
+// Labels are 14px across all three sizes - the reference sets buttons at 14px
 // regardless of button height, and it's the larger label (not wider tracking)
 // that makes uppercase read as composed rather than shouted. Heights grew to
 // carry it.
@@ -135,8 +135,8 @@ export function Card({
   );
 }
 
-/* Status tones. The tone encodes *urgency* — what the operator has to do about
-   the row — while the label text carries the identity. That's why "paid" is the
+/* Status tones. The tone encodes *urgency* - what the operator has to do about
+   the row - while the label text carries the identity. That's why "paid" is the
    loudest chip on the orders table (it's the ship queue) and "delivered" is
    merely solid. Filled-vs-outlined does the scanning work a rainbow used to. */
 export type BadgeTone =

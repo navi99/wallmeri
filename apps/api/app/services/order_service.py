@@ -17,8 +17,8 @@ def mark_order_paid(db: Session, order: Order, payment_id: str | None) -> bool:
     Returns True if this call did it.
 
     Every product is made to order, so there is no inventory to reserve or
-    decrement here — confirmation only moves the order's own state. An order
-    with any custom-upload line lands in `in_review` instead of `paid` —
+    decrement here - confirmation only moves the order's own state. An order
+    with any custom-upload line lands in `in_review` instead of `paid` -
     admin approval (or rejection + refund) is required before it can proceed
     to fulfilment; see the custom-review endpoints in app.api.routes.admin.
     """
@@ -28,7 +28,7 @@ def mark_order_paid(db: Session, order: Order, payment_id: str | None) -> bool:
         {"id": order.id},
     ).scalar_one()
     if locked not in (OrderStatus.pending.value, OrderStatus.failed.value):
-        return False  # already paid (or beyond) — idempotent no-op
+        return False  # already paid (or beyond) - idempotent no-op
 
     order.status = OrderStatus.in_review if order.has_custom_items else OrderStatus.paid
     order.paid_at = datetime.now(timezone.utc)

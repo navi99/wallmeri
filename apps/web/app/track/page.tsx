@@ -34,7 +34,7 @@ export default function TrackPage() {
         </span>
         <h1 className="mt-4 title-lg">Track your order</h1>
         <p className="mt-1 text-sm text-muted">
-          No account needed — use your order number and the email from checkout.
+          No account needed - use your order number and the email from checkout.
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">

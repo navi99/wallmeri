@@ -8,7 +8,7 @@ import { Button, Spinner } from "@/components/ui";
 import { cropImageToBlob } from "@/lib/crop-image";
 
 // Gallery images are locked to 3:4 (matches the storefront gallery box) so the
-// vertical thumbnail rail / main image stay visually uniform — see DESIGN.md.
+// vertical thumbnail rail / main image stay visually uniform - see DESIGN.md.
 const GALLERY_ASPECT = 3 / 4;
 
 export function ImageCropModal({

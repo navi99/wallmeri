@@ -21,7 +21,7 @@ failures: list[str] = []
 
 def check(name: str, cond: bool, detail: str = "") -> None:
     mark = "PASS" if cond else "FAIL"
-    print(f"[{mark}] {name}" + (f" — {detail}" if detail and not cond else ""))
+    print(f"[{mark}] {name}" + (f" - {detail}" if detail and not cond else ""))
     if not cond:
         failures.append(name)
 
@@ -63,7 +63,7 @@ def main() -> None:
 
     # Idempotency: replaying verify (webhook + client race) must be a no-op, not
     # a second transition. Products are made to order, so the observable is the
-    # order's own state — it stays paid, and paid_at doesn't move.
+    # order's own state - it stays paid, and paid_at doesn't move.
     paid_at = c.get(f"/orders/{order_id}", headers=auth).json()["paid_at"]
     r = c.post("/checkout/verify", json={
         "order_id": order_id, "razorpay_order_id": "mock", "razorpay_payment_id": "mock_pay",

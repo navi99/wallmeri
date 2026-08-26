@@ -117,7 +117,7 @@ export default function CheckoutPage() {
 
       const payment = await api.createPayment(payload);
 
-      // Mock mode: no Razorpay keys configured — confirm directly.
+      // Mock mode: no Razorpay keys configured - confirm directly.
       if (payment.mock) {
         await api.verifyPayment({
           order_id: payment.order_id,
@@ -303,7 +303,7 @@ export default function CheckoutPage() {
           </p>
           {hasCustom && (
             <p className="mt-3 text-center text-xs text-muted">
-              Custom designs are reviewed before printing (1-2 business days) — no returns for
+              Custom designs are reviewed before printing (1-2 business days) - no returns for
               customer-error content.
             </p>
           )}

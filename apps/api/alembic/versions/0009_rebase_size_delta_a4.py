@@ -1,7 +1,7 @@
 """Re-base product size pricing on A4 instead of A3
 
 Product decision: Product.price_inr is now always quoted for A4 (previously
-A3) — A3 costs 1000 more, A2 costs 2000 more. Only the delta_inr values
+A3) - A3 costs 1000 more, A2 costs 2000 more. Only the delta_inr values
 change here; Product.price_inr rows are untouched (see
 app.services.pricing.compute_quote, which just does
 product.price_inr + size.delta_inr regardless of which size is the zero

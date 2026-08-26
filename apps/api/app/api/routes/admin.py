@@ -155,7 +155,7 @@ def _apply_product_images(
     submitted ordered list of managed-asset ids, deleting any attached
     MediaAsset this call drops from the gallery. Falls back to a pasted
     image_url when image_ids is empty. Only call when the caller's payload
-    actually included an `image_ids` key — see admin_update_product.
+    actually included an `image_ids` key - see admin_update_product.
     """
     image_ids = image_ids or []
     if len(image_ids) > MAX_PRODUCT_IMAGES:
@@ -336,7 +336,7 @@ def admin_update_category(category_id: int, payload: CategoryUpdate, db: Session
 # ── Site images ──────────────────────────────────────────────────────────────
 
 def _apply_site_images(db: Session, slot: str, items: list[SiteImageIn]) -> list[SiteImage]:
-    """Replace-all for one slot's ordered gallery — same shape as
+    """Replace-all for one slot's ordered gallery - same shape as
     _apply_product_images, scoped by slot instead of a product. Detaches and
     deletes any attached MediaAsset this call drops from the slot; validates
     against SITE_IMAGE_SLOTS (unknown slot, too many images) up front.
@@ -537,7 +537,7 @@ def admin_list_reviews(
         dto = ReviewAdminOut.model_validate(r)
         dto.product_title = r.product.title if r.product else ""
         dto.product_slug = r.product.slug if r.product else ""
-        dto.author_name = (r.user.full_name if r.user else "") or "—"
+        dto.author_name = (r.user.full_name if r.user else "") or "-"
         dto.author_email = r.user.email if r.user else ""
         out.append(dto)
     return out
@@ -560,7 +560,7 @@ def admin_moderate_review(review_id: int, payload: ReviewModerate, db: Session =
     dto = ReviewAdminOut.model_validate(review)
     dto.product_title = review.product.title if review.product else ""
     dto.product_slug = review.product.slug if review.product else ""
-    dto.author_name = (review.user.full_name if review.user else "") or "—"
+    dto.author_name = (review.user.full_name if review.user else "") or "-"
     dto.author_email = review.user.email if review.user else ""
     return dto
 
@@ -599,7 +599,7 @@ def admin_update_poster_size(size_id: int, payload: PosterSizeUpdate, db: Sessio
 # ── Custom-upload moderation queue ───────────────────────────────────────────
 # Paid orders containing a custom line land in OrderStatus.in_review (see
 # order_service.mark_order_paid) and wait here for approval before entering
-# normal fulfilment. Rejection refunds the whole order — see the locked
+# normal fulfilment. Rejection refunds the whole order - see the locked
 # product decision in the plan; there is no per-line partial refund.
 
 @router.get("/custom-review", response_model=list[CustomReviewOrderOut])
@@ -679,7 +679,7 @@ def admin_custom_review_action(
     else:
         order.status = OrderStatus.refunded
         if order.razorpay_payment_id:
-            # Best effort — in mock mode (no keys) this is a no-op.
+            # Best effort - in mock mode (no keys) this is a no-op.
             razorpay_service.refund_payment(order.razorpay_payment_id, order.total_inr)
         db.commit()
         db.refresh(order)
@@ -694,7 +694,7 @@ def admin_custom_print_file(custom_upload_id: int, db: Session = Depends(get_db)
     if item is None or item.status != CustomUploadStatus.ordered:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
     original = storage_service.read_bytes(item.media.original_key)
-    # Full resolution, no downscale — this is the production print file.
+    # Full resolution, no downscale - this is the production print file.
     cropped = storage_service.crop_to_jpeg(
         original, item.crop_x, item.crop_y, item.crop_width, item.crop_height
     )
@@ -752,7 +752,7 @@ def admin_update_order_status(
     elif target == OrderStatus.delivered:
         order.delivered_at = now
     elif target == OrderStatus.refunded and order.razorpay_payment_id:
-        # Best effort — in mock mode (no keys) this is a no-op.
+        # Best effort - in mock mode (no keys) this is a no-op.
         razorpay_service.refund_payment(order.razorpay_payment_id, order.total_inr)
 
     db.commit()
@@ -771,7 +771,7 @@ def _original_out(painting: OriginalPainting) -> OriginalPaintingOut:
 
 
 def _apply_original_image(db: Session, painting: OriginalPainting, image_id: int | None) -> None:
-    """Mirror of _apply_artist_avatar for OriginalPainting.image_id — a single
+    """Mirror of _apply_artist_avatar for OriginalPainting.image_id - a single
     optional image, uploaded via the same POST /admin/uploads (kind=product)."""
     old_asset_id = painting.image_id
     if image_id is not None:

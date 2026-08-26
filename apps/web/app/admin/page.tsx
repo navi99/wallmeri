@@ -178,7 +178,7 @@ export default function AdminPage() {
                           {p.artist?.name ?? "WallMeri Original"}
                         </td>
                         <td className="px-4 py-3 text-muted">
-                          {p.categories.map((c) => c.name).join(", ") || "—"}
+                          {p.categories.map((c) => c.name).join(", ") || "-"}
                         </td>
                         <td className="px-4 py-3 font-semibold text-ink">
                           {formatINR(p.price_inr)}

@@ -1,6 +1,6 @@
 """Category display poster: admin-managed image shown on "shop by category" tiles
 
-Mirrors Artist.avatar_id/avatar_url — a nullable FK to media_assets plus a
+Mirrors Artist.avatar_id/avatar_url - a nullable FK to media_assets plus a
 plain URL column, so pasted URLs and admin uploads both work and empty stays
 a valid state (storefront falls back to a gradient tile).
 

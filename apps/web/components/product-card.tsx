@@ -16,10 +16,10 @@ export function ProductCard({
 }: {
   product: Product;
   showFeaturedBadge?: boolean;
-  /** Override when the grid isn't the default 2/3/4-up — e.g. the 3-up listing pages. */
+  /** Override when the grid isn't the default 2/3/4-up - e.g. the 3-up listing pages. */
   imageSizes?: string;
 }) {
-  // Shares the ["poster-sizes"] cache with the product page — one network
+  // Shares the ["poster-sizes"] cache with the product page - one network
   // request no matter how many cards are on screen. product.price_inr is
   // always quoted for A4, so the cheapest enabled size's delta gives this
   // product's true "starting from" price.

@@ -5,7 +5,7 @@ uploads (see 0006_custom_uploads) to plain catalog products: shoppers now
 pick a PosterSize on the product page too, and its price replaces the
 product's flat price_inr for that line.
 
-- order_items.size_code: nullable string snapshot (never a FK — mirrors
+- order_items.size_code: nullable string snapshot (never a FK - mirrors
   custom_uploads.size_code) recording which size a *product* line was
   ordered at. Custom lines still carry their size via custom_upload_id and
   leave this column null.

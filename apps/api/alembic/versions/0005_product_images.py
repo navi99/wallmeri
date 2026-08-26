@@ -1,14 +1,14 @@
 """Product image gallery: ordered product_images backed by media_assets
 
 Introduces product_images, an ordered per-product gallery (up to 6 images:
-1 main + up to 5 more). Position 0 is always the main image — Product.image_url/
+1 main + up to 5 more). Position 0 is always the main image - Product.image_url/
 image_id keep meaning "the main image" and are kept in sync with position 0 by
 app.api.routes.admin._sync_main_image on every save; every existing read path
 (product cards, cart/order snapshots, thumb_url) is unaffected.
 
 Existing products with a managed image_id get a single position-0 gallery row
 so they render identically in the new gallery UI. Products with only a pasted
-image_url (image_id NULL — seeds, external URLs) get no gallery row and keep
+image_url (image_id NULL - seeds, external URLs) get no gallery row and keep
 serving that URL directly, unchanged.
 
 Revision ID: 0005_product_images

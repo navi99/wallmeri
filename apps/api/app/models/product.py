@@ -28,7 +28,7 @@ class Product(Base):
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False, default="")
     # Price stored in whole INR rupees, always quoted for the A4 poster size.
-    # Other sizes adjust this by PosterSize.delta_inr — see pricing.compute_quote.
+    # Other sizes adjust this by PosterSize.delta_inr - see pricing.compute_quote.
     price_inr: Mapped[int] = mapped_column(Integer, nullable=False)
     image_url: Mapped[str] = mapped_column(String(500), nullable=False, default="")
     material: Mapped[str] = mapped_column(String(120), nullable=False, default="Metal")
@@ -44,7 +44,7 @@ class Product(Base):
     )
     image: Mapped["MediaAsset | None"] = relationship()  # noqa: F821
 
-    # Ordered gallery (up to 6). Position 0 is always the main image — kept in
+    # Ordered gallery (up to 6). Position 0 is always the main image - kept in
     # sync with image_id/image_url by admin._sync_main_image on every save.
     images: Mapped[list["ProductImage"]] = relationship(
         order_by="ProductImage.position",
@@ -79,7 +79,7 @@ class Product(Base):
         """480px derivative for small contexts (admin table rows, etc).
 
         Falls back to the full `image_url` when there's no managed asset
-        (pasted external URL, seeded picsum placeholder) — those were never
+        (pasted external URL, seeded picsum placeholder) - those were never
         run through the upload pipeline so no thumbnail was ever generated.
         """
         if self.image is not None:
@@ -90,7 +90,7 @@ class Product(Base):
 class ProductImage(Base):
     """One entry in a product's ordered gallery (see Product.images).
 
-    Position 0 is always the main image — app.api.routes.admin._sync_main_image
+    Position 0 is always the main image - app.api.routes.admin._sync_main_image
     keeps Product.image_id/image_url mirroring it after every save, so every
     read path that predates the gallery (product cards, cart/order snapshots)
     keeps working unchanged.

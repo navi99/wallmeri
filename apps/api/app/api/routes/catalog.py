@@ -63,7 +63,7 @@ def list_categories(db: Session = Depends(get_db)):
 
 @router.get("/site-images", response_model=list[SiteImageOut])
 def list_site_images(db: Session = Depends(get_db)):
-    """All slots' images, ordered — the storefront groups by `slot` client-side
+    """All slots' images, ordered - the storefront groups by `slot` client-side
     (see apps/web/lib/site-images.ts) rather than one request per banner."""
     return db.query(SiteImage).order_by(SiteImage.slot, SiteImage.position).all()
 
@@ -172,7 +172,7 @@ def submit_original_inquiry(
 ):
     check_rate_limit(request, scope="original-inquiry", limit=5, window_seconds=3600)
     if payload.website:
-        # Honeypot tripped — pretend success so bots learn nothing, without
+        # Honeypot tripped - pretend success so bots learn nothing, without
         # even touching the DB to look up the painting.
         return {"ok": True}
     painting = _get_original_or_404(db, slug)

@@ -53,13 +53,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   }, [sizes, sizeCode]);
 
   // Product.price_inr is always quoted for A4; each size's price here is
-  // that base plus its delta (0 at A4) — so the SizePicker shows the
+  // that base plus its delta (0 at A4) - so the SizePicker shows the
   // product's real price at each size, not the shared custom-upload price.
   const basePrice = product?.price_inr ?? 0;
   const displaySizes = sizes.map((s) => ({ ...s, price_inr: basePrice + s.delta_inr }));
   const selectedSize = displaySizes.find((s) => s.code === sizeCode) ?? null;
   // Falls back to the product's flat price if sizes haven't loaded yet, or
-  // none are configured — keeps the PDP usable rather than blocking on them.
+  // none are configured - keeps the PDP usable rather than blocking on them.
   const displayPrice = selectedSize ? selectedSize.price_inr : basePrice;
 
   if (isLoading) {
@@ -134,7 +134,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               {primaryCategory.name}
             </div>
           )}
-          {/* The artwork's own title — a name, so it opts out of the ladder's
+          {/* The artwork's own title - a name, so it opts out of the ladder's
               caps (see The Caps-Heading Rule). */}
           <h1 className="mt-2.5 title-xl title-name">
             {product.title}
@@ -217,7 +217,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     Buy Original →
                   </Link>
                   {product.original.status === "reserved" && (
-                    <p className="mt-2 text-xs text-muted">Reserved — inquiries still open</p>
+                    <p className="mt-2 text-xs text-muted">Reserved - inquiries still open</p>
                   )}
                 </>
               )}

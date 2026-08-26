@@ -110,7 +110,7 @@ def create_review(
         .first()
     )
     if existing:
-        # Author edits their review — it goes back through moderation.
+        # Author edits their review - it goes back through moderation.
         existing.rating = payload.rating
         existing.title = payload.title.strip()
         existing.body = payload.body.strip()

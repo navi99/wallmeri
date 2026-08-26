@@ -11,7 +11,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 // Draws the user's crop selection (in source-image pixels, from react-easy-crop's
-// onCropComplete) onto a canvas and returns it as a JPEG blob — the file the
+// onCropComplete) onto a canvas and returns it as a JPEG blob - the file the
 // admin form then hands to POST /admin/uploads.
 export async function cropImageToBlob(imageSrc: string, cropArea: Area): Promise<Blob> {
   const image = await loadImage(imageSrc);

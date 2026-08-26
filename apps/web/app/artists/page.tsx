@@ -12,7 +12,7 @@ import { Spinner } from "@/components/ui";
 import { api } from "@/lib/api";
 import type { Artist } from "@/lib/types";
 
-// The roster has no server-side facets — /artists returns everyone — so the
+// The roster has no server-side facets - /artists returns everyone - so the
 // page carries sort only, applied client-side but still URL-driven so a sorted
 // roster stays linkable like the Gallery's filters.
 const SORT_OPTIONS = [
@@ -95,7 +95,7 @@ function ArtistsContent() {
               No artists yet
             </p>
             <p className="mt-2 text-sm text-muted">
-              Our first artists are being onboarded — check back soon.
+              Our first artists are being onboarded - check back soon.
             </p>
           </div>
         ) : (
@@ -113,7 +113,7 @@ function ArtistsContent() {
             Are you an artist?
           </h2>
           <p className="mt-2 text-sm text-muted">
-            We handle printing, sales and shipping — you focus on the art.
+            We handle printing, sales and shipping - you focus on the art.
           </p>
         </div>
         <Link
@@ -128,7 +128,7 @@ function ArtistsContent() {
 }
 
 /**
- * Frameless square portrait with the name set on the Cotton beneath it —
+ * Frameless square portrait with the name set on the Cotton beneath it -
  * the homepage tile-rail language (bare tile, media-only hover zoom, tracked
  * label plaque), squared off and dropped into a grid.
  */
@@ -136,10 +136,10 @@ function ArtistTile({ artist }: { artist: Artist }) {
   return (
     <Link href={`/artist/${artist.slug}`} className="group flex flex-col">
       {/* The tint backs the frame so a slow or missing portrait still reads as
-          a tile rather than a hole in the grid — ProductCard does the same
+          a tile rather than a hole in the grid - ProductCard does the same
           with bg-ink behind artwork. */}
       <div className="relative aspect-square overflow-hidden bg-ink/5">
-        {/* The zoom lives on the media, never the tile — the cut edges stay put. */}
+        {/* The zoom lives on the media, never the tile - the cut edges stay put. */}
         <div className="absolute inset-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
           {artist.avatar_url ? (
             <Image

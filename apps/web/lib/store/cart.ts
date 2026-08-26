@@ -8,9 +8,9 @@ export interface CartItem {
   // product lines
   product_id?: number;
   slug?: string;
-  // custom lines — a fresh CustomUpload row per upload, so no natural dedup key
+  // custom lines - a fresh CustomUpload row per upload, so no natural dedup key
   custom_upload_id?: number;
-  // size — set on product lines (chosen poster size) and custom lines
+  // size - set on product lines (chosen poster size) and custom lines
   // (baked in at upload time)
   size_code?: string;
   size_label?: string;
@@ -22,7 +22,7 @@ export interface CartItem {
   qty: number;
 }
 
-// Stable per-line identity for dedupe/remove/setQty — a product line keys on
+// Stable per-line identity for dedupe/remove/setQty - a product line keys on
 // product_id + size_code (same design at a different size is a separate
 // line; bump qty on an exact repeat add), a custom line keys on its unique
 // custom_upload_id (each "Create your own" design is its own line).

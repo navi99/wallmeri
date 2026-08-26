@@ -85,7 +85,7 @@ class TestStorageValidation:
         png = self._png_bytes()
         stored = storage_service.store_image(png, "image/png", kind="product")
 
-        # Original is retained byte-for-byte (not re-encoded) — MVP S-M2.1.
+        # Original is retained byte-for-byte (not re-encoded) - MVP S-M2.1.
         assert stored.original_key.endswith(".png")
         assert stored.web_key.endswith(".jpg")
         assert stored.thumb_key.endswith("_thumb.jpg")
@@ -130,8 +130,8 @@ class TestStorageValidation:
 
         storage_service.delete_keys(keys)
         assert not any((tmp_path / k).exists() for k in keys)
-        storage_service.delete_keys(keys)  # already gone — must not raise
-        storage_service.delete_keys([])  # empty list — must not raise
+        storage_service.delete_keys(keys)  # already gone - must not raise
+        storage_service.delete_keys([])  # empty list - must not raise
 
 
 def test_intake_honeypot_returns_ok_without_storing():

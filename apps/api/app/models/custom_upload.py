@@ -19,7 +19,7 @@ class Orientation(str, enum.Enum):
 
 class CustomUploadStatus(str, enum.Enum):
     # draft: created by the storefront wizard, not yet attached to a paid
-    # order — eligible for custom_upload_service.sweep_drafts() cleanup.
+    # order - eligible for custom_upload_service.sweep_drafts() cleanup.
     draft = "draft"
     # ordered: attached to an OrderItem at checkout; kept forever (needed to
     # reprint / re-review), never swept.
@@ -31,7 +31,7 @@ class CustomUpload(Base):
 
     Holds the crop *coordinates* against the underlying MediaAsset's original
     (not a re-encoded image) so production always prints from the source file
-    at full quality — see app.services.custom_upload_service.
+    at full quality - see app.services.custom_upload_service.
     """
 
     __tablename__ = "custom_uploads"
@@ -43,12 +43,12 @@ class CustomUpload(Base):
     )
     media: Mapped["MediaAsset"] = relationship()  # noqa: F821
 
-    # Nullable — guests can use the custom-upload flow like any other checkout.
+    # Nullable - guests can use the custom-upload flow like any other checkout.
     user_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
     )
 
-    # String snapshot, not a FK to PosterSize — stays stable even if the size
+    # String snapshot, not a FK to PosterSize - stays stable even if the size
     # is later renamed/disabled/removed from the admin size table.
     size_code: Mapped[str] = mapped_column(String(20), nullable=False)
     orientation: Mapped[Orientation] = mapped_column(
@@ -62,7 +62,7 @@ class CustomUpload(Base):
     crop_height: Mapped[int] = mapped_column(Integer, nullable=False)
 
     dpi: Mapped[int] = mapped_column(Integer, nullable=False)
-    # Snapshot of PosterSize.price_inr at creation time — server pricing is
+    # Snapshot of PosterSize.price_inr at creation time - server pricing is
     # re-derived from the *current* PosterSize at quote time regardless (see
     # pricing.compute_quote); this column is the audit trail of what the
     # customer was shown when they added it to their cart.
@@ -87,6 +87,6 @@ class CustomUpload(Base):
     @property
     def original_url(self) -> str:
         """The full-resolution source file. Only ever surfaced through the
-        admin-authenticated print-file endpoint — never linked from a
+        admin-authenticated print-file endpoint - never linked from a
         customer-facing page or email."""
         return storage_service.public_url(self.media.original_key)

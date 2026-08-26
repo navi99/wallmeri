@@ -3,7 +3,7 @@
 Public / optional-auth (guests can use this like any other checkout path).
 Three steps: list available sizes, upload the source photo, then create a
 cropped custom item (DPI-checked, priced from the chosen PosterSize) that the
-storefront cart adds as a `custom_upload_id` line — see app.services.pricing
+storefront cart adds as a `custom_upload_id` line - see app.services.pricing
 and app.api.routes.checkout for how it joins the shared cart/checkout.
 """
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status

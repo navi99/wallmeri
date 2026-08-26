@@ -1,4 +1,4 @@
-"""Drop products.stock — every product is made to order
+"""Drop products.stock - every product is made to order
 
 Wallmeri prints sublimation-on-steel per order, so there is no finite inventory
 to track, reserve, or decrement. The column, its checkout validation, and the

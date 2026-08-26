@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/store/auth";
 
 // Mounted once near the app root. Bounces the user to /login (with a
 // `next` param back to where they were) whenever an authenticated request
-// comes back 401 — e.g. an expired access token. The "session expired"
+// comes back 401 - e.g. an expired access token. The "session expired"
 // toast is shown by the login page itself (via the `expired` param) rather
 // than here, since a toast fired right before a full-page navigation never
 // gets a chance to render.

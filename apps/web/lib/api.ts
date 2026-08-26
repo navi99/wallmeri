@@ -26,7 +26,7 @@ import type {
   UploadResult,
 } from "./types";
 
-// A cart line is either a catalog product or a custom-upload design —
+// A cart line is either a catalog product or a custom-upload design -
 // exactly one id is set (mirrors the backend's CartItemIn validator).
 export interface CheckoutLine {
   product_id?: number;
@@ -204,7 +204,7 @@ export const api = {
   // (product page size picker) and "Create your own" custom uploads below.
   posterSizes: () => request<PosterSize[]>(`/custom/sizes`),
 
-  // Custom poster upload ("Create your own") — guest-friendly, joins the
+  // Custom poster upload ("Create your own") - guest-friendly, joins the
   // shared cart/checkout as a custom_upload_id line (see CheckoutLine).
   customUpload: async (file: File): Promise<UploadResult> => {
     const form = new FormData();

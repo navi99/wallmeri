@@ -4,7 +4,7 @@ import { useRef, type MouseEvent, type ReactNode } from "react";
 
 // A pointer-following glow, adapted to the Steel Gallery system: sharp edges
 // (no rounded-2xl), a single Premium Red glow (no rainbow hue picker), and a
-// Paper surface instead of frosted glass — glassmorphism is banned in
+// Paper surface instead of frosted glass - glassmorphism is banned in
 // DESIGN.md. The glow is the only thing that moves; layout/shape stays put.
 export function SpotlightCard({
   children,

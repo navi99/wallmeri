@@ -6,7 +6,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 class OriginalPaintingBrief(BaseModel):
-    """Nested on ProductOut — just enough for the PDP to decide what CTA to show."""
+    """Nested on ProductOut - just enough for the PDP to decide what CTA to show."""
 
     status: str
     price_inr: int
@@ -25,7 +25,7 @@ class OriginalPaintingOut(BaseModel):
     status: str
     story: str
     image_url: str
-    # Round-tripped for the same reason as ProductOut.image_id — lets the
+    # Round-tripped for the same reason as ProductOut.image_id - lets the
     # admin editor tell "no managed image" apart from "unchanged".
     image_id: Optional[int] = None
 
@@ -48,7 +48,7 @@ class InquiryCreate(BaseModel):
     email: EmailStr
     phone: str = Field(default="", max_length=20)
     message: str = Field(default="", max_length=4000)
-    # Honeypot — bots fill it, humans never see it. Non-empty submissions are dropped.
+    # Honeypot - bots fill it, humans never see it. Non-empty submissions are dropped.
     website: str = ""
 
 

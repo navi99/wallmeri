@@ -11,7 +11,7 @@ import { api, ApiError } from "@/lib/api";
 import type { Category } from "@/lib/types";
 
 // Small square upload control shared by the create form and each category
-// row — lets an admin attach/replace/remove the display poster shown on the
+// row - lets an admin attach/replace/remove the display poster shown on the
 // storefront's "shop by category" tiles. No poster is a valid, common state
 // (ShopByCategory falls back to a gradient tile), so this never blocks save.
 function PosterPicker({
@@ -178,7 +178,7 @@ export function CategoriesTab() {
       </div>
       <p className="mt-3 text-xs text-muted">
         Hiding a category removes it from the storefront navigation; posters keep the tag. The
-        thumbnail sets the display poster shown on the storefront&apos;s category tile — leave it
+        thumbnail sets the display poster shown on the storefront&apos;s category tile - leave it
         empty for a plain gradient tile.
       </p>
     </div>

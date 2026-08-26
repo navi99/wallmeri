@@ -18,8 +18,8 @@ function CatalogContent() {
 
   const q = params.get("q") ?? "";
   const category = params.get("category") ?? "";
-  // No facet sets this any more — the roster at /artists and each artist's own
-  // page cover browsing by artist — but existing ?artist= links still filter.
+  // No facet sets this any more - the roster at /artists and each artist's own
+  // page cover browsing by artist - but existing ?artist= links still filter.
   const artist = params.get("artist") ?? "";
   const sort = params.get("sort") ?? "newest";
   const page = Math.max(1, parseInt(params.get("page") ?? "1", 10) || 1);
@@ -80,7 +80,7 @@ function CatalogContent() {
         </p>
       </div>
 
-      {/* Create-your-own callout — a quiet band under the title: it answers
+      {/* Create-your-own callout - a quiet band under the title: it answers
           "nothing here fits" before the browsing starts, without competing
           with the artwork. */}
       <div className="mt-6 flex flex-col gap-3 border border-line bg-paper px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
@@ -100,7 +100,7 @@ function CatalogContent() {
         </Link>
       </div>
 
-      {/* Category left, Sort right — the whole filter set now, at every width,
+      {/* Category left, Sort right - the whole filter set now, at every width,
           sitting directly above the grid it acts on. */}
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <FilterMenu

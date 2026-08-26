@@ -12,7 +12,7 @@ function isLocalUpload(src: ImageProps["src"]): boolean {
 }
 
 // In local Docker Compose dev, product/artist images uploaded to the API's
-// local-disk fallback are served at http://localhost:8000/uploads/... — a URL
+// local-disk fallback are served at http://localhost:8000/uploads/... - a URL
 // that only resolves from the browser (via the published port). Next's image
 // optimizer runs *inside* the web container and fetches the source image
 // server-side, so "localhost" there resolves to the web container itself and

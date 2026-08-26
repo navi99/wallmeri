@@ -26,7 +26,7 @@ const formSchema = z.object({
   title: z.string().min(2, "Title is required"),
   price_inr: z.coerce.number().int().positive("Enter a price in ₹"),
   description: z.string().optional(),
-  // Pasted external URL — the legacy single-image fallback, only used when
+  // Pasted external URL - the legacy single-image fallback, only used when
   // `images` (the uploaded gallery) is empty. See _apply_product_images.
   image_url: z.string().url("Upload an image or paste a valid URL").or(z.literal("")),
   images: z.array(galleryImageSchema).max(MAX_GALLERY_IMAGES, "Up to 6 images per poster"),
@@ -38,7 +38,7 @@ const formSchema = z.object({
 });
 type FormValues = z.infer<typeof formSchema>;
 
-// What the parent actually submits to the API — images[] collapses to an
+// What the parent actually submits to the API - images[] collapses to an
 // ordered list of asset ids (images[0] becomes the main image server-side).
 export type ProductFormValues = Omit<FormValues, "images"> & { image_ids: number[] };
 
@@ -75,7 +75,7 @@ export function ProductForm({
       price_inr: product?.price_inr ?? 1499,
       description: product?.description ?? "",
       // Only prefill the pasted-URL fallback for legacy products that have
-      // no managed gallery yet — once a gallery exists it's the source of
+      // no managed gallery yet - once a gallery exists it's the source of
       // truth and this field stays hidden (see the `fields.length === 0` gate below).
       image_url: product && product.images.length === 0 ? product.image_url : "",
       images: product?.images.map((i) => ({
@@ -129,7 +129,7 @@ export function ProductForm({
     onSubmit({
       ...rest,
       image_ids: images.map((i) => i.image_id),
-      // The gallery is the source of truth once it has images — clear the
+      // The gallery is the source of truth once it has images - clear the
       // pasted-URL fallback so the backend doesn't resurrect a stale paste.
       image_url: images.length > 0 ? "" : rest.image_url,
     });
@@ -223,7 +223,7 @@ export function ProductForm({
               )}
             </div>
             <p className="mt-1.5 text-xs text-muted">
-              JPEG, PNG or WebP, up to 15 MB. First image is the main photo — reorder with the arrows.
+              JPEG, PNG or WebP, up to 15 MB. First image is the main photo - reorder with the arrows.
             </p>
             <input
               ref={fileRef}

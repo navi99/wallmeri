@@ -96,7 +96,7 @@ function CategoryContent({ slug }: { slug: string }) {
         </p>
       </div>
 
-      {/* Category and Artist left, Sort right — same toolbar placement as
+      {/* Category and Artist left, Sort right - same toolbar placement as
           the gallery page, sitting directly above the grid it acts on. */}
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

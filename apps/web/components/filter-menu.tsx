@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 /**
  * The listing-page toolbar control: a facet as a compact dropdown, for the
  * choices that sit above the grid (Category top-left, Sort top-right) rather
- * than in the left rail. Single-select like the rail's facets — one `category`
- * or one `sort` goes to the API — so this is a listbox, not a set of toggles.
+ * than in the left rail. Single-select like the rail's facets - one `category`
+ * or one `sort` goes to the API - so this is a listbox, not a set of toggles.
  *
  * Options carrying `href` navigate (category pages); the rest call `onSelect`.
  */
@@ -23,13 +23,13 @@ export function FilterMenu({
   align = "start",
   className,
 }: {
-  /** Sits ahead of the current value on the trigger: "Sort — Newest". */
+  /** Sits ahead of the current value on the trigger: "Sort - Newest". */
   label: string;
   options: FilterOption[];
   /** "" selects the leading "All …" option. */
   selected: string;
   onSelect?: (value: string) => void;
-  /** Which edge the panel hangs from — `end` for a right-aligned trigger. */
+  /** Which edge the panel hangs from - `end` for a right-aligned trigger. */
   align?: "start" | "end";
   className?: string;
 }) {

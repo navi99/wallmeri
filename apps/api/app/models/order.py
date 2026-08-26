@@ -22,7 +22,7 @@ class OrderStatus(str, enum.Enum):
     pending = "pending"
     paid = "paid"
     # A paid order that contains at least one custom-upload line lands here
-    # instead of `paid` — see order_service.mark_order_paid. Admin approves
+    # instead of `paid` - see order_service.mark_order_paid. Admin approves
     # (-> paid, enters normal fulfilment) or rejects (-> refunded, full
     # refund) via the custom-review endpoints in app.api.routes.admin.
     in_review = "in_review"
@@ -108,7 +108,7 @@ class OrderItem(Base):
     product_id: Mapped[int | None] = mapped_column(
         ForeignKey("products.id", ondelete="SET NULL"), nullable=True
     )
-    # Set instead of product_id for a custom-upload line — exactly one of the
+    # Set instead of product_id for a custom-upload line - exactly one of the
     # two is populated per row (enforced by CartItemIn / create_payment, not
     # a DB constraint, mirroring how product_id has always been optional).
     custom_upload_id: Mapped[int | None] = mapped_column(
@@ -123,7 +123,7 @@ class OrderItem(Base):
     price_inr: Mapped[int] = mapped_column(Integer, nullable=False)
     qty: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     # Poster size chosen for a *product* line (mirrors CustomUpload.size_code
-    # — a stable string snapshot, not a FK, since PosterSize rows are never
+    # - a stable string snapshot, not a FK, since PosterSize rows are never
     # deleted). Null for custom lines, which carry their size via
     # custom_upload instead, and for legacy product lines ordered before
     # sizes applied to the regular catalog.

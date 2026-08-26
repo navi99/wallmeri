@@ -125,7 +125,7 @@ def upgrade() -> None:
 
     # ── Orders: fulfilment states + tracking ────────────────────────────────
     # PG 12+ allows ADD VALUE in a transaction as long as the value isn't used
-    # in the same transaction — we only add them here.
+    # in the same transaction - we only add them here.
     op.execute("ALTER TYPE order_status ADD VALUE IF NOT EXISTS 'shipped'")
     op.execute("ALTER TYPE order_status ADD VALUE IF NOT EXISTS 'delivered'")
     op.execute("ALTER TYPE order_status ADD VALUE IF NOT EXISTS 'refunded'")

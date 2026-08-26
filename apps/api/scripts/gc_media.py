@@ -2,7 +2,7 @@
 
 An upload (POST /admin/uploads) writes files and a `media_assets` row right
 away, before the admin has saved the product/artist form that would reference
-it — closing the form without saving leaves that row (and its three files)
+it - closing the form without saving leaves that row (and its three files)
 behind. This sweeps rows still unattached after a grace period (default 24h).
 
 Usage (local): docker compose exec api python scripts/gc_media.py

@@ -25,7 +25,7 @@ const schema = z.object({
 });
 type FormValues = z.infer<typeof schema>;
 
-// A product's optional one-of-a-kind physical original — separate save/delete
+// A product's optional one-of-a-kind physical original - separate save/delete
 // from the main poster form (its own PUT/DELETE /admin/products/{id}/original),
 // so editing the original never risks the poster fields, and vice versa.
 export function OriginalPaintingEditor({ product }: { product: Product }) {
@@ -157,7 +157,7 @@ export function OriginalPaintingEditor({ product }: { product: Product }) {
               </button>
             )}
             <p className="mt-1 text-xs text-muted">
-              Photo of the physical original — falls back to the poster&apos;s own images if left blank.
+              Photo of the physical original - falls back to the poster&apos;s own images if left blank.
             </p>
             <input
               ref={fileRef}

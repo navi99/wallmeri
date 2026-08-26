@@ -1,11 +1,11 @@
 """Image storage: S3-compatible object store when configured, local disk otherwise.
 
 Every upload keeps the **original** bytes untouched (satisfies the "originals
-retained" requirement — see docs/backlog/MVP.md S-M2.1 and E10's later need to
+retained" requirement - see docs/backlog/MVP.md S-M2.1 and E10's later need to
 crop/print from the source file) alongside two Pillow-generated JPEG
 derivatives: a large web size and a thumbnail.
 
-Functions here only touch bytes/keys — they know nothing about the database.
+Functions here only touch bytes/keys - they know nothing about the database.
 `app.services.media_service` is the DB-aware layer that turns a `StoredImage`
 into a `MediaAsset` row and later cleans one up. Storage *keys* (not URLs) are
 the thing callers should persist; call `public_url(key)` at read time so a
@@ -126,7 +126,7 @@ def crop_to_jpeg(data: bytes, x: int, y: int, width: int, height: int, max_px: i
     """Crop a region (source pixels) out of an image and re-encode as JPEG.
 
     Callers are responsible for clamping (x, y, width, height) to the source
-    image's bounds — see app.services.custom_upload_service.
+    image's bounds - see app.services.custom_upload_service.
     """
     img = Image.open(io.BytesIO(data))
     img.load()
@@ -202,7 +202,7 @@ def store_image(data: bytes, content_type: str, kind: str = "product") -> Stored
 def store_video(data: bytes, content_type: str, kind: str = "site") -> StoredImage:
     """Store a video upload (e.g. the homepage hero video).
 
-    No Pillow-generated derivatives — the original bytes are the only object
+    No Pillow-generated derivatives - the original bytes are the only object
     written, reused for all three `StoredImage` key fields so this fits the
     same `MediaAsset` row shape as an image. Width/height are meaningless for
     video and left 0; callers must not treat them as real dimensions.

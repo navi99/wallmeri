@@ -4,7 +4,7 @@ Product.price_inr is always quoted for the A3 size. Rather than pricing a
 sized product line at the size's own absolute price_inr (which belongs to
 the "Create your own" custom-upload pricing model and is shared across every
 product), a product line's price is now `product.price_inr + size.delta_inr`
-— see app.services.pricing.compute_quote.
+- see app.services.pricing.compute_quote.
 
 Backfills delta_inr from each size's existing price_inr, relative to A3's
 price_inr, so today's effective per-size prices are unchanged for the

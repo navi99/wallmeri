@@ -134,6 +134,6 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
                 db.query(Order).filter(Order.razorpay_order_id == rzp_order_id).first()
             )
             if order:
-                # Idempotent — no-op if checkout verify already confirmed it.
+                # Idempotent - no-op if checkout verify already confirmed it.
                 mark_order_paid(db, order, entity.get("id"))
     return {"ok": True}

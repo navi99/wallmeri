@@ -6,7 +6,7 @@ import { SingleSiteImage } from "@/components/site-image-banner";
 export const metadata: Metadata = {
   title: "About Us | WallMeri",
   description:
-    "WallMeri brings original Indian artwork from talented independent artists to your walls as premium metal posters — professionally printed in India, with every purchase directly supporting the artist behind it.",
+    "WallMeri brings original Indian artwork from talented independent artists to your walls as premium metal posters - professionally printed in India, with every purchase directly supporting the artist behind it.",
 };
 
 const kicker = "kicker";
@@ -57,7 +57,7 @@ const steps = [
   {
     n: "04",
     title: "You display",
-    body: "Your artwork arrives ready to mount with our magnetic system — no drilling, no damage, just beautiful art on your wall.",
+    body: "Your artwork arrives ready to mount with our magnetic system - no drilling, no damage, just beautiful art on your wall.",
   },
 ];
 
@@ -82,7 +82,7 @@ const materials = [
 export default function AboutPage() {
   return (
     <div>
-      {/* 1 · Hero — story left, one framed piece right. Cotton canvas; red is saved for the bands below */}
+      {/* 1 · Hero - story left, one framed piece right. Cotton canvas; red is saved for the bands below */}
       <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-[clamp(40px,6vw,96px)] gap-y-12">
           <div className="flex min-w-[300px] max-w-[560px] flex-1 flex-col items-start gap-6">
@@ -124,7 +124,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 2 · The story — the problem, then the answer, told once. Noir drench, centered */}
+      {/* 2 · The story - the problem, then the answer, told once. Noir drench, centered */}
       <section className="bg-ink px-[clamp(24px,5vw,64px)] py-[clamp(64px,8vw,112px)]">
         <div className="mx-auto flex max-w-[820px] flex-col items-center gap-7 text-center">
           <div className={kickerOnDark}>Our Story</div>
@@ -134,7 +134,7 @@ export default function AboutPage() {
           </h2>
           <p className="max-w-[640px] text-[17px] leading-[1.75] text-cream/70">
             Every day, thousands of talented Indian artists share incredible
-            work online — seen for a few seconds, appreciated with a like,
+            work online - seen for a few seconds, appreciated with a like,
             and lost in an endless feed. WallMeri was created to help
             meaningful artwork leave the screen and become part of everyday
             spaces. We work directly with artists, transform their creations
@@ -144,7 +144,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 3 · What we believe — the three pillars, columned so it reads distinct from the numbered list below */}
+      {/* 3 · What we believe - the three pillars, columned so it reads distinct from the numbered list below */}
       <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mx-auto max-w-[1040px]">
           <div className="mb-14 text-center">
@@ -169,7 +169,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 4 · How it works — discover, earn, print, hang: a single centered list */}
+      {/* 4 · How it works - discover, earn, print, hang: a single centered list */}
       <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mb-14 text-center">
           <div className={`${kicker} mb-4`}>How WallMeri Works</div>
@@ -198,7 +198,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 5 · Why metal — the material story, Noir drench so it reads as a deliberate second dark band, not a repeat of How It Works */}
+      {/* 5 · Why metal - the material story, Noir drench so it reads as a deliberate second dark band, not a repeat of How It Works */}
       <section className="bg-ink px-[clamp(24px,5vw,64px)] py-[clamp(64px,8vw,104px)]">
         <div className="mx-auto max-w-[1040px]">
           <div className="mx-auto mb-14 max-w-[640px] text-center">
@@ -225,7 +225,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 6 · Our vision — plain centered text, no drench, so the two dark bands either side of it stay the exception */}
+      {/* 6 · Our vision - plain centered text, no drench, so the two dark bands either side of it stay the exception */}
       <section className="px-[clamp(24px,5vw,64px)] py-[clamp(64px,7vw,112px)]">
         <div className="mx-auto flex max-w-[720px] flex-col items-center gap-6 text-center">
           <div className={kicker}>Our Vision</div>
@@ -246,7 +246,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 7 · Closing — Made in India + Join the Journey. Quiet Paper band; red stays confined to the kicker/accent/hover, no drench */}
+      {/* 7 · Closing - Made in India + Join the Journey. Quiet Paper band; red stays confined to the kicker/accent/hover, no drench */}
       <section className="border-t border-line bg-paper px-[clamp(24px,5vw,64px)] py-[clamp(64px,8vw,112px)] text-center">
         <div className="mx-auto flex max-w-[760px] flex-col items-center gap-6">
           <div className={kicker}>Made in India</div>

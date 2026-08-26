@@ -15,7 +15,7 @@ body {
 }
 
 ::selection {
-  background-color: #b32624; /* Premium Red — Cotton on it is 6.2:1 */
+  background-color: #b32624; /* Premium Red - Cotton on it is 6.2:1 */
   color: #faf9f6;
 }
 
@@ -27,7 +27,7 @@ body {
 
 @layer base {
   /* Steel Gallery type system: one font (Montserrat) and one tracking value.
-     Headings are quiet — regular weight, Title Case — and the emphasis comes
+     Headings are quiet - regular weight, Title Case - and the emphasis comes
      from size and air rather than from weight and capitals. Cormorant
      Garamond (--font-display) stays the accent serif, applied explicitly via
      .font-display, and is rationed to one phrase per page. */
@@ -50,15 +50,15 @@ body {
      step) so text renders crisply at any zoom/DPR.
 
      Case splits the ladder in half (2026-07-25, The Caps-Heading Rule). The
-     top three steps — page h1s and section h2s, the ones that name a *place*
-     on the site (GALLERY, OUR ARTISTS, FEATURED PIECES) — are uppercase. The
+     top three steps - page h1s and section h2s, the ones that name a *place*
+     on the site (GALLERY, OUR ARTISTS, FEATURED PIECES) - are uppercase. The
      bottom three stay Title Case: at 18–24px inside a panel or card, caps stop
      reading as a plate and start reading as shouting, and those steps are
      where the quiet register (checkout, admin) does most of its work. Weight
-     stays 400 throughout — caps at regular weight and one tracking value read
+     stays 400 throughout - caps at regular weight and one tracking value read
      as an engraved plate; it is 700 that would make them signage.
 
-     Use these instead of composing heading styles inline — ad-hoc strings are
+     Use these instead of composing heading styles inline - ad-hoc strings are
      what let 30+ variants and 32 uses of negative tracking accumulate. */
   .title-display {
     @apply font-sans text-[32px] font-normal uppercase leading-[38px] tracking-[0.03em] text-ink sm:text-[48px] sm:leading-[56px] lg:text-[60px] lg:leading-[68px];
@@ -87,7 +87,7 @@ body {
   /* ── Chrome ────────────────────────────────────────────────────────────
      Uppercase survives here and nowhere else: nav, buttons, column headings,
      eyebrows. `.label` shares the headings' 0.03em. `.kicker` is the one
-     deliberate exception — at 11px, 0.03em caps read as cramped rather than
+     deliberate exception - at 11px, 0.03em caps read as cramped rather than
      calm, so it opens to 0.08em. */
   .label {
     @apply font-sans text-[14px] font-medium uppercase tracking-[0.03em];
@@ -101,18 +101,18 @@ body {
     @apply font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-premium-100;
   }
 
-  /* The names escape hatch (2026-07-25). A heading that *is* a name — an
-     artwork's title, an artist's name — opts back out of the ladder's caps,
+  /* The names escape hatch (2026-07-25). A heading that *is* a name - an
+     artwork's title, an artist's name - opts back out of the ladder's caps,
      because those strings belong to the artist, not to our chrome. "GALLERY"
      is a place on the site and can shout; an artist's own name shouting back
      at them is a different act. Wrap just the name when the heading mixes both
      ("POSTERS BY <span class=title-name>Navi</span>"). Never use it to quiet a
-     heading you simply prefer in Title Case — that is what the rule is for. */
+     heading you simply prefer in Title Case - that is what the rule is for. */
   .title-name {
     @apply normal-case;
   }
 
-  /* The Cormorant accent — the engraving on the steel. Sized to sit inside a
+  /* The Cormorant accent - the engraving on the steel. Sized to sit inside a
      heading rather than beside it (it needs a touch more size to hold its own
      next to Montserrat), no tracking of its own, and Premium Red so the
      flourish is also the brand's one accent voice. `normal-case` is what lets
@@ -166,7 +166,7 @@ body {
   /* Homepage tile rails scroll horizontally below `md`. The bleeding tile at
      the right edge is the affordance; a scrollbar track cutting across the
      Cotton wall under the art is not. Scrolling stays fully available to
-     touch, wheel, and keyboard — only the chrome is hidden. */
+     touch, wheel, and keyboard - only the chrome is hidden. */
   .no-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;

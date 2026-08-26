@@ -2,7 +2,7 @@
 
 Sits between the public `/custom` routes and the byte-level `storage_service`,
 mirroring how `media_service` sits between the admin upload routes and
-`storage_service` — this module is the DB- and business-rule-aware layer.
+`storage_service` - this module is the DB- and business-rule-aware layer.
 """
 from datetime import datetime, timedelta, timezone
 
@@ -59,7 +59,7 @@ def create_custom_item(
 
     # The client scales crop coordinates from a resized preview image up to
     # the original's pixel space, so a sub-pixel rounding overshoot right at
-    # the original's edge is expected on a full-bleed crop — clamp into
+    # the original's edge is expected on a full-bleed crop - clamp into
     # bounds instead of rejecting an otherwise good-faith crop.
     crop_x = max(0, min(crop_x, asset.width - 1))
     crop_y = max(0, min(crop_y, asset.height - 1))
@@ -104,7 +104,7 @@ def create_custom_item(
 def sweep_drafts(db: Session, older_than: timedelta = timedelta(hours=24)) -> int:
     """Delete draft custom uploads (never attached to a paid order) past the
     grace period. The underlying MediaAsset is reclaimed separately by
-    media_service.sweep_unattached — a custom upload's source asset stays
+    media_service.sweep_unattached - a custom upload's source asset stays
     attached=False until checkout attaches it (see checkout.create_payment).
     """
     cutoff = datetime.now(timezone.utc) - older_than

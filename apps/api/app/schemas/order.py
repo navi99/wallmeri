@@ -5,10 +5,10 @@ from pydantic import BaseModel, EmailStr, Field, model_validator
 
 
 class CartItemIn(BaseModel):
-    # Exactly one of the two is set — a catalog line or a custom-upload line.
+    # Exactly one of the two is set - a catalog line or a custom-upload line.
     product_id: Optional[int] = None
     custom_upload_id: Optional[int] = None
-    # Poster size for a product line (optional — a size-less product line
+    # Poster size for a product line (optional - a size-less product line
     # still prices from Product.price_inr). Meaningless for a custom line,
     # which already carries its size via the custom_upload row.
     size_code: Optional[str] = None

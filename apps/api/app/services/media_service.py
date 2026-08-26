@@ -7,7 +7,7 @@ follow. A row starts `attached=False`; the product/artist endpoints call
 `attach()` once it's actually referenced, and `delete_asset()` whenever an
 attached image is replaced or its owner is deleted. `sweep_unattached()`
 reclaims rows left behind by an upload that was never saved (form opened,
-image picked, then closed) — run it via `apps/api/scripts/gc_media.py`.
+image picked, then closed) - run it via `apps/api/scripts/gc_media.py`.
 """
 from datetime import datetime, timedelta, timezone
 
@@ -47,7 +47,7 @@ def attach(asset: MediaAsset) -> None:
 def delete_asset(db: Session, asset: MediaAsset) -> None:
     """Remove an asset's storage objects and its row.
 
-    Does not commit — callers fold this into the same transaction as the
+    Does not commit - callers fold this into the same transaction as the
     owning product/artist change (create/replace/delete), so a mid-request
     failure rolls back the row deletion too. The storage delete itself still
     happens first and isn't transactional; see the plan's noted risk.

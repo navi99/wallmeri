@@ -72,7 +72,7 @@ def submit_application(
 ):
     check_rate_limit(request, scope="artist-application", limit=5, window_seconds=3600)
     if payload.website:
-        # Honeypot tripped — pretend success so bots learn nothing.
+        # Honeypot tripped - pretend success so bots learn nothing.
         return {"ok": True}
     application = ArtistApplication(
         name=payload.name.strip(),

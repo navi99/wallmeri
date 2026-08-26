@@ -4,16 +4,19 @@ import Image from "@/components/app-image";
 import { useQuery } from "@tanstack/react-query";
 
 import {
+  fullRowCount,
   MediaRail,
   MediaRailItem,
   MediaRailSkeleton,
+  railCols,
   railLabel,
 } from "@/components/custom/media-rail";
 import { Stars } from "@/components/stars";
 import { api } from "@/lib/api";
 import { formatINR } from "@/lib/utils";
 
-const cols = "md:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]";
+// Up to 4-up grid, wraps into extra rows past 4 featured products - matches
+// the Shop by Category grid above it.
 const maxTrack = 380;
 
 // Artwork tiles hold the 3:4 ratio the art is shot at, so a featured piece is
@@ -26,26 +29,28 @@ const frame = "aspect-[3/4] max-h-[clamp(360px,42vw,560px)] bg-ink";
 export function FeaturedProducts() {
   // Shares the ["products", ...] cache shape with the catalog page.
   const { data, isLoading } = useQuery({
-    queryKey: ["products", { featured: "true", page_size: 5 }],
+    queryKey: ["products", { featured: "true", page_size: 48 }],
     queryFn: () =>
-      api.listProducts({ featured: "true", sort: "newest", page: 1, page_size: 5 }),
+      api.listProducts({ featured: "true", sort: "newest", page: 1, page_size: 48 }),
   });
 
-  const products = data?.items ?? [];
+  const products = (data?.items ?? []).slice(0, fullRowCount(data?.items.length ?? 0));
 
   if (isLoading)
     return (
       <MediaRailSkeleton
-        count={5}
-        cols={cols}
+        count={4}
+        cols="md:grid-cols-4"
         maxTrack={maxTrack}
         frameClassName={frame}
       />
     );
   if (products.length === 0) return null;
 
+  const cols = railCols(products.length);
+
   return (
-    <MediaRail cols={cols} count={products.length} maxTrack={maxTrack}>
+    <MediaRail cols={cols} count={Math.min(products.length, 4)} maxTrack={maxTrack}>
       {products.map((p) => (
         <MediaRailItem
           key={p.id}
@@ -62,7 +67,7 @@ export function FeaturedProducts() {
           }
         >
           {/* Plaque: title and price share a baseline row, byline beneath in
-              Warm Grey — the frameless product card from DESIGN.md §5, now
+              Warm Grey - the frameless product card from DESIGN.md §5, now
               sitting directly on the Cotton wall with no card behind it. */}
           <div className="flex items-baseline justify-between gap-2.5">
             <h3 className={`line-clamp-1 ${railLabel}`}>{p.title}</h3>

@@ -32,14 +32,14 @@ export type FilterSection = {
   defaultOpen?: boolean;
   /** Re-clicking the applied choice clears it. Off for Sort, which is always set. */
   clearable?: boolean;
-  /** Caps the list height and scrolls — for long facets like Artist. */
+  /** Caps the list height and scrolls - for long facets like Artist. */
   scroll?: boolean;
 };
 
 /**
  * The listing-page filter column: a sticky left rail on `lg+`, a disclosure
  * above the grid below it. Facets are single-select because the catalog API
- * takes one `category` and one `artist` slug — the square indicators read as
+ * takes one `category` and one `artist` slug - the square indicators read as
  * checkboxes but behave as a toggle, so `aria-pressed` (not radio) is the
  * honest semantic.
  */

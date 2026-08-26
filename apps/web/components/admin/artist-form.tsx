@@ -18,7 +18,7 @@ const schema = z.object({
   avatar_url: z.string().url("Upload an avatar or paste a valid URL").or(z.literal("")),
   // Set only when avatar_url came from the uploader below; null for a pasted
   // URL. Sent as an explicit null (not omitted) so the backend can tell
-  // "cleared" apart from "untouched" — see apps/api's _apply_artist_avatar.
+  // "cleared" apart from "untouched" - see apps/api's _apply_artist_avatar.
   avatar_id: z.number().int().nullable(),
   website_url: z.string().url("Enter a valid URL").or(z.literal("")),
   instagram_url: z.string().url("Enter a valid URL").or(z.literal("")),
@@ -64,7 +64,7 @@ export function ArtistForm({
     setUploading(true);
     try {
       const res = await api.adminUpload(file, "avatar");
-      // Store the web-size derivative, not the 480px thumb — next/image
+      // Store the web-size derivative, not the 480px thumb - next/image
       // handles further downscaling for the 56-112px avatar contexts fine,
       // and this way the full-size image isn't silently discarded.
       setValue("avatar_url", res.image_url, { shouldValidate: true });

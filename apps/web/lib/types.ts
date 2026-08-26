@@ -4,7 +4,7 @@ export interface Category {
   slug: string;
   is_active?: boolean;
   poster_image_url?: string;
-  // Set only when poster_image_url came from the admin uploader — round-tripped
+  // Set only when poster_image_url came from the admin uploader - round-tripped
   // so the edit form can preserve it across saves that don't touch the poster.
   poster_image_id?: number | null;
 }
@@ -29,7 +29,7 @@ export interface ArtistAdmin extends Artist {
   contact_verified: boolean;
   is_active: boolean;
   created_at: string;
-  // Set only when avatar_url came from the admin uploader — round-tripped so
+  // Set only when avatar_url came from the admin uploader - round-tripped so
   // the edit form can preserve it across saves that don't touch the avatar.
   avatar_id: number | null;
 }
@@ -54,7 +54,7 @@ export interface ProductImage {
   position: number;
 }
 
-// Nested on Product — just enough for the PDP to decide what "Buy Original"
+// Nested on Product - just enough for the PDP to decide what "Buy Original"
 // CTA to show. See OriginalPainting for the full detail-page shape.
 export interface OriginalPaintingBrief {
   status: "available" | "reserved" | "sold";
@@ -69,7 +69,7 @@ export interface Product {
   price_inr: number;
   image_url: string;
   thumb_url: string;
-  // Set only when image_url came from the admin uploader — round-tripped so
+  // Set only when image_url came from the admin uploader - round-tripped so
   // the edit form can preserve it across saves that don't touch the image.
   image_id: number | null;
   // Ordered gallery (up to 6). images[0] is always the main image and stays
@@ -87,7 +87,7 @@ export interface Product {
 }
 
 // The one-of-a-kind physical original behind a product's metal-print
-// reproduction — see GET /products/{slug}/original.
+// reproduction - see GET /products/{slug}/original.
 export interface OriginalPainting {
   id: number;
   product_id: number;
@@ -125,7 +125,7 @@ export interface PosterSize {
   // Absolute price for a "Create your own" custom upload at this size.
   price_inr: number;
   // Adjustment applied to a catalog product's price_inr (quoted for A4) to
-  // get its price at this size — 0 at A4, negative below, positive above.
+  // get its price at this size - 0 at A4, negative below, positive above.
   delta_inr: number;
   is_enabled: boolean;
   position: number;
@@ -259,7 +259,7 @@ export interface OrderItem {
 export type OrderStatus =
   | "pending"
   | "paid"
-  // Held for admin moderation — set only on a paid order with a custom line.
+  // Held for admin moderation - set only on a paid order with a custom line.
   | "in_review"
   | "shipped"
   | "delivered"
@@ -333,7 +333,7 @@ export interface UploadResult {
 }
 
 // Admin-configurable page banner/hero images. One "slot" (e.g. "home_hero")
-// is an ordered gallery of these — a single-image slot is just a gallery
+// is an ordered gallery of these - a single-image slot is just a gallery
 // capped at length 1. See apps/api/app/models/site_image.py:SITE_IMAGE_SLOTS
 // for the known slots and their max length.
 export interface SiteImage {

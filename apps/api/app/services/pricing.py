@@ -18,7 +18,7 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
     subtotal = 0
 
     if product_lines:
-        # Collapse duplicate (product, size) pairs by summing quantities —
+        # Collapse duplicate (product, size) pairs by summing quantities -
         # two different sizes of the same product are distinct lines.
         qty_by_key: dict[tuple[int, str | None], int] = {}
         for item in product_lines:
@@ -47,16 +47,16 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
 
             if size_code is not None:
                 # Never trust the price a product line was added to the cart
-                # with — re-derive from the *current* PosterSize (see the
+                # with - re-derive from the *current* PosterSize (see the
                 # matching custom-line comment below). product.price_inr is
                 # always quoted for A4; delta_inr adjusts it for other sizes
-                # (0 at A4) — this is a different price model from custom
+                # (0 at A4) - this is a different price model from custom
                 # uploads, which price directly off size.price_inr instead.
                 size = sizes_by_code.get(size_code)
                 if size is None or not size.is_enabled:
                     raise ValueError(f"Size '{size_code}' is no longer available")
                 price = product.price_inr + size.delta_inr
-                title = f"{product.title} — {size.label}"
+                title = f"{product.title} - {size.label}"
             else:
                 price = product.price_inr
                 title = product.title
@@ -81,7 +81,7 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
         custom = db.get(CustomUpload, item.custom_upload_id)
         if custom is None or custom.status != CustomUploadStatus.draft:
             raise ValueError(f"Custom design {item.custom_upload_id} is unavailable")
-        # Never trust the price a custom upload was created with — re-derive
+        # Never trust the price a custom upload was created with - re-derive
         # from the *current* PosterSize (it may have been repriced or
         # disabled since the customer added it to their cart).
         size = db.query(PosterSize).filter(PosterSize.code == custom.size_code).first()
@@ -94,7 +94,7 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
             QuoteLine(
                 kind="custom",
                 custom_upload_id=custom.id,
-                title=f"Custom poster — {size.label}",
+                title=f"Custom poster - {size.label}",
                 image_url=custom.preview_url,
                 price_inr=size.price_inr,
                 qty=item.qty,

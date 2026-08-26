@@ -22,7 +22,7 @@ class MediaKind(str, enum.Enum):
 class MediaAsset(Base):
     """A managed image upload and its generated derivatives.
 
-    Rows store storage *keys*, not URLs — app.services.storage_service.public_url()
+    Rows store storage *keys*, not URLs - app.services.storage_service.public_url()
     computes the URL on read, so a row stays valid across an S3_PUBLIC_BASE_URL
     change or a local<->S3 migration. Products/artists reference a row 1:1 via a
     nullable FK (Product.image_id / Artist.avatar_id); pasted external URLs and

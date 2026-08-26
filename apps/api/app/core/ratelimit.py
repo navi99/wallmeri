@@ -24,6 +24,6 @@ def check_rate_limit(request: Request, scope: str, limit: int, window_seconds: i
         if len(q) >= limit:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Too many requests — please try again in a little while",
+                detail="Too many requests - please try again in a little while",
             )
         q.append(now)

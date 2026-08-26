@@ -13,7 +13,7 @@ class Category(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     # Display poster shown on the "shop by category" tile. Empty/NULL is a
-    # valid state — the storefront falls back to a gradient tile (see
+    # valid state - the storefront falls back to a gradient tile (see
     # ShopByCategory) rather than requiring every category to have art.
     poster_image_url: Mapped[str] = mapped_column(String(500), nullable=False, default="")
 

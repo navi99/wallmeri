@@ -176,11 +176,11 @@ export function PosterSizesTab() {
         </Button>
       </form>
       <p className="mt-3 text-xs text-muted">
-        New sizes start disabled — enable once you&apos;re happy with the price. Custom orders
+        New sizes start disabled - enable once you&apos;re happy with the price. Custom orders
         already in a cart or order keep the price they were created with, even if you reprice
         later. Price is what a &quot;Create your own&quot; upload costs at this size; Δ vs A4
-        is added to (or subtracted from) each regular product&apos;s own price — which is always
-        set for A4 — to get its price at this size.
+        is added to (or subtracted from) each regular product&apos;s own price - which is always
+        set for A4 - to get its price at this size.
       </p>
     </div>
   );

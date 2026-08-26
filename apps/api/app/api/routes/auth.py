@@ -52,7 +52,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
 @router.post("/login", response_model=AuthResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email.lower()).first()
-    # Google-only accounts have no password hash — treat as invalid credentials.
+    # Google-only accounts have no password hash - treat as invalid credentials.
     if not user or not user.password_hash or not verify_password(payload.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password"

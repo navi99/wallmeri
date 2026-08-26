@@ -4,7 +4,7 @@ Introduces site_images, an ordered-gallery-per-slot table (see
 app.models.site_image.SITE_IMAGE_SLOTS) mirroring the product-gallery
 pattern: each row is one image at one position within a named slot
 ("home_hero", "home_why_wallmeri", "about_hero"). A slot capped at 1 image
-is just a gallery of length <= 1 — same code path as the multi-image
+is just a gallery of length <= 1 - same code path as the multi-image
 homepage hero crossfade.
 
 Seeds the 3 known slots with the Unsplash placeholder URLs that were

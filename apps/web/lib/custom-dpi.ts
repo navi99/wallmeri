@@ -2,7 +2,7 @@ import type { DpiBand, Orientation, PosterSize } from "@/lib/types";
 
 const CM_PER_INCH = 2.54;
 // Mirrors app.services.custom_upload_service.compute_dpi / dpi_band on the
-// backend, which is authoritative (it re-validates on submit) — this is
+// backend, which is authoritative (it re-validates on submit) - this is
 // instant client-side feedback only. Keep in sync with app/core/config.py's
 // CUSTOM_DPI_OK / CUSTOM_DPI_MIN.
 const DPI_OK = 150;

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-/** 1 … 4 5 6 … 20 — always the ends, always a neighbour on each side. */
+/** 1 … 4 5 6 … 20 - always the ends, always a neighbour on each side. */
 function pageWindow(page: number, pages: number): (number | "gap")[] {
   if (pages <= 7) return Array.from({ length: pages }, (_, i) => i + 1);
 

@@ -30,7 +30,7 @@ class Artist(Base):
     )
     avatar: Mapped["MediaAsset | None"] = relationship()  # noqa: F821
 
-    # Verification checklist — all must be true before the artist can go active.
+    # Verification checklist - all must be true before the artist can go active.
     identity_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     agreement_received: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     contact_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)

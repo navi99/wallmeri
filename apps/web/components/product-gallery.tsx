@@ -11,7 +11,7 @@ import type { ProductImage } from "@/lib/types";
 // every image after it is labelled "view N" so screen readers can tell them
 // apart without admin data entry per image.
 function altFor(title: string, index: number): string {
-  return index === 0 ? title : `${title} — view ${index + 1}`;
+  return index === 0 ? title : `${title} - view ${index + 1}`;
 }
 
 // Hero-frame treatment (DESIGN.md §5): the artwork sits inside a Noir mat,
@@ -28,7 +28,7 @@ function touchDistance(a: React.Touch, b: React.Touch): number {
   return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
 }
 
-// Used only inside the full-screen Lightbox (opened on click) — wraps a
+// Used only inside the full-screen Lightbox (opened on click) - wraps a
 // single image with two independent zoom interactions: desktop mouse-hover
 // magnify (scale from cursor position, no pan math needed) and mobile
 // pinch-to-zoom + single-finger pan once zoomed. Touch starts at scale 1
@@ -340,8 +340,8 @@ export function ProductGallery({
   const scrollingFromControl = useRef(false);
 
   // The thumbnail rail sits beside the main image and must never read taller
-  // than it (flex's default stretch — combined with the main image's
-  // aspect-ratio sizing — inflates the rail past the image's real height
+  // than it (flex's default stretch - combined with the main image's
+  // aspect-ratio sizing - inflates the rail past the image's real height
   // rather than capping it). Measuring the main image directly and capping
   // the rail to that value sidesteps the mismatch regardless of thumb count.
   const mainWrapRef = useRef<HTMLDivElement>(null);
@@ -355,7 +355,7 @@ export function ProductGallery({
     return () => ro.disconnect();
   }, [images.length]);
 
-  // No managed gallery (legacy pasted URL / seeded product) — render exactly
+  // No managed gallery (legacy pasted URL / seeded product) - render exactly
   // like the old single-image layout, no rail, strip, or carousel.
   if (images.length === 0) {
     return (
@@ -400,7 +400,7 @@ export function ProductGallery({
 
   return (
     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-4">
-      {/* Desktop: vertical thumbnail rail at a fixed 80px tile — capped to the
+      {/* Desktop: vertical thumbnail rail at a fixed 80px tile - capped to the
           main image's measured height so extra thumbnails scroll internally
           instead of overhanging past the bottom of the image. Hidden entirely
           for single-image products since there's nothing to switch between. */}

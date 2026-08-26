@@ -60,7 +60,7 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
           )}
         </div>
         <div>
-          {/* A name, not a place — opts out of the ladder's caps (see The
+          {/* A name, not a place - opts out of the ladder's caps (see The
               Caps-Heading Rule). */}
           <h1 className="title-xl title-name">{artist.name}</h1>
           <p className="mt-2 max-w-2xl leading-relaxed text-muted">{artist.bio}</p>

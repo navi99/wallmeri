@@ -48,7 +48,7 @@ export default function CreatePage() {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   // The cropper displays the *web* derivative (downscaled to at most ~1600px
-  // by the upload pipeline), not the full-resolution original — so its
+  // by the upload pipeline), not the full-resolution original - so its
   // onCropComplete pixels are in that smaller image's coordinate space.
   // naturalWidth is the displayed image's true pixel width (from Cropper's
   // onMediaLoaded); scaling by asset.width/naturalWidth maps crop coordinates
@@ -64,7 +64,7 @@ export default function CreatePage() {
     }
   }, [sizesQuery.data, sizeCode]);
 
-  // Aspect only changes with orientation (all launch sizes share a ratio) —
+  // Aspect only changes with orientation (all launch sizes share a ratio) -
   // reset the crop view so the new box isn't a stretched leftover.
   useEffect(() => {
     setCrop({ x: 0, y: 0 });
@@ -106,7 +106,7 @@ export default function CreatePage() {
   const aspect = selectedSize ? sizeAspect(selectedSize, orientation) : 3 / 4;
 
   // Crop rect mapped from the displayed (web-derivative) image's pixel space
-  // back to the original's — see the naturalWidth comment above.
+  // back to the original's - see the naturalWidth comment above.
   const scale = asset && naturalWidth ? asset.width / naturalWidth : 1;
   const originalCrop =
     croppedAreaPixels && scale
@@ -321,7 +321,7 @@ export default function CreatePage() {
                       </div>
                     ) : !sizesQuery.data || sizesQuery.data.length === 0 ? (
                       <p className="text-sm text-muted">
-                        Custom printing is temporarily unavailable — check back soon.
+                        Custom printing is temporarily unavailable - check back soon.
                       </p>
                     ) : (
                       <>
@@ -362,12 +362,12 @@ export default function CreatePage() {
                             )}
                             {band === "warning" && (
                               <p className="text-brand-700">
-                                May look soft when printed (~{dpi} DPI) — try zooming out or a smaller size.
+                                May look soft when printed (~{dpi} DPI) - try zooming out or a smaller size.
                               </p>
                             )}
                             {band === "blocked" && (
                               <p className="font-semibold text-brand-700">
-                                Too low-resolution for {selectedSize?.code} (~{dpi} DPI) — zoom out or pick
+                                Too low-resolution for {selectedSize?.code} (~{dpi} DPI) - zoom out or pick
                                 a smaller size.
                               </p>
                             )}
@@ -377,7 +377,7 @@ export default function CreatePage() {
                         <div className="mt-5 flex items-baseline justify-between border-t border-line pt-4">
                           <span className="text-sm font-semibold text-ink">Total</span>
                           <span className="title-sm">
-                            {selectedSize ? formatINR(selectedSize.price_inr) : "—"}
+                            {selectedSize ? formatINR(selectedSize.price_inr) : "-"}
                           </span>
                         </div>
 
@@ -392,7 +392,7 @@ export default function CreatePage() {
                         </Button>
                         <p className="mt-3 text-xs leading-relaxed text-muted">
                           By continuing you confirm you own the rights to this image. Every custom
-                          design is reviewed before printing — no returns for customer-error content.
+                          design is reviewed before printing - no returns for customer-error content.
                         </p>
                       </>
                     )}

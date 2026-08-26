@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Refund & Replacement Policy | WallMeri",
   description:
-    "How WallMeri handles damaged, defective, wrong-item, and cancelled orders — and how to request a replacement or refund.",
+    "How WallMeri handles damaged, defective, wrong-item, and cancelled orders - and how to request a replacement or refund.",
 };
 
 const heading = "title-xs";
@@ -41,7 +41,7 @@ const sections: Section[] = [
   {
     title: "4. Wrong Item Received",
     paragraphs: [
-      "If you receive a different piece than what you ordered, contact us within 48 hours with photos — we'll arrange a free replacement and, if needed, a prepaid return of the incorrect item.",
+      "If you receive a different piece than what you ordered, contact us within 48 hours with photos - we'll arrange a free replacement and, if needed, a prepaid return of the incorrect item.",
     ],
   },
   {

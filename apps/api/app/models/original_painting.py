@@ -22,7 +22,7 @@ class OriginalPaintingStatus(str, enum.Enum):
 class OriginalPainting(Base):
     """The one physical original behind a product's metal-print reproduction.
 
-    1:1 with Product (product_id is unique) — most products have none. Kept
+    1:1 with Product (product_id is unique) - most products have none. Kept
     as its own table rather than fields on Product so the reproduction-facing
     catalog rows stay lean; see docs discussion in the "Buy Original" plan.
     """
@@ -47,7 +47,7 @@ class OriginalPainting(Base):
     )
     story: Mapped[str] = mapped_column(Text, nullable=False, default="")
 
-    # Falls back to the parent product's gallery when unset — most originals
+    # Falls back to the parent product's gallery when unset - most originals
     # are photographed the same as their reproduction.
     image_id: Mapped[int | None] = mapped_column(
         ForeignKey("media_assets.id", ondelete="SET NULL"), nullable=True
@@ -81,7 +81,7 @@ class InquiryStatus(str, enum.Enum):
 
 
 class OriginalInquiry(Base):
-    """A buyer's expression of interest in an OriginalPainting — a lead for
+    """A buyer's expression of interest in an OriginalPainting - a lead for
     the admin team to follow up on manually, not a checkout/payment flow."""
 
     __tablename__ = "original_inquiries"

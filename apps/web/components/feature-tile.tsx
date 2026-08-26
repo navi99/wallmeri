@@ -4,7 +4,7 @@ import type { LucideIcon } from "lucide-react";
 // title, an optional spec line, then the detail.
 //
 // The round disc is an icon *holder*, one of the three exemptions to radius 0
-// (DESIGN.md §5 The Cut-Edge Rule) — a mark drawn behind a glyph, not a surface
+// (DESIGN.md §5 The Cut-Edge Rule) - a mark drawn behind a glyph, not a surface
 // with an edge in the layout. It stays round only for as long as that holds:
 // give this shape a neighbour, or let it bound content, and it goes back to a
 // cut edge. See §5 Feature tile for why the disc is sized above the square chip

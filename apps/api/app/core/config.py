@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 14
 
-    # CORS — comma separated list of allowed origins
+    # CORS - comma separated list of allowed origins
     CORS_ORIGINS: str = "http://localhost:3000"
 
     # Seeded admin account
@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     ADMIN_PASSWORD: str
     ADMIN_NAME: str
 
-    # Razorpay (optional — leave blank to use mock mode)
+    # Razorpay (optional - leave blank to use mock mode)
     RAZORPAY_KEY_ID: str = ""
     RAZORPAY_KEY_SECRET: str = ""
     RAZORPAY_WEBHOOK_SECRET: str = ""
@@ -66,10 +66,10 @@ class Settings(BaseSettings):
     CUSTOM_DPI_MIN: int = 50
     CUSTOM_PREVIEW_MAX_PX: int = 1600
 
-    # Google sign-in (optional — button hidden on the web when unset)
+    # Google sign-in (optional - button hidden on the web when unset)
     GOOGLE_CLIENT_ID: str = ""
 
-    # Email (optional — logs to console when SMTP_HOST is unset)
+    # Email (optional - logs to console when SMTP_HOST is unset)
     SMTP_HOST: str = ""
     SMTP_PORT: int = 587
     SMTP_USER: str = ""

@@ -13,9 +13,9 @@ import { formatINR } from "@/lib/utils";
 
 function statusLabel(status: string) {
   const map: Record<string, string> = {
-    paid: "Paid — being prepared",
+    paid: "Paid - being prepared",
     pending: "Pending payment",
-    in_review: "In review — checking your custom design",
+    in_review: "In review - checking your custom design",
     shipped: "Shipped",
     delivered: "Delivered",
     failed: "Payment failed",
@@ -83,7 +83,7 @@ function OrderContent({ id }: { id: number }) {
       {order.status === "in_review" && (
         <Card className="mt-8 border-line bg-paper p-5 text-center">
           <p className="text-sm text-ink">
-            We&apos;re reviewing your custom design before it goes to print — you&apos;ll get an
+            We&apos;re reviewing your custom design before it goes to print - you&apos;ll get an
             email once it&apos;s approved, usually within 1-2 business days.
           </p>
         </Card>
@@ -93,7 +93,7 @@ function OrderContent({ id }: { id: number }) {
         <Card className="mt-8 border-line bg-paper p-5 text-center">
           <p className="text-sm text-ink">
             Your custom design couldn&apos;t be approved for printing
-            {order.review_note ? <> — {order.review_note}</> : "."} We&apos;ve refunded your
+            {order.review_note ? <> - {order.review_note}</> : "."} We&apos;ve refunded your
             payment in full.
           </p>
         </Card>

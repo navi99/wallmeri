@@ -27,7 +27,7 @@ class ArtistAdminOut(ArtistOut):
     is_active: bool
     created_at: datetime
     # Round-tripped so the admin edit form can tell "no managed avatar" apart
-    # from "has one, just isn't being touched by this save" — see
+    # from "has one, just isn't being touched by this save" - see
     # admin._apply_artist_avatar, which needs the current value to avoid
     # detaching (and deleting) an unrelated field edit's untouched avatar.
     avatar_id: Optional[int] = None
@@ -65,7 +65,7 @@ class ApplicationCreate(BaseModel):
     phone: str = Field(default="", max_length=20)
     portfolio_url: str = Field(default="", max_length=500)
     pitch: str = Field(default="", max_length=4000)
-    # Honeypot — bots fill it, humans never see it. Non-empty submissions are dropped.
+    # Honeypot - bots fill it, humans never see it. Non-empty submissions are dropped.
     website: str = ""
 
 

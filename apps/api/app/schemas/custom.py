@@ -63,7 +63,7 @@ class CustomItemOut(BaseModel):
     orientation: str
     price_inr: int
     dpi: int
-    dpi_band: str  # "ok" | "warning" | "blocked" — see custom_upload_service.dpi_band
+    dpi_band: str  # "ok" | "warning" | "blocked" - see custom_upload_service.dpi_band
 
 
 # ── Admin moderation queue ──────────────────────────────────────────────────

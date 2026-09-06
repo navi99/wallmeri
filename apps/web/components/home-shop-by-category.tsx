@@ -59,7 +59,7 @@ export function ShopByCategory() {
                 alt=""
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 68vw, 20vw"
+                sizes="(max-width: 768px) 50vw, 20vw"
               />
             ) : (
               <div

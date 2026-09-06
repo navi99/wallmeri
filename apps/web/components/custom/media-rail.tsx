@@ -12,9 +12,10 @@ import type { ReactNode } from "react";
 // no resting shadow. The art is the only thing on screen with weight, which
 // is what DESIGN.md's art-first / frameless product-card rule asks for.
 //
-// Below `md` the same markup becomes a snap-scroll rail: tiles stay large and
-// bleed off the right edge as the affordance, rather than shrinking into a
-// grid of thumbnails on the mobile-heavy India audience.
+// Below `md` the same markup renders as a plain 2-up grid (grid-cols-2) that
+// scrolls with the page, matching the Gallery/Category/Artists listing
+// convention - no separate scroll mechanism for the row (updated 2026-09-06,
+// replacing the earlier snap-scroll rail).
 
 // Gutter and outer inset are the same value, so the row reads as an even
 // rhythm running off both edges of the viewport.
@@ -84,12 +85,8 @@ export function MediaRail({
 }) {
   return (
     <div
-      className={`no-scrollbar mx-auto flex snap-x snap-mandatory overflow-x-auto md:grid md:overflow-visible ${cols} ${gutter}`}
+      className={`mx-auto grid grid-cols-2 ${cols} ${gutter}`}
       style={{
-        // Inset the snapport to match the padding. Without it, mandatory snap
-        // parks the first tile's snap edge on the scrollport edge - the rail
-        // loads 8–14px pre-scrolled and the left inset vanishes on mobile.
-        scrollPaddingInline: gutterValue,
         ...(count && maxTrack
           ? { maxWidth: trackCap(count, maxTrack) }
           : null),
@@ -115,10 +112,7 @@ export function MediaRailItem({
   children: ReactNode;
 }) {
   return (
-    <Link
-      href={href}
-      className="group flex w-[min(68vw,300px)] shrink-0 snap-start flex-col md:w-auto"
-    >
+    <Link href={href} className="group flex flex-col">
       <div className={`relative overflow-hidden ${frameClassName}`}>
         {/* The zoom lives on the media, never the tile: the cut edges of the
             frame stay exactly put (steel), only the art breathes. */}
@@ -150,10 +144,7 @@ export function MediaRailSkeleton({
   return (
     <MediaRail cols={cols} count={count} maxTrack={maxTrack}>
       {Array.from({ length: count }).map((_, i) => (
-        <div
-          key={i}
-          className="flex w-[min(68vw,300px)] shrink-0 flex-col md:w-auto"
-        >
+        <div key={i} className="flex flex-col">
           <div className={`animate-pulse ${frameClassName} ${fill}`} />
           <div
             className={`mt-[clamp(12px,1.1vw,16px)] h-3 w-2/3 animate-pulse ${fill}`}

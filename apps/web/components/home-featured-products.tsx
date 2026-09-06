@@ -61,7 +61,7 @@ export function FeaturedProducts() {
               src={p.image_url}
               alt={p.title}
               fill
-              sizes="(max-width: 768px) 68vw, 20vw"
+              sizes="(max-width: 768px) 50vw, 20vw"
               className="object-cover"
             />
           }

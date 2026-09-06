@@ -66,27 +66,31 @@ export function FeaturedProducts() {
             />
           }
         >
-          {/* Plaque: title and price share a baseline row, byline beneath in
-              Warm Grey - the frameless product card from DESIGN.md §5, now
-              sitting directly on the Cotton wall with no card behind it. */}
-          <div className="flex items-baseline justify-between gap-2.5">
-            <h3 className={`line-clamp-1 ${railLabel}`}>{p.title}</h3>
-            <span className="shrink-0 text-sm font-normal tracking-[0.03em] text-premium-600">
-              {formatINR(p.price_inr)}
-            </span>
+          {/* Plaque: title then price stacked on their own lines, byline
+              beneath in Warm Grey - the frameless product card from
+              DESIGN.md §5, now sitting directly on the Cotton wall with no
+              card behind it. Extra bottom padding widens the gap to the next
+              tile row without touching the shared rail gutter. */}
+          <div className="flex flex-col items-center gap-1 pb-6">
+            <div className="flex flex-col items-center gap-0.5">
+              <h3 className={railLabel}>{p.title}</h3>
+              <span className="text-center text-sm font-normal tracking-[0.03em] text-premium-600">
+                {formatINR(p.price_inr)}
+              </span>
+            </div>
+            <p className="line-clamp-1 text-center text-xs text-muted">
+              {p.artist
+                ? `by ${p.artist.name}`
+                : (p.categories[0]?.name ?? "Metal Art")}
+            </p>
+            {p.rating_count > 0 && (
+              <Stars
+                rating={p.rating_avg ?? 0}
+                count={p.rating_count}
+                className="mt-0.5"
+              />
+            )}
           </div>
-          <p className="line-clamp-1 text-xs text-muted">
-            {p.artist
-              ? `by ${p.artist.name}`
-              : (p.categories[0]?.name ?? "Metal Art")}
-          </p>
-          {p.rating_count > 0 && (
-            <Stars
-              rating={p.rating_avg ?? 0}
-              count={p.rating_count}
-              className="mt-0.5"
-            />
-          )}
         </MediaRailItem>
       ))}
     </MediaRail>

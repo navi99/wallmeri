@@ -87,13 +87,10 @@ function CategoryContent({ slug }: { slug: string }) {
         <span className="text-ink">{category?.name ?? slug}</span>
       </nav>
 
-      <div className="mt-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-2 border-b border-line pb-6">
-        <h1 className="title-xl">
+      <div className="mt-5 border-b border-line pb-6">
+        <h1 className="title-lg">
           {category?.name ?? slug}
         </h1>
-        <p className="label text-xs text-muted">
-          {data ? `${data.total} ${data.total === 1 ? "design" : "designs"}` : "Loading…"}
-        </p>
       </div>
 
       {/* Category and Artist left, Sort right - same toolbar placement as

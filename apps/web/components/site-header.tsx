@@ -9,8 +9,12 @@ import { LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-
 import { useAuth } from "@/lib/store/auth";
 import { useCart } from "@/lib/store/cart";
 
+// translate-y nudges the row down slightly - uppercase text's glyph ink sits
+// a touch above the true center of its line box, so centered-via-flex nav
+// text reads as high next to the logo, which is already ink-centered in its
+// raster frame. Optical fix, not a layout one.
 const navLink =
-  "label text-ink transition-colors hover:text-brand-600";
+  "label translate-y-[1px] text-[12px] text-ink transition-colors hover:text-brand-600";
 
 export function SiteHeader() {
   const router = useRouter();
@@ -45,7 +49,7 @@ export function SiteHeader() {
   };
 
   const mobileLink =
-    "label flex min-h-12 items-center px-3 py-2.5 text-ink hover:bg-paper hover:text-brand-600";
+    "label flex min-h-12 items-center px-3 py-2.5 text-[12px] text-ink hover:bg-paper hover:text-brand-600";
 
   return (
     <header className="sticky top-0 z-40">
@@ -174,7 +178,12 @@ export function SiteHeader() {
           aria-label="Main menu"
           className="border-b border-line lg:hidden"
         >
-          <div className="container-page flex flex-col gap-0.5 py-3">
+          {/* Left inset matches where "WallMeri" (not the icon) starts in the
+              logo above - 44px hamburger + row gap + the icon's share of the
+              logo's width, so nav item text lines up under the wordmark.
+              margin (not padding) so it adds to container-page's own inset
+              instead of colliding with its padding-left. */}
+          <div className="container-page flex flex-col gap-0.5 py-3 ml-[69px] sm:ml-[81px]">
             <Link href="/catalog" onClick={closePanels} className={mobileLink}>
               Browse
             </Link>

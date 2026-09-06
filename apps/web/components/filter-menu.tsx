@@ -83,7 +83,7 @@ export function FilterMenu({
             );
           }
         }}
-        className="label flex h-12 w-full items-center justify-between gap-3 border border-line px-4 text-ink transition-colors hover:border-ink sm:w-auto"
+        className="label flex h-12 w-full items-center justify-between gap-3 border border-line px-4 text-[12px] text-ink transition-colors hover:border-ink sm:w-auto"
       >
         <span className="inline-flex items-baseline gap-2 truncate">
           <span className="text-muted">{label}</span>
@@ -137,7 +137,7 @@ export function FilterMenu({
               </>
             );
             const className = cn(
-              "flex w-full items-center gap-3 whitespace-nowrap px-4 py-2.5 text-left text-sm leading-5 transition-colors hover:bg-paper focus-visible:bg-paper focus:outline-none",
+              "flex w-full items-center gap-3 whitespace-nowrap px-4 py-2.5 text-left text-[12px] leading-5 transition-colors hover:bg-paper focus-visible:bg-paper focus:outline-none",
               isSelected ? "font-medium text-ink" : "text-muted",
             );
             const ref = (el: HTMLElement | null) => {

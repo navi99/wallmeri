@@ -71,13 +71,10 @@ function CatalogContent() {
         <span className="text-ink">Gallery</span>
       </nav>
 
-      <div className="mt-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-2 border-b border-line pb-6">
-        <h1 className="title-xl">
+      <div className="mt-5 border-b border-line pb-6">
+        <h1 className="title-lg">
           {heading}
         </h1>
-        <p className="label text-xs text-muted">
-          {data ? `${data.total} ${data.total === 1 ? "design" : "designs"}` : "Loading…"}
-        </p>
       </div>
 
       {/* Create-your-own callout - a quiet band under the title: it answers

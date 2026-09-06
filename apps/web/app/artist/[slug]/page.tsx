@@ -100,7 +100,7 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
       ) : !productsQuery.data || productsQuery.data.length === 0 ? (
         <p className="mt-4 text-muted">New work coming soon.</p>
       ) : (
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
           {productsQuery.data.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

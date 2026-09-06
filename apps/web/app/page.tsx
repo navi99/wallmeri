@@ -54,7 +54,7 @@ export default function HomePage() {
                   Premium Red on the Noir scrim is ~2.3:1, while premium-300
                   clears 7:1. */}
               <h1 className="title-display max-w-[860px] text-cream [text-wrap:balance] motion-safe:animate-hero-rise-2">
-                Every wall deserves <em className="accent text-premium-300">an art.</em>
+                Every wall deserves <em className="accent text-premium-300">a story.</em>
               </h1>
               <p className="max-w-[480px] text-base leading-[1.7] text-cream/75 motion-safe:animate-hero-rise-3">
                 Premium metal art from independent Indian artists

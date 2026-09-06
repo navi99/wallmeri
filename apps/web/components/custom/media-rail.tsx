@@ -65,9 +65,9 @@ export const railFrame = "h-[clamp(300px,30vw,440px)]";
 // Case in the grid would be two treatments of one string. Warms to Premium Red
 // on hover so the whole tile reads as one target.
 export const railLabel =
-  "text-base font-normal tracking-[0.03em] text-ink transition-colors duration-200 group-hover:text-premium-600";
+  "text-center text-sm font-normal tracking-[0.03em] text-ink transition-colors duration-200 group-hover:text-premium-600";
 export const railLabelOnDark =
-  "text-base font-normal tracking-[0.03em] text-cream transition-colors duration-200 group-hover:text-premium-300";
+  "text-center text-sm font-normal tracking-[0.03em] text-cream transition-colors duration-200 group-hover:text-premium-300";
 
 export function MediaRail({
   cols,
@@ -120,7 +120,7 @@ export function MediaRailItem({
           {media}
         </div>
       </div>
-      <div className="mt-[clamp(12px,1.1vw,16px)] flex flex-col gap-1">
+      <div className="mt-[clamp(12px,1.1vw,16px)] flex flex-col items-center gap-1">
         {children}
       </div>
     </Link>

@@ -57,7 +57,7 @@ function ArtistsContent() {
 
       <div className="mt-5 border-b border-line pb-6">
         <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-2">
-          <h1 className="title-xl">
+          <h1 className="title-lg">
             Our Artists
           </h1>
           <p className="label text-xs text-muted">
@@ -162,12 +162,14 @@ function ArtistTile({ artist }: { artist: Artist }) {
       </div>
 
       <div className="mt-4 flex flex-col gap-1.5">
-        <div className={railLabel}>{artist.name}</div>
-        <div className="label text-xs text-muted">
-          {artist.product_count} {artist.product_count === 1 ? "piece" : "pieces"}
+        {/* Truncates to one line past whatever width the tile has - the
+            native title attribute surfaces the full name on hover rather
+            than wrapping the tile taller for a rare long name. */}
+        <div className={`${railLabel} truncate`} title={artist.name}>
+          {artist.name}
         </div>
         {artist.bio && (
-          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted">
+          <p className="mt-1 text-center text-sm leading-relaxed text-muted">
             {artist.bio}
           </p>
         )}

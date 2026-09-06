@@ -69,7 +69,9 @@ export function ShopByCategory() {
             )
           }
         >
-          <span className={railLabel}>{c.name}</span>
+          {/* pb-6 matches Featured Pieces' extra bottom air, so every
+              homepage rail keeps the same distance to the next tile row. */}
+          <span className={`${railLabel} pb-6`}>{c.name}</span>
         </MediaRailItem>
       ))}
     </MediaRail>

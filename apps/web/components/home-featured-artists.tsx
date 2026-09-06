@@ -83,8 +83,10 @@ export function FeaturedArtists() {
           }
         >
           {/* Same plaque voice as the featured-pieces tiles beside it, now on
-              the light wall - the two bands read as one gallery run. */}
-          <div className={railLabel}>{a.name}</div>
+              the light wall - the two bands read as one gallery run. pb-6
+              matches Featured Pieces' extra bottom air, so every homepage
+              rail keeps the same distance to the next tile row. */}
+          <div className={`${railLabel} pb-6`}>{a.name}</div>
         </MediaRailItem>
       ))}
     </MediaRail>

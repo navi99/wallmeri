@@ -4,6 +4,7 @@ import Image from "@/components/app-image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
+import { railLabel } from "@/components/custom/media-rail";
 import { Stars } from "@/components/stars";
 import { api } from "@/lib/api";
 import type { Product } from "@/lib/types";
@@ -46,19 +47,17 @@ export function ProductCard({
           </span>
         )}
       </Link>
-      <div className="flex flex-col gap-1">
-        <div className="flex items-baseline justify-between gap-2.5">
+      <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-0.5">
           <Link href={`/product/${product.slug}`} className="min-w-0">
-            <h3 className="line-clamp-1 text-base font-normal tracking-[0.03em] text-ink hover:text-brand-600">
-              {product.title}
-            </h3>
+            <h3 className={railLabel}>{product.title}</h3>
           </Link>
-          <span className="shrink-0 text-sm font-normal text-brand-600">
+          <span className="text-center text-sm font-normal tracking-[0.03em] text-premium-600">
             {minDelta !== null && <span className="text-muted">From </span>}
             {formatINR(displayPrice)}
           </span>
         </div>
-        <p className="line-clamp-1 text-sm text-muted">
+        <p className="line-clamp-1 text-center text-sm text-muted">
           {product.artist
             ? `by ${product.artist.name}`
             : (product.categories[0]?.name ?? "Metal Art")}

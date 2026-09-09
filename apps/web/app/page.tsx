@@ -67,7 +67,7 @@ export default function HomePage() {
                 Custom Poster
               </Link>
               <Link href="/catalog" className={heroCtaOutline}>
-                Shop the gallery
+                Browse the gallery
               </Link>
             </div>
           </div>

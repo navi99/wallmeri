@@ -71,7 +71,9 @@ const config: Config = {
       // deep red so shadows read as "the brand's own light"; against neutral
       // neutrals that tint showed as a pink halo, so both layers are now ink.
       boxShadow: {
-        card: "0 1px 2px rgba(27, 23, 23, 0.04), 0 10px 30px rgba(27, 23, 23, 0.06)",
+        // x stays 0 on both layers so the shadow falls straight down (south),
+        // never to the side - a plate hung on a wall, lit from directly above.
+        card: "0 6px 10px rgba(27, 23, 23, 0.08), 0 22px 45px rgba(27, 23, 23, 0.12)",
         lift: "0 2px 4px rgba(27, 23, 23, 0.05), 0 16px 40px rgba(27, 23, 23, 0.10)",
       },
     },

@@ -48,13 +48,11 @@ export default function HomePage() {
                 gradient above is what keeps the text legible, so the words sit
                 directly on the video with nothing framing them. */}
             <div className="flex flex-col items-start gap-4">
-              <div className="kicker-on-dark motion-safe:animate-hero-rise-1">WallMeri</div>
-              {/* Caps Montserrat closed by one lowercase Cormorant phrase. The
-                  accent takes premium-300 here rather than the class default:
-                  Premium Red on the Noir scrim is ~2.3:1, while premium-300
-                  clears 7:1. */}
               <h1 className="title-display max-w-[860px] text-cream [text-wrap:balance] motion-safe:animate-hero-rise-2">
-                Every wall deserves <em className="accent text-premium-300">a story.</em>
+                Every wall deserves{" "}
+                <em className="accent inline-block bg-premium-600 px-3 py-1 text-cream">
+                  a story.
+                </em>
               </h1>
               <p className="max-w-[480px] text-base leading-[1.7] text-cream/75 motion-safe:animate-hero-rise-3">
                 Premium metal art from independent Indian artists

@@ -34,9 +34,6 @@ class Settings(BaseSettings):
     RAZORPAY_KEY_SECRET: str = ""
     RAZORPAY_WEBHOOK_SECRET: str = ""
 
-    # Shipping (flat rate in INR rupees)
-    SHIPPING_FLAT_INR: int = 99
-
     # Object storage for uploaded images (S3-compatible, e.g. Cloudflare R2 / AWS S3).
     # Leave S3_BUCKET blank to fall back to local-disk storage served at /uploads
     # (fine for local dev; on Render attach a persistent disk or configure S3).

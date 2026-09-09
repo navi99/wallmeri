@@ -10,7 +10,22 @@ import { Badge, Button } from "@/components/ui";
 import { lineId, useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
 
-const FLAT_SHIPPING = 99;
+// Admin-authored size labels often carry a "cm" unit (e.g. "A3 (30 x 40 cm)") -
+// shrink just that unit to match the smaller "cm" treatment used in the size
+// picker, rather than letting it read at full label size. The unit may be
+// followed by trailing punctuation (a closing paren), so match "cm" itself
+// rather than requiring it to end the string.
+function renderSizeLabel(label: string) {
+  const match = label.match(/^(.*?)(cm)(\W*)$/i);
+  if (!match) return label;
+  return (
+    <>
+      {match[1]}
+      <span className="text-[9px]">{match[2]}</span>
+      {match[3]}
+    </>
+  );
+}
 
 export default function CartPage() {
   const [mounted, setMounted] = useState(false);
@@ -21,8 +36,7 @@ export default function CartPage() {
   useEffect(() => setMounted(true), []);
 
   const subtotal = items.reduce((n, i) => n + i.price_inr * i.qty, 0);
-  const shipping = subtotal === 0 ? 0 : FLAT_SHIPPING;
-  const total = subtotal + shipping;
+  const total = subtotal;
   const itemCount = items.reduce((n, i) => n + i.qty, 0);
   const hasCustom = items.some((i) => i.kind === "custom");
 
@@ -61,7 +75,7 @@ export default function CartPage() {
           {items.map((item) => {
             const id = lineId(item);
             const thumb = (
-              <div className="h-[150px] w-28 shrink-0 bg-ink p-[2px]">
+              <div className="h-[150px] w-28 shrink-0 bg-ink p-[2px] shadow-card">
                 <div className="relative h-full w-full">
                   <Image src={item.image_url} alt={item.title} fill className="object-cover" sizes="112px" />
                 </div>
@@ -90,7 +104,9 @@ export default function CartPage() {
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 label text-xs text-muted">
-                    {item.size_label && <span>Size: {item.size_label}</span>}
+                    {item.size_label && (
+                      <span className="normal-case">Size: {renderSizeLabel(item.size_label)}</span>
+                    )}
                     {item.kind === "custom" && <Badge tone="neutral">Custom design</Badge>}
                     {item.dpi_band === "warning" && (
                       <Badge tone="attention">May look soft when printed</Badge>
@@ -143,10 +159,6 @@ export default function CartPage() {
             <div className="flex justify-between">
               <dt>Subtotal</dt>
               <dd className="text-ink">{formatINR(subtotal)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt>Shipping</dt>
-              <dd className="text-ink">{shipping === 0 ? "Free" : formatINR(shipping)}</dd>
             </div>
           </dl>
           <p className="mb-5 text-xs leading-relaxed text-muted">

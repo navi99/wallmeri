@@ -1,7 +1,6 @@
 """Server-side pricing so totals can never be tampered with on the client."""
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
 from app.models import CustomUpload, CustomUploadStatus, PosterSize, Product
 from app.schemas.order import CartItemIn, QuoteLine
 
@@ -102,6 +101,6 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
             )
         )
 
-    shipping = settings.SHIPPING_FLAT_INR
+    shipping = 0
     total = subtotal + shipping
     return lines, subtotal, shipping, total

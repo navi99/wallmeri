@@ -140,12 +140,6 @@ function OrderContent({ id }: { id: number }) {
             <dt className="text-muted">Subtotal</dt>
             <dd className="font-semibold text-ink">{formatINR(order.subtotal_inr)}</dd>
           </div>
-          <div className="flex justify-between">
-            <dt className="text-muted">Shipping</dt>
-            <dd className="font-semibold text-ink">
-              {order.shipping_inr === 0 ? "Free" : formatINR(order.shipping_inr)}
-            </dd>
-          </div>
           <div className="flex justify-between border-t border-brand-100 pt-2 text-base">
             <dt className="font-medium text-ink">Total</dt>
             <dd className="font-medium text-ink">{formatINR(order.total_inr)}</dd>

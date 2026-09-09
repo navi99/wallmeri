@@ -32,7 +32,7 @@ export function ProductCard({
     <div className="group flex flex-col gap-3.5">
       <Link
         href={`/product/${product.slug}`}
-        className="relative block aspect-[3/4] overflow-hidden bg-ink transition-transform duration-300 group-hover:-translate-y-1.5 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0"
+        className="relative block aspect-[3/4] overflow-hidden bg-ink shadow-card transition-transform duration-300 group-hover:-translate-y-1.5 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0"
       >
         <Image
           src={product.image_url}
@@ -53,7 +53,6 @@ export function ProductCard({
             <h3 className={railLabel}>{product.title}</h3>
           </Link>
           <span className="text-center text-sm font-normal tracking-[0.03em] text-premium-600">
-            {minDelta !== null && <span className="text-muted">From </span>}
             {formatINR(displayPrice)}
           </span>
         </div>

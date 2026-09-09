@@ -19,7 +19,7 @@ function altFor(title: string, index: number): string {
 // the same dark mat with a red ring standing in for a border, since a plain
 // border would sit flush against the frame instead of reading as "selected".
 const THUMB_BASE =
-  "relative aspect-[3/4] flex-none overflow-hidden bg-ink p-1 transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "relative aspect-[3/4] flex-none overflow-hidden bg-ink p-1 shadow-card transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 
 const HOVER_ZOOM = 2;
 const MAX_PINCH_ZOOM = 2.5;
@@ -359,7 +359,7 @@ export function ProductGallery({
   // like the old single-image layout, no rail, strip, or carousel.
   if (images.length === 0) {
     return (
-      <div className="relative aspect-[3/4] overflow-hidden bg-ink p-[5px] shadow-lift">
+      <div className="relative aspect-[3/4] overflow-hidden bg-ink p-[5px] shadow-card">
         <GallerySlide src={fallbackImageUrl} alt={title} priority onOpen={() => setLightboxIndex(0)} />
         {lightboxIndex !== null && (
           <Lightbox
@@ -444,7 +444,7 @@ export function ProductGallery({
               role="group"
               aria-roledescription="slide"
               aria-label={`Image ${i + 1} of ${images.length}`}
-              className="relative aspect-[3/4] w-full flex-none snap-center overflow-hidden bg-ink p-[5px] shadow-lift"
+              className="relative aspect-[3/4] w-full flex-none snap-center overflow-hidden bg-ink p-[5px] shadow-card"
             >
               <GallerySlide
                 src={img.image_url}

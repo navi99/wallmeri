@@ -75,7 +75,7 @@ export function PosterSizesTab() {
                 {size.is_enabled ? <Badge tone="progress">Live</Badge> : <Badge tone="inert">Hidden</Badge>}
               </div>
               <p className="mt-0.5 text-xs text-muted">
-                {size.width_cm} × {size.height_cm} cm
+                {size.width_cm} × {size.height_cm} <span className="text-[9px]">cm</span>
               </p>
             </div>
             <div className="flex items-center gap-2">

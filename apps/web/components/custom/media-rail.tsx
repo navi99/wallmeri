@@ -113,7 +113,7 @@ export function MediaRailItem({
 }) {
   return (
     <Link href={href} className="group flex flex-col">
-      <div className={`relative overflow-hidden ${frameClassName}`}>
+      <div className={`relative overflow-hidden shadow-card ${frameClassName}`}>
         {/* The zoom lives on the media, never the tile: the cut edges of the
             frame stay exactly put (steel), only the art breathes. */}
         <div className="absolute inset-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100">

@@ -16,8 +16,6 @@ import { useAuth } from "@/lib/store/auth";
 import { lineId, useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
 
-const FLAT_SHIPPING = 99;
-
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
   full_name: z.string().min(2, "Enter the recipient's name"),
@@ -71,8 +69,7 @@ export default function CheckoutPage() {
   }, [user, setValue]);
 
   const subtotal = items.reduce((n, i) => n + i.price_inr * i.qty, 0);
-  const shipping = subtotal === 0 ? 0 : FLAT_SHIPPING;
-  const total = subtotal + shipping;
+  const total = subtotal;
   const hasCustom = items.some((i) => i.kind === "custom");
 
   if (mounted && items.length === 0) {
@@ -249,7 +246,7 @@ export default function CheckoutPage() {
           <div className="mt-4 space-y-3">
             {items.map((item) => (
               <div key={lineId(item)} className="flex items-center gap-3">
-                <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-paper">
+                <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-paper shadow-card">
                   <Image src={item.image_url} alt={item.title} fill className="object-cover" sizes="48px" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -267,12 +264,6 @@ export default function CheckoutPage() {
             <div className="flex justify-between">
               <dt className="text-muted">Subtotal</dt>
               <dd className="font-semibold text-ink">{formatINR(subtotal)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-muted">Shipping</dt>
-              <dd className="font-semibold text-ink">
-                {shipping === 0 ? "Free" : formatINR(shipping)}
-              </dd>
             </div>
             <div className="flex justify-between border-t border-brand-100 pt-2 text-base">
               <dt className="font-medium text-ink">Total</dt>

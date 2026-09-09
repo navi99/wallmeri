@@ -61,7 +61,7 @@ def upgrade() -> None:
         INSERT INTO poster_sizes (code, label, width_cm, height_cm, price_inr, is_enabled, position, created_at)
         VALUES
             ('A4', 'A4 (21 x 29.7 cm)', 21.0, 29.7, 1499, false, 0, now()),
-            ('A3', 'A3 (29.7 x 42 cm)', 29.7, 42.0, 2499, true, 1, now()),
+            ('A3', 'A3 (30 x 40 cm)', 30.0, 40.0, 2499, true, 1, now()),
             ('A2', 'A2 (42 x 59.4 cm)', 42.0, 59.4, 3999, false, 2, now())
         """
     )

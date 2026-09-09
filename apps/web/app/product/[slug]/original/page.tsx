@@ -89,7 +89,6 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
   }
 
   const title = product ? `${product.title} - Original` : "Original painting";
-  const dimensions = `${Number(original.width_cm)} × ${Number(original.height_cm)} cm`;
 
   return (
     <div className="container-page py-8">
@@ -148,7 +147,10 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
             )}
             <div>
               <dt className="label text-xs">Dimensions</dt>
-              <dd className="text-ink">{dimensions}</dd>
+              <dd className="text-ink">
+                {Number(original.width_cm)} × {Number(original.height_cm)}{" "}
+                <span className="text-[10px]">cm</span>
+              </dd>
             </div>
             {original.year_created && (
               <div>

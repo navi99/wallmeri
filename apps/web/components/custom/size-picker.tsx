@@ -28,7 +28,7 @@ export function SizePicker({
           >
             <div className="text-sm font-medium uppercase tracking-[0.03em]">{size.code}</div>
             <div className={`mt-0.5 text-[11px] ${active ? "text-cream/70" : "text-muted"}`}>
-              {size.width_cm} × {size.height_cm} cm
+              {size.width_cm} × {size.height_cm} <span className="text-[9px]">cm</span>
             </div>
             <div className="mt-1 text-xs font-semibold">{formatINR(size.price_inr)}</div>
           </button>

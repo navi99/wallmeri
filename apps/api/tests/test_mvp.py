@@ -7,10 +7,14 @@ import io
 import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
+from pydantic import ValidationError
 
 from app.main import app
-from app.models import ORDER_TRANSITIONS, OrderStatus
-from app.services import storage_service
+from app.models import MAX_DISCOUNT_PERCENT, ORDER_TRANSITIONS, OrderStatus
+from app.schemas.contact import CATEGORY_PATTERN, ContactEnquiryCreate
+from app.schemas.discount import DiscountUpdate
+from app.schemas.order import QuoteResponse
+from app.services import discount, email_service, storage_service
 
 client = TestClient(app)
 
@@ -25,8 +29,12 @@ ADMIN_ENDPOINTS = [
     ("GET", "/api/admin/categories"),
     ("POST", "/api/admin/uploads"),
     ("GET", "/api/admin/original-inquiries"),
+    ("GET", "/api/admin/contact-enquiries"),
+    ("PATCH", "/api/admin/contact-enquiries/1"),
     ("PUT", "/api/admin/products/1/original"),
     ("DELETE", "/api/admin/products/1/original"),
+    ("GET", "/api/admin/discount"),
+    ("PUT", "/api/admin/discount"),
 ]
 
 
@@ -166,3 +174,150 @@ def test_original_inquiry_missing_painting_404s():
 def test_get_original_missing_painting_404s():
     res = client.get("/api/products/does-not-exist/original")
     assert res.status_code == 404
+
+
+class TestDiscountRounding:
+    """apply() is mirrored in apps/web/lib/discount.ts - keep both in step."""
+
+    def test_plain_percentages(self):
+        assert discount.apply(1000, 10) == 900
+        assert discount.apply(2499, 15) == 2124
+        assert discount.apply(2799, 15) == 2379
+
+    def test_rounds_half_up_not_bankers(self):
+        # 110 @ 5% is exactly 104.5. Python's round() is banker's rounding and
+        # would give 104, disagreeing with the browser's Math.round by a rupee.
+        assert discount.apply(110, 5) == 105
+        assert round(104.5) == 104  # the trap this guards against
+
+    def test_zero_and_negative_percent_are_identity(self):
+        assert discount.apply(2499, 0) == 2499
+        assert discount.apply(2499, -5) == 2499
+
+    def test_never_returns_a_free_item(self):
+        # The 90% cap alone does not save a 1-rupee base: (1*10+50)//100 == 0.
+        # A zero-rupee line means a free poster and, on a single-line cart, a
+        # 0-paise order Razorpay rejects.
+        assert discount.apply(1, MAX_DISCOUNT_PERCENT) == 1
+
+    def test_non_positive_price_is_left_alone(self):
+        assert discount.apply(0, 20) == 0
+
+    @pytest.mark.parametrize("percent", [0, 1, 7, 15, 33, 50, MAX_DISCOUNT_PERCENT])
+    def test_subtotal_invariant_holds(self, percent):
+        """Discounting the unit price before multiplying by qty is what makes
+        sum(line totals) == subtotal exact, with no rounding residue."""
+        basket = [(2799, 2), (2599, 3), (1499, 1), (110, 7), (1, 4)]
+        subtotal = sum(discount.apply(base, percent) * qty for base, qty in basket)
+        lines = [discount.apply(base, percent) * qty for base, qty in basket]
+        assert sum(lines) == subtotal
+
+
+class TestDiscountSchema:
+    def test_rejects_out_of_range_percent(self):
+        with pytest.raises(ValidationError):
+            DiscountUpdate(percent=MAX_DISCOUNT_PERCENT + 1)
+        with pytest.raises(ValidationError):
+            DiscountUpdate(percent=-1)
+
+    def test_rejects_overlong_label(self):
+        with pytest.raises(ValidationError):
+            DiscountUpdate(percent=10, label="x" * 81)
+
+    def test_defaults_are_the_no_discount_state(self):
+        assert DiscountUpdate().model_dump() == {
+            "percent": 0,
+            "label": "",
+            "is_active": False,
+        }
+
+
+def test_public_discount_route_is_registered():
+    assert "/api/discount" in app.openapi()["paths"]
+
+
+def test_quote_response_discount_fields_default_to_zero():
+    """A response built without any discount data must look exactly like the
+    pre-discount API, so historical/legacy consumers are unaffected."""
+    res = QuoteResponse(lines=[], subtotal_inr=0, shipping_inr=0, total_inr=0)
+    assert res.discount_percent == 0
+    assert res.discount_label == ""
+    assert res.discount_amount_inr == 0
+    assert res.original_subtotal_inr == 0
+
+
+class TestContactEnquirySchema:
+    """The contact form's server-side guard rails. Pure schema checks - no DB,
+    no rate-limit quota consumed."""
+
+    def _valid(self, **overrides):
+        base = {
+            "category": "returns",
+            "name": "Asha Rao",
+            "email": "asha@example.com",
+            "message": "My poster arrived with a dented corner.",
+        }
+        base.update(overrides)
+        return ContactEnquiryCreate(**base)
+
+    def test_accepts_a_realistic_enquiry(self):
+        enquiry = self._valid()
+        assert enquiry.category == "returns"
+        assert enquiry.website == ""  # honeypot defaults empty
+
+    def test_category_defaults_to_general(self):
+        payload = ContactEnquiryCreate(
+            name="Asha Rao", email="asha@example.com", message="A general question here."
+        )
+        assert payload.category == "general"
+
+    def test_rejects_unknown_category(self):
+        with pytest.raises(ValidationError):
+            self._valid(category="refund-now")
+
+    def test_rejects_one_word_message(self):
+        # The 10-char floor: shorter than this is a bot or a mis-submit, never
+        # a question anyone can answer.
+        with pytest.raises(ValidationError):
+            self._valid(message="help")
+
+    def test_rejects_bad_email(self):
+        with pytest.raises(ValidationError):
+            self._valid(email="not-an-email")
+
+    def test_rejects_overlong_message(self):
+        with pytest.raises(ValidationError):
+            self._valid(message="x" * 4001)
+
+
+def test_every_contact_category_has_an_email_label():
+    """A category the form can send but email_service can't name would leak a
+    raw code into the team's inbox subject line."""
+    allowed = set(CATEGORY_PATTERN.strip("^$()").split("|"))
+    assert allowed == set(email_service.CONTACT_CATEGORY_LABELS)
+
+
+def test_contact_enquiry_route_is_registered():
+    assert "/api/contact-enquiries" in app.openapi()["paths"]
+
+
+def test_contact_enquiry_rejects_invalid_payload_before_the_handler():
+    # 422 comes from request validation, so no DB and no rate-limit quota.
+    res = client.post("/api/contact-enquiries", json={"name": "x", "email": "nope"})
+    assert res.status_code == 422
+
+
+def test_contact_enquiry_honeypot_returns_ok_without_storing():
+    res = client.post(
+        "/api/contact-enquiries",
+        json={
+            "category": "general",
+            "name": "Bot Bot",
+            "email": "bot@spam.com",
+            "message": "Buy cheap watches now.",
+            "website": "http://spam",
+        },
+    )
+    # Honeypot short-circuits before any DB access.
+    assert res.status_code == 201
+    assert res.json() == {"ok": True}

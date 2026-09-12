@@ -15,6 +15,8 @@ from app.models import (
     Artist,
     ArtistApplication,
     Category,
+    ContactEnquiry,
+    ContactEnquiryStatus,
     CustomUpload,
     CustomUploadStatus,
     InquiryStatus,
@@ -52,6 +54,7 @@ from app.schemas.catalog import (
     SiteImageSlotUpdate,
     UploadOut,
 )
+from app.schemas.contact import ContactEnquiryOut, ContactEnquiryUpdate
 from app.schemas.custom import (
     CropRect,
     CustomReviewAction,
@@ -61,6 +64,7 @@ from app.schemas.custom import (
     PosterSizeOut,
     PosterSizeUpdate,
 )
+from app.schemas.discount import DiscountAdminOut, DiscountUpdate
 from app.schemas.order import OrderItemOut, OrderOut, OrderStatusUpdate
 from app.schemas.original import (
     InquiryOut,
@@ -71,6 +75,7 @@ from app.schemas.original import (
 from app.schemas.review import ReviewAdminOut, ReviewModerate
 from app.services import (
     custom_upload_service,
+    discount as discount_service,
     email_service,
     media_service,
     razorpay_service,
@@ -411,6 +416,32 @@ def admin_list_site_images(db: Session = Depends(get_db)):
 @router.put("/site-images/{slot}", response_model=list[SiteImageOut])
 def admin_update_site_images(slot: str, payload: SiteImageSlotUpdate, db: Session = Depends(get_db)):
     return _apply_site_images(db, slot, payload.images)
+
+
+# ── Site-wide discount ──────────────────────────────────────────
+
+@router.get("/discount", response_model=DiscountAdminOut)
+def admin_get_discount(db: Session = Depends(get_db)):
+    return discount_service.get_settings(db)
+
+
+@router.put("/discount", response_model=DiscountAdminOut)
+def admin_update_discount(payload: DiscountUpdate, db: Session = Depends(get_db)):
+    """Set the one global discount.
+
+    Affects display and future quotes only - orders already placed carry
+    their own snapshot (Order.discount_percent), so ending a sale never
+    rewrites history. Product and poster-size prices are left alone too:
+    the discount is a lens over the base prices, never baked into them.
+    """
+    row = discount_service.get_settings(db)
+    row.percent = payload.percent
+    row.label = payload.label.strip()
+    row.is_active = payload.is_active
+    db.commit()
+    db.refresh(row)
+    return row
+
 
 
 # ── Artists ──────────────────────────────────────────────────────────────────
@@ -880,3 +911,27 @@ def admin_update_original_inquiry(
     dto.product_title = product.title if product else ""
     dto.product_slug = product.slug if product else ""
     return dto
+
+
+@router.get("/contact-enquiries", response_model=list[ContactEnquiryOut])
+def admin_list_contact_enquiries(db: Session = Depends(get_db)):
+    return (
+        db.query(ContactEnquiry).order_by(ContactEnquiry.created_at.desc()).all()
+    )
+
+
+@router.patch("/contact-enquiries/{enquiry_id}", response_model=ContactEnquiryOut)
+def admin_update_contact_enquiry(
+    enquiry_id: int, payload: ContactEnquiryUpdate, db: Session = Depends(get_db)
+):
+    enquiry = db.get(ContactEnquiry, enquiry_id)
+    if not enquiry:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Enquiry not found")
+    data = payload.model_dump(exclude_unset=True)
+    if "status" in data and data["status"]:
+        enquiry.status = ContactEnquiryStatus(data["status"])
+    if "admin_note" in data and data["admin_note"] is not None:
+        enquiry.admin_note = data["admin_note"]
+    db.commit()
+    db.refresh(enquiry)
+    return enquiry

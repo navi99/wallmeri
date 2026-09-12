@@ -136,6 +136,8 @@ export default function OriginalPaintingPage({ params }: { params: { slug: strin
             )}
           </p>
 
+          {/* Originals are excluded from the site-wide discount - one-of-a-kind
+              pieces are priced individually. */}
           <p className="mt-4 text-3xl font-normal tracking-[0.03em] text-brand-600">{formatINR(original.price_inr)}</p>
 
           <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-muted">

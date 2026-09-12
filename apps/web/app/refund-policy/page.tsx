@@ -102,7 +102,11 @@ export default function RefundPolicyPage() {
           <div className="border-t border-line py-7">
             <h2 className={heading}>8. Contact</h2>
             <p className={`mt-3 ${body}`}>
-              For anything not covered here, reach out on{" "}
+              To start a replacement or refund,{" "}
+              <Link href="/contact?tab=contactus&category=returns" className={link}>
+                use our contact form
+              </Link>
+              , or reach out on{" "}
               <a
                 href="https://wa.me/916363882696"
                 target="_blank"

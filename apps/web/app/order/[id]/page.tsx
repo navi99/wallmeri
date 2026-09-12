@@ -66,6 +66,10 @@ function OrderContent({ id }: { id: number }) {
   }
 
   const addr = order.shipping_address;
+  // 0 on every order placed at list price, including all pre-discount
+  // history - which is what keeps the totals block unchanged for them.
+  const discountSaved =
+    order.discount_percent > 0 ? order.original_subtotal_inr - order.subtotal_inr : 0;
 
   return (
     <div className="container-page max-w-3xl py-12">
@@ -136,10 +140,26 @@ function OrderContent({ id }: { id: number }) {
         </div>
 
         <dl className="mt-5 space-y-2 border-t border-brand-100 pt-4 text-sm">
+          {/* Subtotal is the pre-discount figure whenever a discount row
+              follows it, so Subtotal - discount = Total actually reads as
+              arithmetic. Without a discount it is the plain subtotal, exactly
+              as before - which is also what every pre-discount order shows,
+              since those carry discount_percent 0. */}
           <div className="flex justify-between">
             <dt className="text-muted">Subtotal</dt>
-            <dd className="font-semibold text-ink">{formatINR(order.subtotal_inr)}</dd>
+            <dd className="font-semibold text-ink">
+              {formatINR(discountSaved > 0 ? order.original_subtotal_inr : order.subtotal_inr)}
+            </dd>
           </div>
+          {discountSaved > 0 && (
+            <div className="flex justify-between">
+              <dt className="text-muted">
+                {order.discount_label ? `${order.discount_label} - ` : ""}
+                {order.discount_percent}% off
+              </dt>
+              <dd className="text-muted">-{formatINR(discountSaved)}</dd>
+            </div>
+          )}
           <div className="flex justify-between border-t border-brand-100 pt-2 text-base">
             <dt className="font-medium text-ink">Total</dt>
             <dd className="font-medium text-ink">{formatINR(order.total_inr)}</dd>

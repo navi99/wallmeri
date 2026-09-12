@@ -22,11 +22,18 @@ router = APIRouter(tags=["checkout"])
 @router.post("/checkout/quote", response_model=QuoteResponse)
 def quote(payload: QuoteRequest, db: Session = Depends(get_db)):
     try:
-        lines, subtotal, shipping, total = compute_quote(db, payload.items)
+        quote = compute_quote(db, payload.items)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     return QuoteResponse(
-        lines=lines, subtotal_inr=subtotal, shipping_inr=shipping, total_inr=total
+        lines=quote.lines,
+        subtotal_inr=quote.subtotal,
+        shipping_inr=quote.shipping,
+        total_inr=quote.total,
+        original_subtotal_inr=quote.original_subtotal,
+        discount_percent=quote.discount_percent,
+        discount_label=quote.discount_label,
+        discount_amount_inr=quote.discount_amount,
     )
 
 
@@ -37,7 +44,7 @@ def create_payment(
     user: User | None = Depends(get_optional_user),
 ):
     try:
-        lines, subtotal, shipping, total = compute_quote(db, payload.items)
+        quote = compute_quote(db, payload.items)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
@@ -45,12 +52,17 @@ def create_payment(
         user_id=user.id if user else None,
         email=payload.email.lower(),
         status=OrderStatus.pending,
-        subtotal_inr=subtotal,
-        shipping_inr=shipping,
-        total_inr=total,
+        subtotal_inr=quote.subtotal,
+        shipping_inr=quote.shipping,
+        total_inr=quote.total,
+        # Snapshot the sale this order was placed under, so the order can
+        # still explain its own pricing long after the sale ends.
+        original_subtotal_inr=quote.original_subtotal,
+        discount_percent=quote.discount_percent,
+        discount_label=quote.discount_label,
         shipping_address=payload.shipping_address.model_dump(),
     )
-    for line in lines:
+    for line in quote.lines:
         order.items.append(
             OrderItem(
                 product_id=line.product_id,
@@ -69,7 +81,7 @@ def create_payment(
     # Custom lines: lock in the design (a repriced/disabled size can no
     # longer be re-quoted against it) and attach its source asset so GC
     # never reclaims a photo that's now part of a real order.
-    custom_ids = [line.custom_upload_id for line in lines if line.custom_upload_id is not None]
+    custom_ids = [line.custom_upload_id for line in quote.lines if line.custom_upload_id is not None]
     if custom_ids:
         customs = db.query(CustomUpload).filter(CustomUpload.id.in_(custom_ids)).all()
         for custom in customs:
@@ -77,7 +89,7 @@ def create_payment(
             media_service.attach(custom.media)
         db.flush()
 
-    rzp_order_id = razorpay_service.create_order(total, receipt=f"wallmeri_{order.id}")
+    rzp_order_id = razorpay_service.create_order(quote.total, receipt=f"wallmeri_{order.id}")
     order.razorpay_order_id = rzp_order_id
     db.commit()
     db.refresh(order)
@@ -86,8 +98,8 @@ def create_payment(
         order_id=order.id,
         razorpay_order_id=rzp_order_id,
         razorpay_key_id=settings.RAZORPAY_KEY_ID,
-        amount_inr=total,
-        amount_paise=total * 100,
+        amount_inr=quote.total,
+        amount_paise=quote.total * 100,
         mock=not razorpay_service.is_configured(),
     )
 

@@ -10,7 +10,9 @@ import { toast } from "sonner";
 import { ApplicationsTab } from "@/components/admin/applications-tab";
 import { ArtistsTab } from "@/components/admin/artists-tab";
 import { CategoriesTab } from "@/components/admin/categories-tab";
+import { ContactEnquiriesTab } from "@/components/admin/contact-enquiries-tab";
 import { CustomReviewTab } from "@/components/admin/custom-review-tab";
+import { DiscountTab } from "@/components/admin/discount-tab";
 import { OrdersTab } from "@/components/admin/orders-tab";
 import { OriginalInquiriesTab } from "@/components/admin/original-inquiries-tab";
 import { PosterSizesTab } from "@/components/admin/poster-sizes-tab";
@@ -34,6 +36,8 @@ const TABS = [
   "reviews",
   "site content",
   "original inquiries",
+  "enquiries",
+  "discount",
 ] as const;
 type Tab = (typeof TABS)[number];
 
@@ -150,6 +154,8 @@ export default function AdminPage() {
                       <th className="px-4 py-3">Poster</th>
                       <th className="px-4 py-3">Artist</th>
                       <th className="px-4 py-3">Categories</th>
+                      {/* List price - deliberately not run through the
+                          site-wide discount, so admins edit real numbers. */}
                       <th className="px-4 py-3">Price</th>
                       <th className="px-4 py-3">Status</th>
                       <th className="px-4 py-3 text-right">Actions</th>
@@ -231,6 +237,8 @@ export default function AdminPage() {
         {tab === "reviews" && <ReviewsTab />}
         {tab === "site content" && <SiteImagesTab />}
         {tab === "original inquiries" && <OriginalInquiriesTab />}
+        {tab === "enquiries" && <ContactEnquiriesTab />}
+        {tab === "discount" && <DiscountTab />}
       </div>
 
       {formOpen && categoriesQuery.data && artistsQuery.data && (

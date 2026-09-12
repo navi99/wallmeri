@@ -1,20 +1,51 @@
 """Server-side pricing so totals can never be tampered with on the client."""
+from dataclasses import dataclass
+
 from sqlalchemy.orm import Session
 
 from app.models import CustomUpload, CustomUploadStatus, PosterSize, Product
 from app.schemas.order import CartItemIn, QuoteLine
+from app.services import discount as discount_service
 
 
-def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine], int, int, int]:
-    """Returns (lines, subtotal, shipping, total) in whole INR rupees."""
+@dataclass
+class Quote:
+    """A fully priced basket. All money in whole INR rupees.
+
+    subtotal/total are what will actually be charged (discount already
+    applied); original_subtotal is what the same basket would have cost at
+    list price. discount_amount is the difference, precomputed so invoices
+    and emails never have to re-derive it.
+    """
+
+    lines: list[QuoteLine]
+    subtotal: int
+    shipping: int
+    total: int
+    original_subtotal: int
+    discount_percent: int
+    discount_label: str
+
+    @property
+    def discount_amount(self) -> int:
+        return self.original_subtotal - self.subtotal
+
+
+def compute_quote(db: Session, items: list[CartItemIn]) -> Quote:
+    """Prices a basket against *current* catalog and discount state."""
     if not items:
         raise ValueError("Cart is empty")
+
+    # Read once, so every line in a basket is priced against the same
+    # discount even if an admin toggles it mid-request.
+    percent, discount_label = discount_service.active_discount(db)
 
     product_lines = [i for i in items if i.product_id is not None]
     custom_lines = [i for i in items if i.custom_upload_id is not None]
 
     lines: list[QuoteLine] = []
     subtotal = 0
+    original_subtotal = 0
 
     if product_lines:
         # Collapse duplicate (product, size) pairs by summing quantities -
@@ -54,14 +85,18 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
                 size = sizes_by_code.get(size_code)
                 if size is None or not size.is_enabled:
                     raise ValueError(f"Size '{size_code}' is no longer available")
-                price = product.price_inr + size.delta_inr
+                list_price = product.price_inr + size.delta_inr
                 title = f"{product.title} - {size.label}"
             else:
-                price = product.price_inr
+                list_price = product.price_inr
                 title = product.title
 
+            # Discount the *composed* price, not the base: rounding the base
+            # and the delta separately would not add up to rounding the sum.
+            price = discount_service.apply(list_price, percent)
             line_total = price * qty
             subtotal += line_total
+            original_subtotal += list_price * qty
             lines.append(
                 QuoteLine(
                     kind="product",
@@ -73,6 +108,8 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
                     price_inr=price,
                     qty=qty,
                     line_total_inr=line_total,
+                    original_price_inr=list_price,
+                    original_line_total_inr=list_price * qty,
                 )
             )
 
@@ -87,20 +124,32 @@ def compute_quote(db: Session, items: list[CartItemIn]) -> tuple[list[QuoteLine]
         if size is None or not size.is_enabled:
             raise ValueError(f"Size '{custom.size_code}' is no longer available")
 
-        line_total = size.price_inr * item.qty
+        price = discount_service.apply(size.price_inr, percent)
+        line_total = price * item.qty
         subtotal += line_total
+        original_subtotal += size.price_inr * item.qty
         lines.append(
             QuoteLine(
                 kind="custom",
                 custom_upload_id=custom.id,
                 title=f"Custom poster - {size.label}",
                 image_url=custom.preview_url,
-                price_inr=size.price_inr,
+                price_inr=price,
                 qty=item.qty,
                 line_total_inr=line_total,
+                original_price_inr=size.price_inr,
+                original_line_total_inr=size.price_inr * item.qty,
             )
         )
 
     shipping = 0
     total = subtotal + shipping
-    return lines, subtotal, shipping, total
+    return Quote(
+        lines=lines,
+        subtotal=subtotal,
+        shipping=shipping,
+        total=total,
+        original_subtotal=original_subtotal,
+        discount_percent=percent,
+        discount_label=discount_label,
+    )

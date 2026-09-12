@@ -8,6 +8,9 @@ import { toast } from "sonner";
 import { Badge, Button, Card, Input, Spinner } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 
+// All prices in this tab are list prices - the site-wide discount is applied
+// on top at display and checkout time (see lib/discount.ts), never baked in
+// here, so a running sale must not change what these inputs show.
 const emptyForm = { code: "", label: "", width_cm: "", height_cm: "", price_inr: "", delta_inr: "0" };
 
 export function PosterSizesTab() {

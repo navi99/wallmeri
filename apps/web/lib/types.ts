@@ -116,6 +116,29 @@ export interface OriginalInquiry {
   product_slug: string;
 }
 
+// Must stay in step with schemas/contact.CATEGORY_PATTERN on the API - the
+// server rejects anything outside this set.
+export type ContactCategory =
+  | "order"
+  | "product"
+  | "returns"
+  | "wholesale"
+  | "artist"
+  | "general";
+
+export interface ContactEnquiry {
+  id: number;
+  category: ContactCategory;
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+  status: "new" | "open" | "resolved" | "spam";
+  admin_note: string;
+  created_at: string;
+}
+
 export interface PosterSize {
   id: number;
   code: string;
@@ -223,9 +246,14 @@ export interface QuoteLine {
   slug: string;
   title: string;
   image_url: string;
+  // Already discounted - the price that will actually be charged.
   price_inr: number;
   qty: number;
   line_total_inr: number;
+  // List price, before any site-wide discount. Equal to price_inr when no
+  // discount is running.
+  original_price_inr: number;
+  original_line_total_inr: number;
 }
 
 export interface Quote {
@@ -233,6 +261,24 @@ export interface Quote {
   subtotal_inr: number;
   shipping_inr: number;
   total_inr: number;
+  original_subtotal_inr: number;
+  discount_percent: number;
+  discount_label: string;
+  discount_amount_inr: number;
+}
+
+/** The site-wide discount, for display. `percent` is already 0 when the
+ *  discount is inactive, so there is one thing to check. */
+export interface Discount {
+  percent: number;
+  label: string;
+}
+
+export interface DiscountAdmin {
+  percent: number;
+  label: string;
+  is_active: boolean;
+  updated_at: string;
 }
 
 export interface CreatePaymentResponse {
@@ -274,6 +320,11 @@ export interface Order {
   subtotal_inr: number;
   shipping_inr: number;
   total_inr: number;
+  // Snapshot of the discount in force when the order was placed. 0 / "" on
+  // every pre-discount order.
+  original_subtotal_inr: number;
+  discount_percent: number;
+  discount_label: string;
   shipping_address: Record<string, string>;
   razorpay_order_id: string | null;
   razorpay_payment_id: string | null;

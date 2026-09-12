@@ -135,7 +135,11 @@ export default function PrivacyPolicyPage() {
           <div className="border-t border-line py-7">
             <h2 className={heading}>10. Contact</h2>
             <p className={`mt-3 ${body}`}>
-              Questions about your data? Reach us on{" "}
+              Questions about your data?{" "}
+              <Link href="/contact" className={link}>
+                Send us a message
+              </Link>
+              , or reach us on{" "}
               <a
                 href="https://wa.me/916363882696"
                 target="_blank"

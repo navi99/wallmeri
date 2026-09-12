@@ -13,6 +13,7 @@ import {
 } from "@/components/custom/media-rail";
 import { Stars } from "@/components/stars";
 import { api } from "@/lib/api";
+import { useDiscount } from "@/lib/discount";
 import { formatINR } from "@/lib/utils";
 
 // Up to 4-up grid, wraps into extra rows past 4 featured products - matches
@@ -33,6 +34,13 @@ export function FeaturedProducts() {
     queryFn: () =>
       api.listProducts({ featured: "true", sort: "newest", page: 1, page_size: 48 }),
   });
+  // Same "starting from" price the catalog cards quote: product.price_inr is
+  // always the A4 price, so the cheapest enabled size's delta has to be added
+  // before it means anything. Without this the homepage quoted a lower price
+  // than the card for the same poster.
+  const { data: sizes } = useQuery({ queryKey: ["poster-sizes"], queryFn: () => api.posterSizes() });
+  const minDelta = sizes?.length ? Math.min(...sizes.map((s) => s.delta_inr)) : null;
+  const { priced } = useDiscount();
 
   const products = (data?.items ?? []).slice(0, fullRowCount(data?.items.length ?? 0));
 
@@ -75,7 +83,7 @@ export function FeaturedProducts() {
             <div className="flex flex-col items-center gap-0.5">
               <h3 className={railLabel}>{p.title}</h3>
               <span className="text-center text-sm font-normal tracking-[0.03em] text-premium-600">
-                {formatINR(p.price_inr)}
+                {formatINR(priced(p.price_inr + (minDelta ?? 0)))}
               </span>
             </div>
             <p className="line-clamp-1 text-center text-xs text-muted">

@@ -14,6 +14,12 @@ from app.models.review import Review, ReviewStatus
 from app.models.poster_size import PosterSize
 from app.models.custom_upload import CustomUpload, CustomUploadStatus, Orientation
 from app.models.order import ORDER_TRANSITIONS, Order, OrderItem, OrderStatus
+from app.models.contact import ContactEnquiry, ContactEnquiryStatus
+from app.models.discount import (
+    DISCOUNT_SETTINGS_ID,
+    MAX_DISCOUNT_PERCENT,
+    DiscountSettings,
+)
 
 __all__ = [
     "User",
@@ -42,4 +48,9 @@ __all__ = [
     "OrderItem",
     "OrderStatus",
     "ORDER_TRANSITIONS",
+    "ContactEnquiry",
+    "ContactEnquiryStatus",
+    "DiscountSettings",
+    "DISCOUNT_SETTINGS_ID",
+    "MAX_DISCOUNT_PERCENT",
 ]

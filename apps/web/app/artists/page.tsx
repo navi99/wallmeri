@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
-import { railLabel } from "@/components/custom/media-rail";
+import { hungPrint, railLabel } from "@/components/custom/media-rail";
 import { FilterMenu } from "@/components/filter-menu";
 import { Spinner } from "@/components/ui";
 import { api } from "@/lib/api";
@@ -128,9 +128,9 @@ function ArtistsContent() {
 }
 
 /**
- * Frameless square portrait with the name set on the Cotton beneath it -
- * the homepage tile-rail language (bare tile, media-only hover zoom, tracked
- * label plaque), squared off and dropped into a grid.
+ * Square portrait with the name set on the Cotton beneath it - the homepage
+ * tile-rail language (hung-print frame, media-only hover zoom, tracked label
+ * plaque), squared off and dropped into a grid.
  */
 function ArtistTile({ artist }: { artist: Artist }) {
   return (
@@ -138,7 +138,7 @@ function ArtistTile({ artist }: { artist: Artist }) {
       {/* The tint backs the frame so a slow or missing portrait still reads as
           a tile rather than a hole in the grid - ProductCard does the same
           with bg-ink behind artwork. */}
-      <div className="relative aspect-square overflow-hidden bg-ink/5">
+      <div className={`relative aspect-square overflow-hidden bg-ink/5 ${hungPrint}`}>
         {/* The zoom lives on the media, never the tile - the cut edges stay put. */}
         <div className="absolute inset-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
           {artist.avatar_url ? (

@@ -4,9 +4,10 @@ import Image from "@/components/app-image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
-import { railLabel } from "@/components/custom/media-rail";
+import { hungPrint, railLabel } from "@/components/custom/media-rail";
 import { Stars } from "@/components/stars";
 import { api } from "@/lib/api";
+import { useDiscount } from "@/lib/discount";
 import type { Product } from "@/lib/types";
 import { formatINR } from "@/lib/utils";
 
@@ -26,13 +27,18 @@ export function ProductCard({
   // product's true "starting from" price.
   const { data: sizes } = useQuery({ queryKey: ["poster-sizes"], queryFn: () => api.posterSizes() });
   const minDelta = sizes?.length ? Math.min(...sizes.map((s) => s.delta_inr)) : null;
-  const displayPrice = minDelta !== null ? product.price_inr + minDelta : product.price_inr;
+  const listPrice = minDelta !== null ? product.price_inr + minDelta : product.price_inr;
+  // Cards show the discounted figure alone - no strikethrough and no "-15%"
+  // badge. The struck original is reserved for the product page (and the
+  // cart/checkout savings line); DESIGN.md bans badge clutter in grids.
+  const { priced } = useDiscount();
+  const displayPrice = priced(listPrice);
 
   return (
     <div className="group flex flex-col gap-3.5">
       <Link
         href={`/product/${product.slug}`}
-        className="relative block aspect-[3/4] overflow-hidden bg-ink shadow-card transition-transform duration-300 group-hover:-translate-y-1.5 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0"
+        className={`relative block aspect-[3/4] overflow-hidden bg-ink ${hungPrint}`}
       >
         <Image
           src={product.image_url}

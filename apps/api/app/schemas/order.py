@@ -48,13 +48,24 @@ class QuoteLine(BaseModel):
     price_inr: int
     qty: int
     line_total_inr: int
+    # List price, before any site-wide discount. Equal to price_inr when no
+    # discount is running, so a client that ignores these fields renders
+    # exactly as it did before the discount feature existed.
+    original_price_inr: int = 0
+    original_line_total_inr: int = 0
 
 
 class QuoteResponse(BaseModel):
     lines: list[QuoteLine]
+    # Already discounted - the sum of the lines above, and the amount that
+    # will be charged.
     subtotal_inr: int
     shipping_inr: int
     total_inr: int
+    original_subtotal_inr: int = 0
+    discount_percent: int = 0
+    discount_label: str = ""
+    discount_amount_inr: int = 0
 
 
 class CheckoutRequest(BaseModel):
@@ -101,6 +112,12 @@ class OrderOut(BaseModel):
     subtotal_inr: int
     shipping_inr: int
     total_inr: int
+    # Snapshot of the discount in force when the order was placed. 0/"" on
+    # every pre-discount order, and all discount UI is gated on
+    # discount_percent > 0, so history renders unchanged.
+    original_subtotal_inr: int = 0
+    discount_percent: int = 0
+    discount_label: str = ""
     shipping_address: dict
     razorpay_order_id: Optional[str]
     razorpay_payment_id: Optional[str]

@@ -20,7 +20,9 @@ from app.models import (
     product_categories,
 )
 from app.schemas.catalog import CategoryOut, ProductListOut, ProductOut, SiteImageOut
+from app.schemas.discount import DiscountOut
 from app.schemas.original import InquiryCreate, OriginalPaintingBrief, OriginalPaintingOut
+from app.services import discount as discount_service
 
 router = APIRouter(tags=["catalog"])
 
@@ -66,6 +68,19 @@ def list_site_images(db: Session = Depends(get_db)):
     """All slots' images, ordered - the storefront groups by `slot` client-side
     (see apps/web/lib/site-images.ts) rather than one request per banner."""
     return db.query(SiteImage).order_by(SiteImage.slot, SiteImage.position).all()
+
+
+@router.get("/discount", response_model=DiscountOut)
+def get_discount(db: Session = Depends(get_db)):
+    """The one site-wide discount, for display only.
+
+    Always 200: an inactive discount is reported as percent=0, which the
+    storefront treats as "show prices as-is". What is actually charged is
+    re-derived server-side at checkout (services.pricing.compute_quote), so
+    a stale cache of this response can never affect a payment.
+    """
+    percent, label = discount_service.active_discount(db)
+    return DiscountOut(percent=percent, label=label)
 
 
 @router.get("/products", response_model=ProductListOut)

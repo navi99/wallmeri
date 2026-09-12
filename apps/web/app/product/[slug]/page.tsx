@@ -16,6 +16,7 @@ import { Stars } from "@/components/stars";
 import { Button, Spinner } from "@/components/ui";
 import { WhyLoveIt } from "@/components/why-love-it";
 import { api, ApiError } from "@/lib/api";
+import { useDiscount } from "@/lib/discount";
 import { useCart } from "@/lib/store/cart";
 import { formatINR } from "@/lib/utils";
 
@@ -56,11 +57,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   // that base plus its delta (0 at A4) - so the SizePicker shows the
   // product's real price at each size, not the shared custom-upload price.
   const basePrice = product?.price_inr ?? 0;
-  const displaySizes = sizes.map((s) => ({ ...s, price_inr: basePrice + s.delta_inr }));
+  const { percent: discountPercent, label: discountLabel, priced } = useDiscount();
+  // Size tiles show the discounted price only - the struck original appears
+  // once, in the main price block below, rather than seven times over.
+  const displaySizes = sizes.map((s) => ({ ...s, price_inr: priced(basePrice + s.delta_inr) }));
   const selectedSize = displaySizes.find((s) => s.code === sizeCode) ?? null;
   // Falls back to the product's flat price if sizes haven't loaded yet, or
   // none are configured - keeps the PDP usable rather than blocking on them.
-  const displayPrice = selectedSize ? selectedSize.price_inr : basePrice;
+  const selectedDelta = sizes.find((s) => s.code === sizeCode)?.delta_inr ?? 0;
+  const listPrice = basePrice + (selectedSize ? selectedDelta : 0);
+  const displayPrice = priced(listPrice);
 
   if (isLoading) {
     return (
@@ -159,7 +165,31 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             />
           )}
 
-          <p className="mt-4 text-3xl font-normal tracking-[0.03em] text-brand-600">{formatINR(displayPrice)}</p>
+          {/* The only struck-through price on the storefront (the cart and
+              checkout summaries carry a savings line instead). Quiet by
+              design: the discounted figure keeps the existing size and
+              colour, the original sits beside it in muted body text, and
+              there is no badge, pill or urgency copy - see DESIGN.md
+              "Don't import the generic-marketplace grammar". */}
+          <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <p
+              className="text-3xl font-normal tracking-[0.03em] text-brand-600"
+              aria-label={discountPercent > 0 ? "Discounted price" : undefined}
+            >
+              {formatINR(displayPrice)}
+            </p>
+            {discountPercent > 0 && (
+              <s className="text-lg font-normal tracking-[0.03em] text-muted" aria-label="Original price">
+                {formatINR(listPrice)}
+              </s>
+            )}
+          </div>
+          {discountPercent > 0 && (
+            <p className="mt-1 text-xs text-muted">
+              {discountLabel ? `${discountLabel} - ` : ""}
+              {discountPercent}% off
+            </p>
+          )}
 
           <p className="mt-4 whitespace-pre-wrap leading-relaxed text-muted">{product.description}</p>
           <p className="mt-2 label text-xs text-muted">Material: {product.material}</p>
@@ -201,6 +231,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <p className="text-base text-ink">
                 Also available as an original painting
               </p>
+              {/* Originals are excluded from the site-wide discount - one-of-a-kind
+                  pieces are priced individually, so no priced() here. */}
               <p className="mt-1 text-lg font-normal tracking-[0.03em] text-brand-600">
                 {formatINR(product.original.price_inr)}
               </p>

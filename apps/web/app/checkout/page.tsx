@@ -14,6 +14,7 @@ import { Button, Card, FieldError, Input, Label } from "@/components/ui";
 import { api, ApiError, type CheckoutLine } from "@/lib/api";
 import { useAuth } from "@/lib/store/auth";
 import { lineId, useCart } from "@/lib/store/cart";
+import { useCartQuote } from "@/lib/use-cart-quote";
 import { formatINR } from "@/lib/utils";
 
 const schema = z.object({
@@ -68,8 +69,28 @@ export default function CheckoutPage() {
     if (user?.full_name) setValue("full_name", user.full_name);
   }, [user, setValue]);
 
-  const subtotal = items.reduce((n, i) => n + i.price_inr * i.qty, 0);
-  const total = subtotal;
+  // Server-confirmed prices. This summary used to show a purely local
+  // reduce and never called the quote endpoint at all, so any divergence
+  // between the cart's stored prices and the real ones stayed invisible
+  // until the Razorpay sheet opened.
+  const quoteQuery = useCartQuote();
+  const quote = quoteQuery.data;
+  const quoteError =
+    quoteQuery.error instanceof ApiError ? quoteQuery.error.message : null;
+
+  const serverLine = new Map(
+    (quote?.lines ?? []).map((l) => [
+      l.kind === "custom"
+        ? `custom:${l.custom_upload_id}`
+        : `product:${l.product_id}:${l.size_code ?? ""}`,
+      l,
+    ]),
+  );
+
+  const localSubtotal = items.reduce((n, i) => n + i.price_inr * i.qty, 0);
+  const subtotal = quote?.subtotal_inr ?? localSubtotal;
+  const total = quote?.total_inr ?? localSubtotal;
+  const savings = quote ? quote.discount_amount_inr : 0;
   const hasCustom = items.some((i) => i.kind === "custom");
 
   if (mounted && items.length === 0) {
@@ -113,6 +134,17 @@ export default function CheckoutPage() {
       };
 
       const payment = await api.createPayment(payload);
+
+      // create-payment re-derives prices from live catalog and discount
+      // state, so a sale ending between the quote above and this call would
+      // charge more than the summary showed. Never open the payment sheet on
+      // an amount the customer hasn't seen.
+      if (quote && payment.amount_inr !== quote.total_inr) {
+        await queryClient.invalidateQueries({ queryKey: ["quote"] });
+        toast.error("Prices have changed - please review your order before paying.");
+        setPaying(false);
+        return;
+      }
 
       // Mock mode: no Razorpay keys configured - confirm directly.
       if (payment.mock) {
@@ -254,7 +286,9 @@ export default function CheckoutPage() {
                   <p className="text-xs text-muted">Qty {item.qty}</p>
                 </div>
                 <span className="text-sm font-semibold text-ink">
-                  {formatINR(item.price_inr * item.qty)}
+                  {formatINR(
+                    serverLine.get(lineId(item))?.line_total_inr ?? item.price_inr * item.qty,
+                  )}
                 </span>
               </div>
             ))}
@@ -263,15 +297,37 @@ export default function CheckoutPage() {
           <dl className="mt-5 space-y-2 border-t border-brand-100 pt-4 text-sm">
             <div className="flex justify-between">
               <dt className="text-muted">Subtotal</dt>
-              <dd className="font-semibold text-ink">{formatINR(subtotal)}</dd>
+              <dd className="font-semibold text-ink">
+                {formatINR(quote ? quote.original_subtotal_inr : subtotal)}
+              </dd>
             </div>
+            {savings > 0 && (
+              <div className="flex justify-between">
+                <dt className="text-muted">
+                  {quote?.discount_label ? `${quote.discount_label} - ` : ""}
+                  {quote?.discount_percent}% off
+                </dt>
+                <dd className="text-muted">-{formatINR(savings)}</dd>
+              </div>
+            )}
             <div className="flex justify-between border-t border-brand-100 pt-2 text-base">
               <dt className="font-medium text-ink">Total</dt>
               <dd className="font-medium text-ink">{formatINR(total)}</dd>
             </div>
           </dl>
 
-          <Button type="submit" size="lg" className="mt-5 w-full" loading={paying}>
+          {quoteError && (
+            <p className="mt-4 bg-brand-600/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-brand-600">
+              {quoteError} Please review your cart before paying.
+            </p>
+          )}
+          <Button
+            type="submit"
+            size="lg"
+            className="mt-5 w-full"
+            loading={paying}
+            disabled={quoteQuery.isLoading || !!quoteError}
+          >
             Pay {formatINR(total)}
           </Button>
           <p className="mt-3 text-center text-xs leading-relaxed text-muted">

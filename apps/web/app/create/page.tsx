@@ -24,6 +24,7 @@ import { api, ApiError } from "@/lib/api";
 import { useCart } from "@/lib/store/cart";
 import { computeDpi, dpiBand, sizeAspect } from "@/lib/custom-dpi";
 import type { Orientation, UploadResult } from "@/lib/types";
+import { useDiscount } from "@/lib/discount";
 import { formatINR } from "@/lib/utils";
 
 type Step = "upload" | "design";
@@ -57,6 +58,11 @@ export default function CreatePage() {
   const [naturalWidth, setNaturalWidth] = useState<number | null>(null);
 
   const sizesQuery = useQuery({ queryKey: ["poster-sizes"], queryFn: () => api.posterSizes() });
+  // Custom uploads price straight off PosterSize.price_inr (not a product
+  // base + delta), and the site-wide discount applies to them too - matching
+  // what compute_quote will charge at checkout.
+  const { priced } = useDiscount();
+  const displaySizes = (sizesQuery.data ?? []).map((s) => ({ ...s, price_inr: priced(s.price_inr) }));
 
   useEffect(() => {
     if (!sizeCode && sizesQuery.data && sizesQuery.data.length > 0) {
@@ -102,7 +108,7 @@ export default function CreatePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalOpen]);
 
-  const selectedSize = sizesQuery.data?.find((s) => s.code === sizeCode) ?? null;
+  const selectedSize = displaySizes.find((s) => s.code === sizeCode) ?? null;
   const aspect = selectedSize ? sizeAspect(selectedSize, orientation) : 3 / 4;
 
   // Crop rect mapped from the displayed (web-derivative) image's pixel space
@@ -329,7 +335,7 @@ export default function CreatePage() {
                           Size
                         </div>
                         <div className="mt-2">
-                          <SizePicker sizes={sizesQuery.data} selected={sizeCode} onSelect={setSizeCode} />
+                          <SizePicker sizes={displaySizes} selected={sizeCode} onSelect={setSizeCode} />
                         </div>
 
                         <div className="mt-5 label text-xs text-muted">

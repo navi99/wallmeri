@@ -252,10 +252,16 @@ export function ProductForm({
             />
           )}
 
+          {/* The list price, before any site-wide discount. Never apply the
+              discount to this field - it would be saved back as the new base
+              and compound on every edit. */}
           <div>
             <Label htmlFor="price_inr">Price (₹, for A4)</Label>
             <Input id="price_inr" type="number" {...register("price_inr")} />
             <FieldError>{errors.price_inr?.message}</FieldError>
+            <p className="mt-1 text-xs text-muted">
+              List price, before any site-wide discount.
+            </p>
           </div>
 
           {/* Category tags */}

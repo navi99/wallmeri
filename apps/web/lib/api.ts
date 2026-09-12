@@ -4,10 +4,13 @@ import type {
   ArtistApplication,
   AuthResponse,
   Category,
+  ContactEnquiry,
   CreatePaymentResponse,
   CropRect,
   CustomItem,
   CustomReviewOrder,
+  Discount,
+  DiscountAdmin,
   MyReview,
   Order,
   OriginalInquiry,
@@ -155,6 +158,21 @@ export const api = {
       body: JSON.stringify(body),
     }),
 
+  // Contact
+  submitContactEnquiry: (body: {
+    category: string;
+    name: string;
+    email: string;
+    phone: string;
+    subject: string;
+    message: string;
+    website: string; // honeypot, keep empty
+  }) =>
+    request<{ ok: boolean }>(`/contact-enquiries`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
   // Reviews
   listReviews: (slug: string) => request<Review[]>(`/products/${slug}/reviews`),
   reviewEligibility: (slug: string) =>
@@ -182,6 +200,10 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ credential }),
     }),
+
+  // The one site-wide discount. Display only - what is actually charged is
+  // re-derived server-side at checkout, so a stale cache here is harmless.
+  discount: () => request<Discount>(`/discount`),
 
   // Checkout
   quote: (items: CheckoutLine[]) =>
@@ -285,6 +307,14 @@ export const api = {
       auth: true,
       body: JSON.stringify(body),
     }),
+  adminListContactEnquiries: () =>
+    request<ContactEnquiry[]>(`/admin/contact-enquiries`, { auth: true }),
+  adminUpdateContactEnquiry: (id: number, body: { status?: string; admin_note?: string }) =>
+    request<ContactEnquiry>(`/admin/contact-enquiries/${id}`, {
+      method: "PATCH",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
   adminListOrders: () => request<Order[]>(`/admin/orders`, { auth: true }),
   adminUpdateOrderStatus: (
     id: number,
@@ -330,6 +360,14 @@ export const api = {
   adminUpdateCategory: (id: number, body: Record<string, unknown>) =>
     request<Category>(`/admin/categories/${id}`, {
       method: "PATCH",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+
+  adminGetDiscount: () => request<DiscountAdmin>(`/admin/discount`, { auth: true }),
+  adminUpdateDiscount: (body: { percent: number; label: string; is_active: boolean }) =>
+    request<DiscountAdmin>(`/admin/discount`, {
+      method: "PUT",
       auth: true,
       body: JSON.stringify(body),
     }),

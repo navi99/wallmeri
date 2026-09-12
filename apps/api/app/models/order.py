@@ -62,10 +62,29 @@ class Order(Base):
         nullable=False,
     )
 
-    # All money in whole INR rupees.
+    # All money in whole INR rupees. subtotal_inr is the sum of the *stored*
+    # OrderItem.price_inr * qty - i.e. already discounted - so that invariant
+    # holds whether or not a sale was running. original_subtotal_inr is the
+    # same sum at undiscounted prices; the saving is the difference between
+    # the two, never stored twice.
     subtotal_inr: Mapped[int] = mapped_column(Integer, nullable=False)
     shipping_inr: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     total_inr: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    # Snapshot of the site-wide discount in force at purchase time, so a
+    # historical order can still explain its own pricing after the sale ends
+    # or the percent changes. percent 0 == no sale: orders placed before this
+    # feature existed are backfilled to 0 with original_subtotal_inr ==
+    # subtotal_inr, and render exactly as they always did.
+    original_subtotal_inr: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+    discount_percent: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+    discount_label: Mapped[str] = mapped_column(
+        String(80), nullable=False, default="", server_default=""
+    )
 
     shipping_address: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
 

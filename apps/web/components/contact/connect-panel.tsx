@@ -10,11 +10,17 @@ import {
   Building2,
 } from "lucide-react";
 
-// TODO: replace the placeholder social handles and the studio address below
-// with the real ones. Everything else on this panel (WhatsApp number, support
-// address) matches what the policy pages already publish.
+// TODO: replace the placeholder Facebook handle and the studio address below
+// with the real ones - Instagram is now the live account. Everything else on
+// this panel (WhatsApp number, support address) matches what the policy pages
+// already publish.
 const SOCIALS = [
-  { icon: Instagram, label: "Instagram", handle: "@wallmeri", href: "https://instagram.com/wallmeri" },
+  {
+    icon: Instagram,
+    label: "Instagram",
+    handle: "@wallmeriofficial",
+    href: "https://www.instagram.com/wallmeriofficial/",
+  },
   { icon: Facebook, label: "Facebook", handle: "/wallmeri", href: "https://facebook.com/wallmeri" },
 ];
 

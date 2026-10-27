@@ -155,7 +155,7 @@ def send_custom_review_rejected(order: Order, reason: str) -> None:
         f"printing.\n\n"
         f"Reason: {reason}\n\n"
         f"Your payment of ₹{order.total_inr} has been fully refunded and should reflect in "
-        f"5-7 business days.\n\n"
+        f"7-10 business days.\n\n"
         f"Questions? Just reply to this email.\n\n"
         f"Order: {track_url}\n\n"
         f"- Team WallMeri"

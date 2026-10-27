@@ -373,7 +373,7 @@ export default function CreatePage() {
                             )}
                             {band === "blocked" && (
                               <p className="font-semibold text-brand-700">
-                                Too low-resolution for {selectedSize?.code} (~{dpi} DPI) - zoom out or pick
+                                Too low-resolution for {selectedSize?.label} (~{dpi} DPI) - zoom out or pick
                                 a smaller size.
                               </p>
                             )}

@@ -26,8 +26,12 @@ export function SizePicker({
               active ? "border-ink bg-ink text-cream" : "border-line bg-paper text-ink hover:border-ink"
             }`}
           >
-            <div className="text-sm font-medium uppercase tracking-[0.03em]">{size.code}</div>
-            <div className={`mt-0.5 text-[11px] ${active ? "text-cream/70" : "text-muted"}`}>
+            {/* Dimensions, not `size.code` - the code is an internal key ("A3")
+                that doesn't describe what the buyer gets: the size we print is
+                30 × 40 cm, not the 29.7 × 42 cm ISO A3 sheet. */}
+            {/* No `uppercase` here - it used to carry the code, and it would
+                now shout the unit as "CM" over the small-caps treatment. */}
+            <div className="text-sm font-medium tracking-[0.03em]">
               {size.width_cm} × {size.height_cm} <span className="text-[9px]">cm</span>
             </div>
             <div className="mt-1 text-xs font-semibold">{formatINR(size.price_inr)}</div>

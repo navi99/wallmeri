@@ -14,8 +14,8 @@ export function SiteFooter() {
           <Image
             src="/logo-wallmeri-white.png"
             alt="WallMeri"
-            width={322}
-            height={512}
+            width={691}
+            height={1025}
             className="h-36 w-auto sm:h-44"
           />
         </div>

@@ -72,10 +72,10 @@ export function SiteHeader() {
           <Image
             src="/logo-wallmeri.png"
             alt="WallMeri"
-            width={401}
-            height={128}
+            width={2828}
+            height={857}
             priority
-            className="h-8 w-auto sm:h-9"
+            className="h-9 w-auto sm:h-10"
           />
         </Link>
 
@@ -181,9 +181,14 @@ export function SiteHeader() {
           {/* Left inset matches where "WallMeri" (not the icon) starts in the
               logo above - 44px hamburger + row gap + the icon's share of the
               logo's width, so nav item text lines up under the wordmark.
+              The wordmark begins 27.4% into the artwork (774px of 2828), so:
+              44 + 8 + 33 = 85 at h-9, and 44 + 16 + 36 = 96 at sm:h-10.
+              Re-derive these if the logo file is ever swapped again.
               margin (not padding) so it adds to container-page's own inset
-              instead of colliding with its padding-left. */}
-          <div className="container-page flex flex-col gap-0.5 py-3 ml-[69px] sm:ml-[81px]">
+              instead of colliding with its padding-left - with `w-auto` to
+              undo container-page's `w-full`, which would otherwise keep the
+              box at 100% and push it off-screen by the width of the margin. */}
+          <div className="container-page flex w-auto flex-col gap-0.5 py-3 ml-[85px] sm:ml-[96px]">
             <Link href="/catalog" onClick={closePanels} className={mobileLink}>
               Browse
             </Link>
